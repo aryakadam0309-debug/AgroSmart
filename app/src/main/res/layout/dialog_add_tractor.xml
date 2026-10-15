@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/etModelName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tractor Model (e.g. Mahindra 575 DI) *"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Brand (Mahindra / John Deere / Swaraj / Sonalika) *"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etHp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Horsepower (e.g. 50 HP)"
+            android:inputType="textCapWords" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etHourlyRate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:hint="Hourly Rate ₹ *"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/etDailyRate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:hint="Daily Rate ₹"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etImplements"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Implements (e.g. Rotavator, MB Plough, Trolley)"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etOwnerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Owner / Provider Name *"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etOwnerPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Contact Phone *"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/etLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Location / Village (e.g. Baramati, Pune)"
+            android:inputType="textCapWords" />
+    </LinearLayout>
+</ScrollView>

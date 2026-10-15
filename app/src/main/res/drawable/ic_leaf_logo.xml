@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+  <path
+      android:fillColor="@color/forest_green_primary"
+      android:pathData="M48,8C32,24 16,40 16,56C16,73.67 30.33,88 48,88C65.67,88 80,73.67 80,56C80,40 64,24 48,8ZM48,80C34.75,80 24,69.25 24,56C24,43.2 38.4,26.4 48,16.5C57.6,26.4 72,43.2 72,56C72,69.25 61.25,80 48,80Z"/>
+  <path
+      android:fillColor="@color/golden_harvest"
+      android:pathData="M48,24L48,72M48,44L60,34M48,56L36,46"
+      android:strokeWidth="4"
+      android:strokeColor="@color/golden_harvest"
+      android:strokeLineCap="round"/>
+</vector>

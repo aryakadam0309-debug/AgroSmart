@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <path
+      android:fillColor="@color/golden_harvest"
+      android:pathData="M24,14c-5.52,0 -10,4.48 -10,10s4.48,10 10,10 10,-4.48 10,-10 -4.48,-10 -10,-10zm0,24c-7.73,0 -14,-6.27 -14,-14s6.27,-14 14,-14 14,6.27 14,14 -6.27,14 -14,14zM24,2V8M24,40V46M4,24H10M38,24H44M9.86,9.86L14.1,14.1M33.9,33.9L38.14,38.14M9.86,38.14L14.1,33.9M33.9,14.1L38.14,9.86"
+      android:strokeWidth="3.5"
+      android:strokeColor="@color/golden_harvest"
+      android:strokeLineCap="round"/>
+</vector>

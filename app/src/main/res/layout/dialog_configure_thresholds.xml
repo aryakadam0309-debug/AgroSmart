@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Configure Smart Irrigation"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Dual-threshold hysteresis prevents relay damage and protects soil health."
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp" />
+
+    <!-- Start Threshold -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilStartThreshold"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Start Irrigation Threshold (Dry Soil %)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etStartThreshold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:text="30.0" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Stop Threshold -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilStopThreshold"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Stop Irrigation Threshold (Target Moisture %)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etStopThreshold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:text="70.0" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Max Runtime Sec -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilMaxRuntime"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Max Continuous Runtime (Seconds, e.g. 300 = 5 min)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etMaxRuntime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="300" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Cooldown Sec -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCooldown"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Safety Cooldown Interval (Seconds, e.g. 600 = 10 min)">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCooldown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:text="600" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

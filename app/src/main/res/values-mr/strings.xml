@@ -1,0 +1,208 @@
+<resources>
+    <string name="app_name">AgroSmart</string>
+    <string name="app_tagline">स्मार्ट कृषी व्यवस्थापन प्रणाली</string>
+    <string name="empowering_farmers">तंत्रज्ञानाने शेतकऱ्यांचे सक्षमीकरण</string>
+
+    <!-- Language Selection -->
+    <string name="select_language_title">भाषा निवडा</string>
+    <string name="select_language_subtitle">ॲप्लिकेशनसाठी आपली पसंतीची भाषा निवडा</string>
+    <string name="lang_english">English</string>
+    <string name="lang_hindi">हिन्दी (Hindi)</string>
+    <string name="lang_marathi">मराठी (Marathi)</string>
+    <string name="btn_continue">पुढे जा</string>
+
+    <!-- Authentication -->
+    <string name="welcome_back">पुन्हा स्वागत आहे</string>
+    <string name="login_to_account">आपल्या ॲग्रोस्मार्ट खात्यात साइन इन करा</string>
+    <string name="email_or_phone">फोन नंबर किंवा ईमेल</string>
+    <string name="password">पासवर्ड</string>
+    <string name="login">लॉगिन करा</string>
+    <string name="register">नोंदणी करा</string>
+    <string name="full_name">पूर्ण नाव</string>
+    <string name="phone_number">१०-अंकी मोबाईल नंबर</string>
+    <string name="email_address">ईमेल पत्ता (पर्यायी)</string>
+    <string name="farm_location">शेताचे ठिकाण / गाव</string>
+    <string name="farm_size_acres">शेतीचे क्षेत्र (एकर)</string>
+    <string name="dont_have_account">खाते नाही? नोंदणी करा</string>
+    <string name="already_have_account">आधीच खाते आहे? लॉगिन करा</string>
+    <string name="farmer_role">शेतकरी</string>
+    <string name="admin_role">प्रशासक</string>
+    <string name="select_role">आपली भूमिका निवडा</string>
+    <string name="forgot_password">पासवर्ड विसरलात?</string>
+    <string name="reset_password">पासवर्ड रीसेट करा</string>
+    <string name="logout">लॉग आउट</string>
+    <string name="logout_confirm_title">लॉग आउट करा</string>
+    <string name="logout_confirm_msg">आपण खात्रीने ॲग्रोस्मार्टमधून लॉग आउट करू इच्छिता?</string>
+    <string name="cancel">रद्द करा</string>
+
+    <!-- Navigation & Common -->
+    <string name="nav_home">मुख्यपृष्ठ</string>
+    <string name="nav_services">सेवा</string>
+    <string name="nav_marketplace">बाजारपेठ</string>
+    <string name="nav_bookings">बुकिंग</string>
+    <string name="nav_profile">माझे प्रोफाइल</string>
+    <string name="search">शोधा</string>
+    <string name="submit">सबमिट करा</string>
+    <string name="save">जतन करा</string>
+    <string name="edit">संपादन करा</string>
+    <string name="delete">हटवा</string>
+    <string name="view_all">सर्व पहा</string>
+    <string name="details">तपशील</string>
+    <string name="status">स्थिती</string>
+    <string name="all">सर्व</string>
+
+    <!-- Home & Profile -->
+    <string name="greeting_farmer">नमस्कार, %s! 👋</string>
+    <string name="registered_farmer">🌱 नोंदणीकृत शेतकरी</string>
+    <string name="system_admin">🛡️ प्रणाली प्रशासक</string>
+    <string name="view_mode">पाहण्याचा मोड</string>
+    <string name="edit_mode">संपादन मोड</string>
+    <string name="edit_profile">प्रोफाइल संपादित करा</string>
+    <string name="change_language">भाषा बदला</string>
+    <string name="detect_gps">GPS द्वारे ठिकाण शोधा</string>
+    <string name="change_photo">फोटो बदला</string>
+    <string name="remove_photo">फोटो हटवा</string>
+
+    <!-- Weather Module -->
+    <string name="weather_forecast">हवामान अंदाज</string>
+    <string name="weather_current">सध्याचे हवामान</string>
+    <string name="weather_5day">५ दिवसांचा शेती हवामान अंदाज</string>
+    <string name="humidity">आर्द्रता</string>
+    <string name="wind_speed">वाऱ्याचा वेग</string>
+    <string name="rainfall">पाऊस</string>
+    <string name="sunrise">सूर्योदय</string>
+    <string name="sunset">सूर्यास्त</string>
+
+    <!-- Mandi & Crop Prices -->
+    <string name="crop_prices">बाजारभाव (मंडी भाव)</string>
+    <string name="market_name">बाजार समिती / APMC</string>
+    <string name="modal_price">सर्वसाधारण भाव</string>
+    <string name="min_max_price">किमान: ₹%1$,.0f • कमाल: ₹%2$,.0f</string>
+    <string name="arrival_quantity">आवक: %s</string>
+    <string name="price_up">भाव वाढले</string>
+    <string name="price_down">भाव घसरले</string>
+    <string name="price_stable">भाव स्थिर</string>
+
+    <!-- Government Schemes -->
+    <string name="govt_schemes">शासकीय योजना</string>
+    <string name="scheme_benefits">योजनेचे फायदे</string>
+    <string name="scheme_eligibility">पात्रता</string>
+    <string name="scheme_ministry">मंत्रालय / विभाग</string>
+    <string name="scheme_deadline">अर्जाची शेवटची तारीख</string>
+    <string name="scheme_apply">आता अर्ज करा</string>
+
+    <!-- Crop Guides & Disease Directory -->
+    <string name="crop_guide">पीक लागवड मार्गदर्शिका</string>
+    <string name="crop_disease">पीक रोग व कीड माहिती</string>
+    <string name="scientific_name">शास्त्रीय नाव</string>
+    <string name="sowing_window">पेरणीचा कालावधी</string>
+    <string name="harvesting_window">कापणीचा कालावधी</string>
+    <string name="soil_type">जमिनीचा प्रकार</string>
+    <string name="water_requirement">पाण्याची गरज</string>
+    <string name="npk_advisory">खत (NPK) सल्ला</string>
+    <string name="symptoms">लक्षणे</string>
+    <string name="organic_control">सेंद्रिय / जैविक उपाय</string>
+    <string name="chemical_control">रासायनिक नियंत्रण</string>
+    <string name="preventive_measures">प्रतिबंधात्मक काळजी</string>
+
+    <!-- Tractor Rental & Booking -->
+    <string name="tractor_booking">ट्रॅक्टर भाडे सेवा</string>
+    <string name="available_tractors">उपलब्ध ट्रॅक्टर व अवजारे</string>
+    <string name="rent_out_tractor">माझा ट्रॅक्टर भाड्याने द्या</string>
+    <string name="add_tractor">ट्रॅक्टर / अवजार जोडा</string>
+    <string name="hourly_rate">ताशी दर</string>
+    <string name="daily_rate">दैनिक दर</string>
+    <string name="tractor_implements">समाविष्ट अवजारे</string>
+    <string name="tractor_hp">अश्वशक्ती (HP)</string>
+    <string name="owner_name">मालकाचे नाव</string>
+    <string name="owner_phone">मालकाचा फोन</string>
+    <string name="book_now">आता बुक करा</string>
+    <string name="booking_details">बुकिंग तपशील</string>
+    <string name="booking_date">बुकिंग दिनांक</string>
+    <string name="duration_hours">भाडे कालावधी (तास)</string>
+    <string name="total_amount">एकूण रक्कम</string>
+    <string name="pay_online_razorpay">ऑनलाइन पेमेंट (रेझरपे UPI / कार्ड्स)</string>
+    <string name="pay_on_delivery">शेतावर आल्यावर पेमेंट (COD / नकद / UPI)</string>
+    <string name="booking_success">ट्रॅक्टर बुकिंग यशस्वी झाले!</string>
+    <string name="booking_history">माझे ट्रॅक्टर बुकिंग</string>
+    <string name="no_bookings_found">कोणतेही ट्रॅक्टर बुकिंग आढळले नाही</string>
+
+    <!-- Farm Inventory Module -->
+    <string name="fertilizer_inventory">खते साठा व्यवस्थापन</string>
+    <string name="crop_inventory">पीक उत्पादन साठा</string>
+    <string name="add_fertilizer">नवीन खत साठा जोडा</string>
+    <string name="add_crop_harvest">नवीन पीक काढणी नोंदवा</string>
+    <string name="fertilizer_name">खताचे नाव</string>
+    <string name="fertilizer_category">प्रकार (NPK, सेंद्रिय, सूक्ष्म अन्नद्रव्ये)</string>
+    <string name="quantity_bags">गोण्यांची संख्या</string>
+    <string name="bag_weight">गोणीचे वजन (किग्रॅ)</string>
+    <string name="cost_per_bag">प्रति गोणी किंमत (₹)</string>
+    <string name="purchase_date">खरेदी दिनांक</string>
+    <string name="crop_name">पिकाचे नाव</string>
+    <string name="variety">वाण / जात</string>
+    <string name="harvested_quintals">उत्पादन (क्विंटल)</string>
+    <string name="sold_quintals">विक्री केलेले (क्विंटल)</string>
+    <string name="stock_remaining">शिल्लक साठा</string>
+    <string name="storage_location">गोदाम / साठवणुकीचे ठिकाण</string>
+    <string name="expected_price">अपेक्षित भाव (₹/क्विंटल)</string>
+    <string name="low_stock_warning">⚠️ कमी साठा सूचना</string>
+    <string name="upload_item_image">साहित्याचा फोटो अपलोड करा</string>
+    <string name="no_inventory_found">कोणतीही साठा नोंद आढळली नाही</string>
+
+    <!-- Marketplace & Cart -->
+    <string name="marketplace">कृषी बाजारपेठ</string>
+    <string name="cart">माझी कार्ट</string>
+    <string name="orders">माझ्या ऑर्डर्स</string>
+    <string name="add_to_cart">कार्टमध्ये जोडा</string>
+    <string name="buy_now">आता खरेदी करा</string>
+    <string name="delivery_address">डिलिव्हरी शेताचा पत्ता</string>
+    <string name="order_placed_success">ऑर्डर यशस्वीरित्या नोंदवली गेली!</string>
+    <string name="empty_cart">आपली कार्ट रिकामी आहे</string>
+
+    <!-- Notifications -->
+    <string name="notifications">सूचना (नोटिफिकेशन्स)</string>
+    <string name="mark_all_read">सर्व वाचल्याचे चिन्हांकित करा</string>
+    <string name="no_notifications">सध्या कोणतीही सूचना नाही</string>
+    <string name="notif_booking_title">ट्रॅक्टर बुकिंग अपडेट</string>
+    <string name="notif_order_title">बाजारपेठ ऑर्डर अपडेट</string>
+    <string name="notif_weather_title">हवामान सल्ला</string>
+    <string name="notif_price_title">बाजारभाव अलर्ट</string>
+
+    <!-- Agri News -->
+    <string name="agri_news">कृषी वार्ता व बातम्या</string>
+    <string name="add_news">बातम्या जोडा</string>
+    <string name="news_title">बातमीचे शीर्षक</string>
+    <string name="news_summary">थोडक्यात सारांश</string>
+    <string name="news_content">सविस्तर बातमी मजकूर</string>
+    <string name="news_category">वर्गवारी</string>
+    <string name="news_source">स्रोत / वृत्तसंस्था</string>
+    <string name="upload_news_image">बातमीचा मुख्य फोटो अपलोड करा</string>
+
+    <!-- IoT Smart Farming Module -->
+    <string name="title_iot_dashboard">IoT स्मार्ट शेती</string>
+    <string name="subtitle_iot_dashboard">थेट जमिनीतील ओलावा, हवामान व सिंचन नियंत्रण</string>
+    <string name="iot_soil_moisture">जमिनीतील ओलावा</string>
+    <string name="iot_temp_humidity">तापमान व आर्द्रता</string>
+    <string name="iot_pump_control">स्मार्ट सिंचन पंप</string>
+    <string name="iot_auto_mode">स्वयंचलित हिस्टेरेसीस मोड</string>
+    <string name="iot_manual_mode">मॅन्युअल नियंत्रण</string>
+    <string name="iot_turn_on">पंप चालू करा</string>
+    <string name="iot_turn_off">पंप बंद करा</string>
+    <string name="iot_status_online">ऑनलाइन</string>
+    <string name="iot_status_offline">ऑफलाइन कॅश मोड</string>
+    <string name="iot_recent_readings">अलीकडील सेन्सर नोंदी</string>
+    <string name="iot_device_setup">ESP32 रचना व वायरिंग</string>
+    <string name="iot_configure_thresholds">सिंचन मर्यादा सेटिंग्ज</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard">प्रशासक व्यवस्थापन पोर्टल</string>
+    <string name="admin_analytics">सिस्टम विश्लेषण व सारांश</string>
+    <string name="total_farmers">एकूण शेतकरी</string>
+    <string name="total_tractors">नोंदणीकृत ट्रॅक्टर</string>
+    <string name="total_bookings">एकूण बुकिंग</string>
+    <string name="total_orders">बाजारपेठ ऑर्डर्स</string>
+    <string name="manage_schemes">शासकीय योजना व्यवस्थापन</string>
+    <string name="manage_news">कृषी बातम्या व्यवस्थापन</string>
+    <string name="manage_crop_prices">बाजारभाव व्यवस्थापन</string>
+    <string name="manage_tractors">यंत्रसामग्री व्यवस्थापन</string>
+</resources>

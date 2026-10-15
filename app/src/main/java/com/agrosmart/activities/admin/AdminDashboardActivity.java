@@ -1,0 +1,90 @@
+package com.agrosmart.activities.admin;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.agrosmart.activities.auth.LoginActivity;
+import com.agrosmart.databinding.ActivityAdminDashboardBinding;
+import com.agrosmart.utils.LocaleHelper;
+import com.agrosmart.utils.SessionManager;
+import com.agrosmart.viewmodels.AdminViewModel;
+
+public class AdminDashboardActivity extends AppCompatActivity {
+
+    private ActivityAdminDashboardBinding binding;
+    private AdminViewModel adminViewModel;
+    private SessionManager sessionManager;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SessionManager session = new SessionManager(newBase);
+        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityAdminDashboardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        sessionManager = new SessionManager(this);
+        adminViewModel = new ViewModelProvider(this).get(AdminViewModel.class);
+
+        setupObservers();
+        setupClickListeners();
+
+        adminViewModel.fetchStats();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adminViewModel != null) {
+            adminViewModel.fetchStats();
+        }
+    }
+
+    private void setupObservers() {
+        adminViewModel.getDashboardStats().observe(this, stats -> {
+            if (stats != null) {
+                binding.tvTotalFarmers.setText(String.format("%,d", stats.getTotalFarmers()));
+                binding.tvTotalTractors.setText(String.format("%,d", stats.getTotalTractors()));
+                binding.tvTotalBookings.setText(String.format("%,d", stats.getTotalBookings()));
+                binding.tvTotalOrders.setText(String.format("%,d", stats.getTotalOrders()));
+            }
+        });
+    }
+
+    private void setupClickListeners() {
+        binding.btnLogout.setOnClickListener(v -> {
+            sessionManager.logout();
+            Intent intent = new Intent(AdminDashboardActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+
+        binding.cardManageSchemes.setOnClickListener(v ->
+                startActivity(new Intent(this, ManageSchemesActivity.class)));
+
+        binding.cardManageNews.setOnClickListener(v ->
+                startActivity(new Intent(this, ManageNewsActivity.class)));
+
+        binding.cardManageCropPrices.setOnClickListener(v ->
+                startActivity(new Intent(this, ManageCropPricesActivity.class)));
+
+        binding.cardManageTractors.setOnClickListener(v ->
+                startActivity(new Intent(this, ManageTractorsActivity.class)));
+
+        binding.cardManageCropGuides.setOnClickListener(v ->
+                startActivity(new Intent(this, com.agrosmart.activities.farmer.CropGuideActivity.class)));
+
+        binding.cardBroadcastAlerts.setOnClickListener(v ->
+                startActivity(new Intent(this, com.agrosmart.activities.farmer.NotificationsActivity.class)));
+    }
+}

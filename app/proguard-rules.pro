@@ -1,0 +1,1 @@
+﻿# AgroSmart ProGuard rules

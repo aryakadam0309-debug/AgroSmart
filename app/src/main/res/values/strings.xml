@@ -1,0 +1,208 @@
+<resources>
+    <string name="app_name">AgroSmart</string>
+    <string name="app_tagline">Smart Agriculture Management System</string>
+    <string name="empowering_farmers">Empowering Farmers with Technology</string>
+
+    <!-- Language Selection -->
+    <string name="select_language_title">Select Language</string>
+    <string name="select_language_subtitle">Choose your preferred language for the application</string>
+    <string name="lang_english">English</string>
+    <string name="lang_hindi">हिन्दी (Hindi)</string>
+    <string name="lang_marathi">मराठी (Marathi)</string>
+    <string name="btn_continue">Continue</string>
+
+    <!-- Authentication -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_to_account">Sign in to your AgroSmart account</string>
+    <string name="email_or_phone">Phone Number or Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">10-Digit Mobile Number</string>
+    <string name="email_address">Email Address (Optional)</string>
+    <string name="farm_location">Farm Location / Village</string>
+    <string name="farm_size_acres">Farm Size (Acres)</string>
+    <string name="dont_have_account">Don\'t have an account? Register</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="farmer_role">Farmer</string>
+    <string name="admin_role">Admin</string>
+    <string name="select_role">Select Your Role</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirm_title">Log Out</string>
+    <string name="logout_confirm_msg">Are you sure you want to log out of AgroSmart?</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Navigation & Common -->
+    <string name="nav_home">Home</string>
+    <string name="nav_services">Services</string>
+    <string name="nav_marketplace">Market</string>
+    <string name="nav_bookings">Bookings</string>
+    <string name="nav_profile">Profile</string>
+    <string name="search">Search</string>
+    <string name="submit">Submit</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="view_all">View All</string>
+    <string name="details">Details</string>
+    <string name="status">Status</string>
+    <string name="all">All</string>
+
+    <!-- Home & Profile -->
+    <string name="greeting_farmer">Hello, %s! 👋</string>
+    <string name="registered_farmer">🌱 REGISTERED FARMER</string>
+    <string name="system_admin">🛡️ SYSTEM ADMINISTRATOR</string>
+    <string name="view_mode">View Mode</string>
+    <string name="edit_mode">Edit Mode</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_language">Change Language</string>
+    <string name="detect_gps">Detect GPS Location</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="remove_photo">Remove Photo</string>
+
+    <!-- Weather Module -->
+    <string name="weather_forecast">Weather Forecast</string>
+    <string name="weather_current">Current Weather</string>
+    <string name="weather_5day">5-Day Agriculture Forecast</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="rainfall">Rainfall</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+
+    <!-- Mandi & Crop Prices -->
+    <string name="crop_prices">Crop Prices (Mandi)</string>
+    <string name="market_name">Market / APMC</string>
+    <string name="modal_price">Modal Price</string>
+    <string name="min_max_price">Min: ₹%1$,.0f • Max: ₹%2$,.0f</string>
+    <string name="arrival_quantity">Arrival: %s</string>
+    <string name="price_up">Price Rising</string>
+    <string name="price_down">Price Falling</string>
+    <string name="price_stable">Price Stable</string>
+
+    <!-- Government Schemes -->
+    <string name="govt_schemes">Government Schemes</string>
+    <string name="scheme_benefits">Scheme Benefits</string>
+    <string name="scheme_eligibility">Eligibility</string>
+    <string name="scheme_ministry">Ministry / Department</string>
+    <string name="scheme_deadline">Application Deadline</string>
+    <string name="scheme_apply">Apply Now</string>
+
+    <!-- Crop Guides & Disease Directory -->
+    <string name="crop_guide">Crop Cultivation Guide</string>
+    <string name="crop_disease">Crop Disease Directory</string>
+    <string name="scientific_name">Scientific Name</string>
+    <string name="sowing_window">Sowing Window</string>
+    <string name="harvesting_window">Harvesting Window</string>
+    <string name="soil_type">Soil Type</string>
+    <string name="water_requirement">Water Requirement</string>
+    <string name="npk_advisory">Fertilizer (NPK) Advisory</string>
+    <string name="symptoms">Symptoms</string>
+    <string name="organic_control">Organic Treatment</string>
+    <string name="chemical_control">Chemical Treatment</string>
+    <string name="preventive_measures">Preventive Measures</string>
+
+    <!-- Tractor Rental & Booking -->
+    <string name="tractor_booking">Tractor Rental</string>
+    <string name="available_tractors">Available Tractors &amp; Machinery</string>
+    <string name="rent_out_tractor">Rent Out My Tractor</string>
+    <string name="add_tractor">Add Tractor / Machinery</string>
+    <string name="hourly_rate">Hourly Rate</string>
+    <string name="daily_rate">Daily Rate</string>
+    <string name="tractor_implements">Included Implements</string>
+    <string name="tractor_hp">Horsepower (HP)</string>
+    <string name="owner_name">Owner Name</string>
+    <string name="owner_phone">Owner Phone</string>
+    <string name="book_now">Book Now</string>
+    <string name="booking_details">Booking Details</string>
+    <string name="booking_date">Booking Date</string>
+    <string name="duration_hours">Rental Duration (Hours)</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="pay_online_razorpay">Pay Online (Razorpay UPI / Cards)</string>
+    <string name="pay_on_delivery">Book &amp; Pay at Farm (COD / UPI)</string>
+    <string name="booking_success">Tractor Booking Successful!</string>
+    <string name="booking_history">My Tractor Bookings</string>
+    <string name="no_bookings_found">No tractor bookings found</string>
+
+    <!-- Farm Inventory Module -->
+    <string name="fertilizer_inventory">Fertilizer Inventory</string>
+    <string name="crop_inventory">Crop Harvest Inventory</string>
+    <string name="add_fertilizer">Add Fertilizer Stock</string>
+    <string name="add_crop_harvest">Add Harvest Record</string>
+    <string name="fertilizer_name">Fertilizer Name</string>
+    <string name="fertilizer_category">Category (NPK, Organic, Bio)</string>
+    <string name="quantity_bags">Number of Bags</string>
+    <string name="bag_weight">Bag Weight (Kg)</string>
+    <string name="cost_per_bag">Cost Per Bag (₹)</string>
+    <string name="purchase_date">Purchase Date</string>
+    <string name="crop_name">Crop Name</string>
+    <string name="variety">Variety</string>
+    <string name="harvested_quintals">Harvested (Quintals)</string>
+    <string name="sold_quintals">Sold (Quintals)</string>
+    <string name="stock_remaining">Remaining Stock</string>
+    <string name="storage_location">Storage / Godown Location</string>
+    <string name="expected_price">Expected Price (₹/Qtl)</string>
+    <string name="low_stock_warning">⚠️ Low Stock Alert</string>
+    <string name="upload_item_image">Upload Item Photo</string>
+    <string name="no_inventory_found">No inventory records found</string>
+
+    <!-- Marketplace & Cart -->
+    <string name="marketplace">Agri Marketplace</string>
+    <string name="cart">My Cart</string>
+    <string name="orders">My Orders</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="delivery_address">Delivery Farm Address</string>
+    <string name="order_placed_success">Order Placed Successfully!</string>
+    <string name="empty_cart">Your Cart is Empty</string>
+
+    <!-- Notifications -->
+    <string name="notifications">Notifications</string>
+    <string name="mark_all_read">Mark All as Read</string>
+    <string name="no_notifications">No notifications yet</string>
+    <string name="notif_booking_title">Tractor Booking Update</string>
+    <string name="notif_order_title">Marketplace Order Update</string>
+    <string name="notif_weather_title">Weather Advisory</string>
+    <string name="notif_price_title">Mandi Price Alert</string>
+
+    <!-- Agri News -->
+    <string name="agri_news">Agricultural News</string>
+    <string name="add_news">Add News Article</string>
+    <string name="news_title">Article Headline</string>
+    <string name="news_summary">Short Summary</string>
+    <string name="news_content">Full Article Content</string>
+    <string name="news_category">Category</string>
+    <string name="news_source">Source / Publisher</string>
+    <string name="upload_news_image">Upload Featured Image</string>
+
+    <!-- IoT Smart Farming Module -->
+    <string name="title_iot_dashboard">IoT Smart Farming</string>
+    <string name="subtitle_iot_dashboard">Real-time Soil, Weather &amp; Irrigation Control</string>
+    <string name="iot_soil_moisture">Soil Moisture</string>
+    <string name="iot_temp_humidity">Temperature &amp; Humidity</string>
+    <string name="iot_pump_control">Smart Irrigation Pump</string>
+    <string name="iot_auto_mode">Automatic Hysteresis</string>
+    <string name="iot_manual_mode">Manual Control</string>
+    <string name="iot_turn_on">Turn Pump ON</string>
+    <string name="iot_turn_off">Turn Pump OFF</string>
+    <string name="iot_status_online">Online</string>
+    <string name="iot_status_offline">Offline Cache Mode</string>
+    <string name="iot_recent_readings">Recent Sensor Readings</string>
+    <string name="iot_device_setup">ESP32 Setup &amp; Wiring</string>
+    <string name="iot_configure_thresholds">Irrigation Settings</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard">Admin Management Portal</string>
+    <string name="admin_analytics">System Analytics &amp; Overview</string>
+    <string name="total_farmers">Total Farmers</string>
+    <string name="total_tractors">Fleet Tractors</string>
+    <string name="total_bookings">Total Bookings</string>
+    <string name="total_orders">Market Orders</string>
+    <string name="manage_schemes">Manage Govt Schemes</string>
+    <string name="manage_news">Manage Agri News</string>
+    <string name="manage_crop_prices">Manage Mandi Prices</string>
+    <string name="manage_tractors">Manage Machinery</string>
+</resources>

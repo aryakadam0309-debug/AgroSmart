@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Primary Colors (Deep Forest Green & Nature) -->
+    <color name="forest_green_dark">#1B4332</color>
+    <color name="forest_green_primary">#2D6A4F</color>
+    <color name="forest_green_light">#40916C</color>
+    <color name="forest_green_surface">#D8F3DC</color>
+
+    <!-- Brand Secondary Colors (Leaf Green) -->
+    <color name="leaf_green">#52B788</color>
+    <color name="leaf_green_light">#74C69D</color>
+    <color name="leaf_green_subtle">#E8F5E9</color>
+
+    <!-- Accent Colors (Golden Harvest) -->
+    <color name="golden_harvest">#E9C46A</color>
+    <color name="harvest_amber">#F4A261</color>
+    <color name="harvest_wheat">#DDA15E</color>
+    <color name="harvest_light">#FFF9E6</color>
+
+    <!-- Deep Teal (Technology & Precision) -->
+    <color name="deep_teal">#005F73</color>
+    <color name="teal_accent">#0A9396</color>
+    <color name="teal_surface">#E0F2F1</color>
+
+    <!-- Earth Brown (Soil & Reliability) -->
+    <color name="earth_brown">#6C584C</color>
+    <color name="earth_brown_light">#A98467</color>
+    <color name="earth_surface">#F5EBE0</color>
+
+    <!-- Backgrounds & Surfaces (Warm Cream & Pure White) -->
+    <color name="bg_warm_cream">#F9FBF7</color>
+    <color name="bg_card_surface">#FFFFFF</color>
+    <color name="bg_surface_tint">#F2F5ED</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Typography & Neutrals -->
+    <color name="text_primary">#1A1C19</color>
+    <color name="text_secondary">#4A4D46</color>
+    <color name="text_muted">#73796E</color>
+    <color name="divider_line">#E2E5DD</color>
+
+    <!-- Functional Status Colors -->
+    <color name="status_success">#2E7D32</color>
+    <color name="status_warning">#ED6C02</color>
+    <color name="status_error">#BA1A1A</color>
+    <color name="status_info">#0288D1</color>
+    <color name="ripple_color">#202D6A4F</color>
+    <color name="primary_dark">#1B4332</color>
+    <color name="primary">#2D6A4F</color>
+</resources>

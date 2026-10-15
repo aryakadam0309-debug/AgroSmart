@@ -1,0 +1,68 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base Application Theme -->
+    <style name="Theme.AgroSmart" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Brand Colors -->
+        <item name="colorPrimary">@color/forest_green_primary</item>
+        <item name="colorPrimaryVariant">@color/forest_green_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/leaf_green</item>
+        <item name="colorSecondaryVariant">@color/forest_green_light</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Background & Surface -->
+        <item name="android:windowBackground">@color/bg_warm_cream</item>
+        <item name="colorSurface">@color/bg_card_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+
+        <!-- Status Bar & Navigation Bar -->
+        <item name="android:statusBarColor">@color/forest_green_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <!-- Fullscreen Splash Theme -->
+    <style name="Theme.AgroSmart.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/forest_green_dark</item>
+        <item name="android:statusBarColor">@color/forest_green_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- AgroSmart Card Style -->
+    <style name="Widget.AgroSmart.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">3dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="cardBackgroundColor">@color/bg_card_surface</item>
+    </style>
+
+    <!-- AgroSmart Primary Button Style -->
+    <style name="Widget.AgroSmart.Button.Primary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/forest_green_primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">54dp</item>
+    </style>
+
+    <!-- AgroSmart Outlined Button Style -->
+    <style name="Widget.AgroSmart.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/forest_green_primary</item>
+        <item name="strokeWidth">1.5dp</item>
+        <item name="android:textColor">@color/forest_green_primary</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">54dp</item>
+    </style>
+
+    <!-- AgroSmart Text Input Layout -->
+    <style name="Widget.AgroSmart.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/forest_green_primary</item>
+        <item name="hintTextColor">@color/forest_green_primary</item>
+    </style>
+</resources>

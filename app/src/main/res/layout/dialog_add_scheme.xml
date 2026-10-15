@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/etSchemeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Scheme Name *"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Category (Financial / Subsidy / Insurance / Machinery)"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Summary Description *"
+            android:inputType="textMultiLine"
+            android:lines="3" />
+
+        <EditText
+            android:id="@+id/etBenefits"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Key Benefits / Subsidy Amount"
+            android:inputType="textMultiLine"
+            android:lines="2" />
+
+        <EditText
+            android:id="@+id/etEligibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Eligibility Criteria"
+            android:inputType="textMultiLine"
+            android:lines="2" />
+
+        <EditText
+            android:id="@+id/etPortalUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Official Portal URL (e.g. https://pmkisan.gov.in)"
+            android:inputType="textUri" />
+    </LinearLayout>
+</ScrollView>
