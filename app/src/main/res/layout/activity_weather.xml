@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_warm_cream">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="32dp">
+
+            <!-- Gradient Header Banner -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_gradient_header"
+                android:paddingStart="16dp"
+                android:paddingTop="32dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="24dp">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Back"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_nav_home"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="@string/weather_forecast"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+                    app:layout_constraintStart_toEndOf="@+id/btnBack"
+                    app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+                <LinearLayout
+                    android:id="@+id/rowControls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnBack">
+
+                    <LinearLayout
+                        android:id="@+id/btnChangeCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_rounded_card"
+                        android:backgroundTint="#26FFFFFF"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp">
+
+                        <TextView
+                            android:id="@+id/tvLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📍 Mumbai, Maharashtra"
+                            android:textColor="@color/forest_green_surface"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="▾"
+                            android:textColor="@color/harvest_wheat"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <!-- Strategy Design Pattern Mode Switcher -->
+                    <LinearLayout
+                        android:id="@+id/btnStrategySwitcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_rounded_card"
+                        android:backgroundTint="#33FFFFFF"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp">
+
+                        <TextView
+                            android:id="@+id/tvActiveStrategyLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌐 Live API"
+                            android:textColor="@color/golden_harvest"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="▾"
+                            android:textColor="@color/golden_harvest"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvMainTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="31°C"
+                    android:textColor="@color/white"
+                    android:textSize="54sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rowControls" />
+
+                <TextView
+                    android:id="@+id/tvConditionDesc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Partly Cloudy • Favorable for Field Spraying"
+                    android:textColor="@color/golden_harvest"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMainTemp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Academic Demo Strategy Alert Banner -->
+            <LinearLayout
+                android:id="@+id/bannerDemoMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFF3CD"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🧪"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvDemoBannerText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="DEMO STRATEGY ACTIVE: Displaying simulated offline farm forecast for Software Engineering evaluation."
+                    android:textColor="#856404"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- 4 Grid Metric Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="-16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <!-- Humidity -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.AgroSmart.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="90dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💧"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/tvHumidityValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="62%"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Humidity"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Wind -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.AgroSmart.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="90dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💨"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/tvWindValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="14 km/h"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wind"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal">
+
+                <!-- Rain Chance -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.AgroSmart.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="90dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌧️"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/tvRainValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="15%"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rain Chance"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Pressure -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.AgroSmart.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="90dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⏲️"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/tvPressureValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1012 hPa"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pressure"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- 5-Day Forecast Header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="5-Day Farm Forecast"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvForecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
