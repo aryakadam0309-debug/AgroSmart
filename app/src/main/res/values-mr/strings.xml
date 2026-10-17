@@ -205,4 +205,5 @@
     <string name="manage_news">कृषी बातम्या व्यवस्थापन</string>
     <string name="manage_crop_prices">बाजारभाव व्यवस्थापन</string>
     <string name="manage_tractors">यंत्रसामग्री व्यवस्थापन</string>
+    <string name="delivery_address_hint">वितरण पत्ता / गावाचे नाव</string>
 </resources>

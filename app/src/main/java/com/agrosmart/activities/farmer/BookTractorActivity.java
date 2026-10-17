@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.agrosmart.databinding.ActivityBookTractorBinding;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.models.TractorBooking;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.viewmodels.TractorViewModel;
 
@@ -20,7 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class BookTractorActivity extends AppCompatActivity {
+public class BookTractorActivity extends BaseActivity {
 
     private ActivityBookTractorBinding binding;
     private TractorViewModel viewModel;
@@ -114,6 +115,11 @@ public class BookTractorActivity extends AppCompatActivity {
             hours = Integer.parseInt(hoursStr);
         } catch (NumberFormatException ignored) {}
 
+        if (hours < 1) {
+            binding.etBookingHours.setError("Booking duration must be at least 1 hour");
+            return;
+        }
+
         double total = hours * tractor.getHourlyRate();
         String bookingId = "BK-" + (System.currentTimeMillis() % 10000);
         String bookingDate = binding.etBookingDate.getText().toString();
@@ -126,8 +132,12 @@ public class BookTractorActivity extends AppCompatActivity {
                 bookingDate, hours, total, location, notes, "PENDING", now
         );
 
-        viewModel.submitBooking(booking);
-        Toast.makeText(this, "Tractor booking submitted successfully! ID: " + bookingId, Toast.LENGTH_LONG).show();
-        finish();
+        boolean success = viewModel.submitBooking(booking);
+        if (success) {
+            Toast.makeText(this, "Tractor booking submitted successfully! ID: " + bookingId, Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            Toast.makeText(this, "This tractor is already booked for " + bookingDate + ". Please select another date or tractor.", Toast.LENGTH_LONG).show();
+        }
     }
 }

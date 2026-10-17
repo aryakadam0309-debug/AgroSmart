@@ -164,7 +164,7 @@
                     android:id="@+id/etDeliveryAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Plot 14, Near Primary School, Baramati, Pune"
+                    android:hint="@string/delivery_address_hint"
                     android:inputType="textPostalAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -11,13 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.CropGuideAdapter;
 import com.agrosmart.databinding.ActivityCropGuideBinding;
 import com.agrosmart.models.CropGuide;
 import com.agrosmart.viewmodels.CropGuideViewModel;
 import com.google.android.material.chip.Chip;
 
-public class CropGuideActivity extends AppCompatActivity {
+public class CropGuideActivity extends BaseActivity {
 
     private ActivityCropGuideBinding binding;
     private CropGuideViewModel viewModel;

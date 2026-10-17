@@ -8,20 +8,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivitySchemeDetailBinding;
 import com.agrosmart.models.GovernmentScheme;
-import com.agrosmart.utils.LocaleHelper;
 import com.agrosmart.utils.SessionManager;
 
-public class SchemeDetailActivity extends AppCompatActivity {
+public class SchemeDetailActivity extends BaseActivity {
 
     private ActivitySchemeDetailBinding binding;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,12 +10,13 @@ import android.view.animation.Animation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivitySplashBinding;
 import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 
 @SuppressLint("CustomSplashScreen")
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private ActivitySplashBinding binding;
     private SessionManager sessionManager;

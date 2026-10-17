@@ -4,9 +4,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivityOrderSuccessBinding;
 
-public class OrderSuccessActivity extends AppCompatActivity {
+public class OrderSuccessActivity extends BaseActivity {
 
     private ActivityOrderSuccessBinding binding;
 

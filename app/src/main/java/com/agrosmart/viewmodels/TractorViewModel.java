@@ -38,8 +38,8 @@ public class TractorViewModel extends ViewModel {
         loadTractors();
     }
 
-    public void submitBooking(TractorBooking booking) {
-        repository.addBooking(booking);
+    public boolean submitBooking(TractorBooking booking) {
+        return repository.addBooking(booking);
     }
 
     public void cancelBooking(String bookingId) {

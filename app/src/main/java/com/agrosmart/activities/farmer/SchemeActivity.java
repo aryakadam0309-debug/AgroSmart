@@ -10,23 +10,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.SchemeAdapter;
 import com.agrosmart.databinding.ActivitySchemeBinding;
-import com.agrosmart.utils.LocaleHelper;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.viewmodels.SchemeViewModel;
 
-public class SchemeActivity extends AppCompatActivity {
+public class SchemeActivity extends BaseActivity {
 
     private ActivitySchemeBinding binding;
     private SchemeViewModel schemeViewModel;
     private SchemeAdapter schemeAdapter;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

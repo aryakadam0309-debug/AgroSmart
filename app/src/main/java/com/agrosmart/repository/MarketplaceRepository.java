@@ -89,10 +89,13 @@ public class MarketplaceRepository {
     public LiveData<List<CartItem>> getCart() { return cartLiveData; }
 
     public void addToCart(MarketProduct product) {
+        if (product == null || product.getStock() <= 0) return;
         for (CartItem item : cartItems) {
             if (item.getProduct().getId().equals(product.getId())) {
-                item.setQuantity(item.getQuantity() + 1);
-                cartLiveData.setValue(new ArrayList<>(cartItems));
+                if (item.getQuantity() < product.getStock()) {
+                    item.setQuantity(item.getQuantity() + 1);
+                    cartLiveData.setValue(new ArrayList<>(cartItems));
+                }
                 return;
             }
         }
@@ -106,7 +109,8 @@ public class MarketplaceRepository {
         } else {
             for (CartItem item : cartItems) {
                 if (item.getProduct().getId().equals(productId)) {
-                    item.setQuantity(newQty);
+                    int maxStock = item.getProduct().getStock();
+                    item.setQuantity(Math.min(newQty, maxStock > 0 ? maxStock : 999));
                     break;
                 }
             }
@@ -120,7 +124,33 @@ public class MarketplaceRepository {
     }
 
     public void placeOrder(AgriOrder order) {
+        if (order == null) return;
         orders.add(0, order);
+
+        // Deduct stock for ordered products
+        if (order.getItems() != null) {
+            for (CartItem ci : order.getItems()) {
+                if (ci.getProduct() != null) {
+                    for (MarketProduct mp : products) {
+                        if (mp.getId().equals(ci.getProduct().getId())) {
+                            mp.setStock(Math.max(0, mp.getStock() - ci.getQuantity()));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Post order confirmation notification
+        NotificationRepository.getInstance().addNotification(
+                "NOTIF-ORD-" + order.getOrderId(),
+                "🛍️ Order Placed: #" + order.getOrderId(),
+                "Agri-inputs order (₹" + Math.round(order.getTotalAmount()) + ") placed successfully via " + order.getPaymentMethod() + ".",
+                "Just now",
+                "ORDER",
+                false
+        );
+
         clearCart();
     }
 }

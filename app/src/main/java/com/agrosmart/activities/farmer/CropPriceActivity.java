@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.CropPriceAdapter;
 import com.agrosmart.databinding.ActivityCropPriceBinding;
 import com.agrosmart.models.CropPrice;
@@ -18,7 +19,7 @@ import com.agrosmart.viewmodels.CropPriceViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 
-public class CropPriceActivity extends AppCompatActivity {
+public class CropPriceActivity extends BaseActivity {
 
     private ActivityCropPriceBinding binding;
     private CropPriceViewModel viewModel;

@@ -6,11 +6,12 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.NotificationAdapter;
 import com.agrosmart.databinding.ActivityNotificationsBinding;
 import com.agrosmart.repository.NotificationRepository;
 
-public class NotificationsActivity extends AppCompatActivity {
+public class NotificationsActivity extends BaseActivity {
 
     private ActivityNotificationsBinding binding;
     private NotificationAdapter adapter;

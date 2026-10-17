@@ -205,4 +205,5 @@
     <string name="manage_news">Manage Agri News</string>
     <string name="manage_crop_prices">Manage Mandi Prices</string>
     <string name="manage_tractors">Manage Machinery</string>
+    <string name="delivery_address_hint">Delivery Address / Village Name</string>
 </resources>

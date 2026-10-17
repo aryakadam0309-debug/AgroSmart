@@ -7,25 +7,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.ActivityAddTractorBinding;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.repository.TractorRepository;
-import com.agrosmart.utils.LocaleHelper;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.utils.ValidationUtils;
 
-public class AddTractorActivity extends AppCompatActivity {
+public class AddTractorActivity extends BaseActivity {
 
     private ActivityAddTractorBinding binding;
     private SessionManager sessionManager;
     private AgroSmartDbHelper dbHelper;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

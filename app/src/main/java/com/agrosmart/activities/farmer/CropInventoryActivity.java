@@ -6,20 +6,21 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.CropHarvestAdapter;
 import com.agrosmart.databinding.ActivityCropInventoryBinding;
 import com.agrosmart.models.CropHarvest;
+import com.agrosmart.repository.CropHarvestRepository;
 import com.agrosmart.viewmodels.CropHarvestViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class CropInventoryActivity extends AppCompatActivity {
+public class CropInventoryActivity extends BaseActivity {
 
     private ActivityCropInventoryBinding binding;
     private CropHarvestViewModel viewModel;
@@ -31,6 +32,7 @@ public class CropInventoryActivity extends AppCompatActivity {
         binding = ActivityCropInventoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        CropHarvestRepository.getInstance(this);
         viewModel = new ViewModelProvider(this).get(CropHarvestViewModel.class);
 
         binding.toolbarHarvest.setNavigationOnClickListener(v -> finish());
@@ -105,11 +107,24 @@ public class CropInventoryActivity extends AppCompatActivity {
                 .setView(container)
                 .setPositiveButton("Save Harvest", (dialog, which) -> {
                     String name = etName.getText().toString().trim();
-                    if (name.isEmpty()) return;
+                    if (name.isEmpty()) {
+                        Toast.makeText(this, "Please enter a valid crop name.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     double qty = 20.0;
                     double price = 2500.0;
                     try { qty = Double.parseDouble(etQty.getText().toString().trim()); } catch (Exception ignored) {}
                     try { price = Double.parseDouble(etPrice.getText().toString().trim()); } catch (Exception ignored) {}
+
+                    if (qty <= 0) {
+                        Toast.makeText(this, "Yield quantity must be greater than 0 quintals.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (price < 0) {
+                        Toast.makeText(this, "Target price cannot be negative.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     String storage = etStorage.getText().toString().trim();
                     if (storage.isEmpty()) storage = "Farm Storage";
 

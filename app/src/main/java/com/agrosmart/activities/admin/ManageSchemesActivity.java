@@ -11,33 +11,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.SchemeAdapter;
 import com.agrosmart.databinding.ActivityManageSchemesBinding;
 import com.agrosmart.models.GovernmentScheme;
 import com.agrosmart.repository.SchemeRepository;
-import com.agrosmart.utils.LocaleHelper;
+import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
-public class ManageSchemesActivity extends AppCompatActivity {
+public class ManageSchemesActivity extends BaseActivity {
 
     private ActivityManageSchemesBinding binding;
     private SchemeAdapter adapter;
     private SchemeRepository repository;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityManageSchemesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (!Constants.ROLE_ADMIN.equals(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Access Denied: Administrator role required.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         repository = SchemeRepository.getInstance();
 

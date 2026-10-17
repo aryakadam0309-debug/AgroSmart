@@ -6,16 +6,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.MarketProductAdapter;
 import com.agrosmart.databinding.ActivityMarketplaceBinding;
 import com.agrosmart.viewmodels.MarketplaceViewModel;
 import com.google.android.material.chip.Chip;
 
-public class MarketplaceActivity extends AppCompatActivity {
+public class MarketplaceActivity extends BaseActivity {
 
     private ActivityMarketplaceBinding binding;
     private MarketplaceViewModel viewModel;

@@ -8,23 +8,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.activities.auth.LoginActivity;
 import com.agrosmart.databinding.ActivityAdminDashboardBinding;
-import com.agrosmart.utils.LocaleHelper;
+import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.viewmodels.AdminViewModel;
 
-public class AdminDashboardActivity extends AppCompatActivity {
+public class AdminDashboardActivity extends BaseActivity {
 
     private ActivityAdminDashboardBinding binding;
     private AdminViewModel adminViewModel;
     private SessionManager sessionManager;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +28,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         sessionManager = new SessionManager(this);
+        if (!Constants.ROLE_ADMIN.equals(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Access Denied: Administrator role required.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         adminViewModel = new ViewModelProvider(this).get(AdminViewModel.class);
 
         setupObservers();

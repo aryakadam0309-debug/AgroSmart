@@ -8,24 +8,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivityFarmerDashboardBinding;
 import com.agrosmart.fragments.BookingsFragment;
 import com.agrosmart.fragments.HomeFragment;
 import com.agrosmart.fragments.MarketplaceFragment;
 import com.agrosmart.fragments.ProfileFragment;
 import com.agrosmart.fragments.ServicesFragment;
-import com.agrosmart.utils.LocaleHelper;
 import com.agrosmart.utils.SessionManager;
 
-public class FarmerDashboardActivity extends AppCompatActivity {
+public class FarmerDashboardActivity extends BaseActivity {
 
     private ActivityFarmerDashboardBinding binding;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

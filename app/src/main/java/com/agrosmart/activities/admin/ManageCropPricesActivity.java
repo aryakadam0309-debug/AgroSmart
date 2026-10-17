@@ -12,12 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.CropPriceAdapter;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.ActivityManageCropPricesBinding;
 import com.agrosmart.models.CropPrice;
 import com.agrosmart.repository.CropPriceRepository;
-import com.agrosmart.utils.LocaleHelper;
+import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class ManageCropPricesActivity extends AppCompatActivity {
+public class ManageCropPricesActivity extends BaseActivity {
 
     private ActivityManageCropPricesBinding binding;
     private CropPriceAdapter adapter;
@@ -35,16 +36,17 @@ public class ManageCropPricesActivity extends AppCompatActivity {
     private AgroSmartDbHelper dbHelper;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityManageCropPricesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (!Constants.ROLE_ADMIN.equals(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Access Denied: Administrator role required.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         repository = CropPriceRepository.getInstance();
         dbHelper = AgroSmartDbHelper.getInstance(this);
