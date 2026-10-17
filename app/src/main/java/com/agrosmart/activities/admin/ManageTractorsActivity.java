@@ -11,18 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.TractorAdapter;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.ActivityManageTractorsBinding;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.repository.TractorRepository;
-import com.agrosmart.utils.LocaleHelper;
+import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.UUID;
 
-public class ManageTractorsActivity extends AppCompatActivity {
+public class ManageTractorsActivity extends BaseActivity {
 
     private ActivityManageTractorsBinding binding;
     private TractorAdapter adapter;
@@ -30,18 +31,19 @@ public class ManageTractorsActivity extends AppCompatActivity {
     private AgroSmartDbHelper dbHelper;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityManageTractorsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        repository = TractorRepository.getInstance();
+        SessionManager sessionManager = new SessionManager(this);
+        if (!Constants.ROLE_ADMIN.equals(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Access Denied: Administrator role required.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        repository = TractorRepository.getInstance(this);
         dbHelper = AgroSmartDbHelper.getInstance(this);
 
         binding.toolbar.setNavigationOnClickListener(v -> finish());

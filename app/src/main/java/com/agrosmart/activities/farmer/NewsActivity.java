@@ -8,23 +8,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.NewsAdapter;
 import com.agrosmart.databinding.ActivityNewsBinding;
-import com.agrosmart.utils.LocaleHelper;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.viewmodels.NewsViewModel;
 
-public class NewsActivity extends AppCompatActivity {
+public class NewsActivity extends BaseActivity {
 
     private ActivityNewsBinding binding;
     private NewsViewModel newsViewModel;
     private NewsAdapter newsAdapter;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.SensorReadingAdapter;
 import com.agrosmart.databinding.ActivityIotDashboardBinding;
 import com.agrosmart.databinding.DialogConfigureThresholdsBinding;
@@ -29,7 +30,6 @@ import com.agrosmart.models.IrrigationSetting;
 import com.agrosmart.models.PumpCommand;
 import com.agrosmart.models.SensorReading;
 import com.agrosmart.repository.IotRepository;
-import com.agrosmart.utils.LocaleHelper;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.viewmodels.IotViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class IotDashboardActivity extends AppCompatActivity {
+public class IotDashboardActivity extends BaseActivity {
 
     private ActivityIotDashboardBinding binding;
     private IotViewModel viewModel;
@@ -52,12 +52,6 @@ public class IotDashboardActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<String[]> locationPermissionLauncher;
     private SessionManager sessionManager;
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

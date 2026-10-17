@@ -4,10 +4,11 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivityCropDiseaseDetailBinding;
 import com.agrosmart.models.CropDisease;
 
-public class CropDiseaseDetailActivity extends AppCompatActivity {
+public class CropDiseaseDetailActivity extends BaseActivity {
 
     private ActivityCropDiseaseDetailBinding binding;
 

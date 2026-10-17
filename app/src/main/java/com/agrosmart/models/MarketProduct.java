@@ -41,4 +41,7 @@ public class MarketProduct implements Serializable {
     public String getDescription() { return description; }
     public float getRating() { return rating; }
     public int getStockCount() { return stockCount; }
+    public int getStock() { return stockCount; }
+    public void setStock(int stockCount) { this.stockCount = stockCount; }
+    public void setStockCount(int stockCount) { this.stockCount = stockCount; }
 }

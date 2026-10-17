@@ -205,4 +205,5 @@
     <string name="manage_news">कृषि समाचार प्रबंधित करें</string>
     <string name="manage_crop_prices">मंडी भाव प्रबंधित करें</string>
     <string name="manage_tractors">कृषि मशीनरी प्रबंधित करें</string>
+    <string name="delivery_address_hint">वितरण पता / गाँव का नाम</string>
 </resources>

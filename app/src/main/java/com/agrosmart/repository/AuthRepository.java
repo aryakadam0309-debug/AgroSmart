@@ -43,22 +43,32 @@ public class AuthRepository {
         User user = dbHelper.authenticateUser(cleanIdentifier, password, role);
 
         if (user == null) {
+            // Check if user exists in database with a wrong password
+            if (dbHelper.checkUserExists(cleanIdentifier)) {
+                callback.onError("Incorrect password. Please verify your password.");
+                return;
+            }
+
             // Check default fallback admin/farmer credentials
             if (Constants.ROLE_ADMIN.equals(role)) {
-                if (("admin@agrosmart.in".equalsIgnoreCase(cleanIdentifier) || "9999999999".equals(cleanIdentifier)) && "admin123".equals(password)) {
-                    user = new User(2L, "AgroSmart Admin", "9999999999", "admin@agrosmart.in", role, "jwt_admin_" + System.currentTimeMillis());
+                if ("admin@agrosmart.in".equalsIgnoreCase(cleanIdentifier) || "9999999999".equals(cleanIdentifier)) {
+                    if ("admin123".equals(password)) {
+                        user = new User(2L, "AgroSmart Admin", "9999999999", "admin@agrosmart.in", role, "jwt_admin_" + System.currentTimeMillis());
+                    } else {
+                        callback.onError("Incorrect password for Administrator account.");
+                        return;
+                    }
                 }
             } else {
-                if (("farmer@agrosmart.in".equalsIgnoreCase(cleanIdentifier) || "9876543210".equals(cleanIdentifier)) && "123456".equals(password)) {
-                    user = new User(1L, "Arya Farmer", "9876543210", "farmer@agrosmart.in", role, "jwt_farmer_" + System.currentTimeMillis());
-                    user.setLocation("Mumbai, Maharashtra");
-                    user.setFarmSize(5.5);
-                } else if (ValidationUtils.isValidPhone(cleanIdentifier) && password.length() >= 6) {
-                    // Demo mode dynamic login
-                    user = new User(System.currentTimeMillis(), "Shetkari Kisan", cleanIdentifier, cleanIdentifier + "@agrosmart.in", role, "jwt_farmer_" + System.currentTimeMillis());
-                    user.setLocation("Mumbai, Maharashtra");
-                    user.setFarmSize(4.0);
-                    dbHelper.registerUser(user, password);
+                if ("farmer@agrosmart.in".equalsIgnoreCase(cleanIdentifier) || "9876543210".equals(cleanIdentifier)) {
+                    if ("123456".equals(password)) {
+                        user = new User(1L, "Arya Farmer", "9876543210", "farmer@agrosmart.in", role, "jwt_farmer_" + System.currentTimeMillis());
+                        user.setLocation("Mumbai, Maharashtra");
+                        user.setFarmSize(5.5);
+                    } else {
+                        callback.onError("Incorrect password for Farmer account.");
+                        return;
+                    }
                 }
             }
         }
@@ -79,7 +89,7 @@ public class AuthRepository {
             }
             callback.onSuccess(user);
         } else {
-            callback.onError("Invalid credentials. Please verify phone/email and password.");
+            callback.onError("No registered account found with this mobile or email. Please register first.");
         }
     }
 

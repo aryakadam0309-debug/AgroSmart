@@ -12,16 +12,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.FertilizerAdapter;
 import com.agrosmart.databinding.ActivityFertilizerInventoryBinding;
 import com.agrosmart.models.FertilizerItem;
+import com.agrosmart.repository.FertilizerRepository;
 import com.agrosmart.viewmodels.FertilizerViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class FertilizerInventoryActivity extends AppCompatActivity {
+public class FertilizerInventoryActivity extends BaseActivity {
 
     private ActivityFertilizerInventoryBinding binding;
     private FertilizerViewModel viewModel;
@@ -33,6 +35,7 @@ public class FertilizerInventoryActivity extends AppCompatActivity {
         binding = ActivityFertilizerInventoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        FertilizerRepository.getInstance(this);
         viewModel = new ViewModelProvider(this).get(FertilizerViewModel.class);
 
         binding.toolbarFertilizer.setNavigationOnClickListener(v -> finish());
@@ -103,11 +106,23 @@ public class FertilizerInventoryActivity extends AppCompatActivity {
                 .setView(container)
                 .setPositiveButton("Save Stock", (dialog, which) -> {
                     String name = etName.getText().toString().trim();
-                    if (name.isEmpty()) return;
+                    if (name.isEmpty()) {
+                        Toast.makeText(this, "Please enter a valid fertilizer name.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     int bags = 1;
                     double cost = 300.0;
                     try { bags = Integer.parseInt(etBags.getText().toString().trim()); } catch (Exception ignored) {}
                     try { cost = Double.parseDouble(etCost.getText().toString().trim()); } catch (Exception ignored) {}
+
+                    if (bags <= 0) {
+                        Toast.makeText(this, "Quantity must be at least 1 bag.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (cost < 0) {
+                        Toast.makeText(this, "Cost cannot be negative.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     String id = "FER-" + (System.currentTimeMillis() % 10000);
                     String today = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(new Date());

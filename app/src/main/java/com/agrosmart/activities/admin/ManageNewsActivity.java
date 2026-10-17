@@ -17,10 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
 import com.agrosmart.adapters.NewsAdapter;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivityManageNewsBinding;
 import com.agrosmart.models.NewsItem;
 import com.agrosmart.repository.AgriNewsRepository;
-import com.agrosmart.utils.LocaleHelper;
+import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -33,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ManageNewsActivity extends AppCompatActivity {
+public class ManageNewsActivity extends BaseActivity {
 
     private ActivityManageNewsBinding binding;
     private NewsAdapter adapter;
@@ -46,16 +47,17 @@ public class ManageNewsActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> imagePickerLauncher;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        SessionManager session = new SessionManager(newBase);
-        super.attachBaseContext(LocaleHelper.setLocale(newBase, session.getLanguage()));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityManageNewsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (!Constants.ROLE_ADMIN.equals(sessionManager.getUserRole())) {
+            Toast.makeText(this, "Access Denied: Administrator role required.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         repository = AgriNewsRepository.getInstance(this);
 

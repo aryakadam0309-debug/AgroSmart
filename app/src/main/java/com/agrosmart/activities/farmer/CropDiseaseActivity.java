@@ -11,13 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.CropDiseaseAdapter;
 import com.agrosmart.databinding.ActivityCropDiseaseBinding;
 import com.agrosmart.models.CropDisease;
 import com.agrosmart.viewmodels.CropDiseaseViewModel;
 import com.google.android.material.chip.Chip;
 
-public class CropDiseaseActivity extends AppCompatActivity {
+public class CropDiseaseActivity extends BaseActivity {
 
     private ActivityCropDiseaseBinding binding;
     private CropDiseaseViewModel viewModel;

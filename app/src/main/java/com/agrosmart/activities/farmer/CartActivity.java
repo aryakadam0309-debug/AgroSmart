@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.CartAdapter;
 import com.agrosmart.databinding.ActivityCartBinding;
 import com.agrosmart.models.AgriOrder;
@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class CartActivity extends AppCompatActivity implements PaymentResultListener {
+public class CartActivity extends BaseActivity implements PaymentResultListener {
 
     private ActivityCartBinding binding;
     private MarketplaceViewModel viewModel;
@@ -46,6 +46,12 @@ public class CartActivity extends AppCompatActivity implements PaymentResultList
         sessionManager = new SessionManager(this);
 
         binding.toolbarCart.setNavigationOnClickListener(v -> finish());
+
+        // Prefill delivery address with farmer's registered location
+        String userLoc = sessionManager.getUserLocation();
+        if (userLoc != null && !userLoc.isEmpty()) {
+            binding.etDeliveryAddress.setText(userLoc);
+        }
 
         setupRecyclerView();
         observeCart();
@@ -95,6 +101,14 @@ public class CartActivity extends AppCompatActivity implements PaymentResultList
     private void startRazorpayPayment() {
         if (currentTotal <= 0) return;
 
+        String address = binding.etDeliveryAddress.getText() != null ? binding.etDeliveryAddress.getText().toString().trim() : "";
+        if (address.isEmpty()) {
+            binding.etDeliveryAddress.setError("Please enter your farm or village delivery address");
+            binding.etDeliveryAddress.requestFocus();
+            Toast.makeText(this, "Please enter your delivery address first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Checkout checkout = new Checkout();
         checkout.setKeyID("rzp_test_AgroSmartDemo123");
 
@@ -128,8 +142,15 @@ public class CartActivity extends AppCompatActivity implements PaymentResultList
     }
 
     private void completeOrder(String method, String txnId) {
+        String address = binding.etDeliveryAddress.getText() != null ? binding.etDeliveryAddress.getText().toString().trim() : "";
+        if (address.isEmpty()) {
+            binding.etDeliveryAddress.setError("Please enter your farm or village delivery address");
+            binding.etDeliveryAddress.requestFocus();
+            Toast.makeText(this, "Please enter your delivery address first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String orderId = "ORD-" + (System.currentTimeMillis() % 100000);
-        String address = binding.etDeliveryAddress.getText() != null ? binding.etDeliveryAddress.getText().toString().trim() : "Farm Address";
         String today = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(new Date());
 
         AgriOrder order = new AgriOrder(orderId, new ArrayList<>(currentItems), currentTotal, method, txnId, address, today, "PLACED");

@@ -4,10 +4,11 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivityCropGuideDetailBinding;
 import com.agrosmart.models.CropGuide;
 
-public class CropGuideDetailActivity extends AppCompatActivity {
+public class CropGuideDetailActivity extends BaseActivity {
 
     private ActivityCropGuideDetailBinding binding;
 

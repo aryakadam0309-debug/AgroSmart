@@ -3,18 +3,19 @@ package com.agrosmart.activities.farmer;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
+import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.TractorAdapter;
 import com.agrosmart.databinding.ActivityTractorListBinding;
 import com.agrosmart.models.Tractor;
+import com.agrosmart.repository.TractorRepository;
 import com.agrosmart.viewmodels.TractorViewModel;
 import com.google.android.material.chip.Chip;
 
-public class TractorListActivity extends AppCompatActivity {
+public class TractorListActivity extends BaseActivity {
 
     private ActivityTractorListBinding binding;
     private TractorViewModel viewModel;
@@ -26,6 +27,7 @@ public class TractorListActivity extends AppCompatActivity {
         binding = ActivityTractorListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        TractorRepository.getInstance(this);
         viewModel = new ViewModelProvider(this).get(TractorViewModel.class);
 
         binding.toolbarTractors.setNavigationOnClickListener(v -> finish());
