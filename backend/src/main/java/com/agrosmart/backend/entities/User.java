@@ -13,18 +13,22 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String phone;
 
     @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(nullable = false)
     private String role; // "ROLE_FARMER", "ROLE_ADMIN"
 
+    @Column(unique = true)
+    private String googleId;
+
+    private String profileImageUrl;
     private String village;
     private String district;
     private String state;
@@ -57,6 +61,10 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getGoogleId() { return googleId; }
+    public void setGoogleId(String googleId) { this.googleId = googleId; }
+    public String getProfileImageUrl() { return profileImageUrl; }
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
     public String getVillage() { return village; }
     public String getDistrict() { return district; }
     public String getState() { return state; }

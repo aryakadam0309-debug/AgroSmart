@@ -38,6 +38,7 @@
     <color name="text_secondary">#4A4D46</color>
     <color name="text_muted">#73796E</color>
     <color name="divider_line">#E2E5DD</color>
+    <color name="divider_gray">#D0D5DD</color>
 
     <!-- Functional Status Colors -->
     <color name="status_success">#2E7D32</color>

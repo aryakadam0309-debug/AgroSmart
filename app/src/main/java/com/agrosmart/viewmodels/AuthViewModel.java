@@ -83,4 +83,23 @@ public class AuthViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public void loginWithGoogle(String idToken, String email, String displayName, String photoUrl) {
+        isLoading.setValue(true);
+        errorMessage.setValue(null);
+
+        repository.loginWithGoogle(idToken, email, displayName, photoUrl, new AuthRepository.AuthCallback() {
+            @Override
+            public void onSuccess(User user) {
+                isLoading.postValue(false);
+                authUserSuccess.postValue(user);
+            }
+
+            @Override
+            public void onError(String message) {
+                isLoading.postValue(false);
+                errorMessage.postValue(message);
+            }
+        });
+    }
 }

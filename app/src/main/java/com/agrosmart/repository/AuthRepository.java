@@ -142,4 +142,50 @@ public class AuthRepository {
             }
         }
     }
+
+    public void loginWithGoogle(String idToken, String email, String displayName, String photoUrl, AuthCallback callback) {
+        if (email == null || email.trim().isEmpty()) {
+            callback.onError("Google account email is missing");
+            return;
+        }
+
+        String verifiedEmail = email.trim().toLowerCase();
+        String name = displayName != null && !displayName.isEmpty() ? displayName : "Google Farmer";
+        String phone = "G" + Math.abs(verifiedEmail.hashCode() % 1000000000L);
+
+        // Check if user already exists in local SQLite
+        User user = dbHelper.getUserByPhone(phone);
+        if (user == null) {
+            user = new User();
+            user.setId(System.currentTimeMillis());
+            user.setFullName(name);
+            user.setPhone(phone);
+            user.setEmail(verifiedEmail);
+            user.setRole(Constants.ROLE_FARMER);
+            user.setLocation("Pune, Maharashtra");
+            user.setFarmSize(2.5);
+            user.setProfileImageUrl(photoUrl);
+            user.setToken("jwt_google_" + System.currentTimeMillis());
+
+            dbHelper.registerUser(user, "GOOGLE_AUTH_SECURE");
+        } else {
+            if (user.getToken() == null) {
+                user.setToken("jwt_google_" + System.currentTimeMillis());
+            }
+        }
+
+        // Save active session
+        sessionManager.saveAuthSession(user.getToken(), user.getId(), user.getFullName(), user.getEmail(), user.getPhone(), user.getRole());
+        if (user.getLocation() != null && !user.getLocation().isEmpty()) {
+            sessionManager.setUserLocation(user.getLocation());
+        }
+        if (user.getFarmSize() != null) {
+            sessionManager.setUserFarmSize(user.getFarmSize());
+        }
+        if (photoUrl != null) {
+            sessionManager.setProfileImage(photoUrl);
+        }
+
+        callback.onSuccess(user);
+    }
 }

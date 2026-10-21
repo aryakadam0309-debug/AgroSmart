@@ -17,6 +17,22 @@ import retrofit2.http.Query;
 
 public interface AgroSmartApiService {
 
+    // Authentication & User Identity (MySQL Persisted)
+    @POST("auth/login")
+    Call<Map<String, Object>> loginUser(
+            @Body Map<String, String> credentials
+    );
+
+    @POST("auth/register")
+    Call<Map<String, Object>> registerUser(
+            @Body Map<String, Object> userData
+    );
+
+    @POST("auth/google")
+    Call<Map<String, Object>> googleAuth(
+            @Body Map<String, String> googlePayload
+    );
+
     // Mandi Bhav / Crop Prices
     @GET("crops/prices")
     Call<List<CropPrice>> getCropPrices(

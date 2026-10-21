@@ -6,6 +6,13 @@ public class AuthDto {
         public String password;
     }
 
+    public static class GoogleAuthRequest {
+        public String idToken;
+        public String email;
+        public String displayName;
+        public String photoUrl;
+    }
+
     public static class RegisterRequest {
         public String fullName;
         public String phone;

@@ -483,6 +483,29 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public User getUserByPhone(String phone) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE phone = ?", new String[]{phone});
+        if (cursor != null && cursor.moveToFirst()) {
+            User user = new User();
+            user.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
+            user.setFullName(cursor.getString(cursor.getColumnIndexOrThrow("full_name")));
+            user.setPhone(cursor.getString(cursor.getColumnIndexOrThrow("phone")));
+            user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
+            user.setRole(cursor.getString(cursor.getColumnIndexOrThrow("role")));
+            user.setLocation(cursor.getString(cursor.getColumnIndexOrThrow("location")));
+            user.setFarmSize(cursor.getDouble(cursor.getColumnIndexOrThrow("farm_size")));
+            int imgIdx = cursor.getColumnIndex("profile_image_url");
+            if (imgIdx != -1 && !cursor.isNull(imgIdx)) {
+                user.setProfileImageUrl(cursor.getString(imgIdx));
+            }
+            cursor.close();
+            return user;
+        }
+        if (cursor != null) cursor.close();
+        return null;
+    }
+
     public User getUserById(long id) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE id = ?", new String[]{String.valueOf(id)});
@@ -1207,4 +1230,3 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         return db.delete("agri_news", "id = ?", new String[]{String.valueOf(id)}) > 0;
     }
 }
-

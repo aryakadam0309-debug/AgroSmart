@@ -69,6 +69,9 @@ dependencies {
     // Google Play Services Location (GPS for Weather)
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
+    // Google Play Services Sign-In
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+
     // Razorpay Payment Gateway SDK
     implementation 'com.razorpay:checkout:1.6.38'
 
