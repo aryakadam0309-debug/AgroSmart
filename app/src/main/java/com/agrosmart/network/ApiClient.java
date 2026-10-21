@@ -9,8 +9,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static final String WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/";
-    // 10.0.2.2 is standard Android emulator loopback alias to host machine localhost:8080
-    private static final String BACKEND_BASE_URL = "http://10.0.2.2:8080/api/";
+    // Laptop hotspot IP for physical phone connectivity (Fallback to 10.0.2.2 for emulator)
+    private static final String BACKEND_BASE_URL = "http://10.39.223.48:8080/api/";
 
     private static Retrofit weatherRetrofit = null;
     private static Retrofit backendRetrofit = null;

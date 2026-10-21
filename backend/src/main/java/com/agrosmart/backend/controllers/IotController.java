@@ -34,6 +34,45 @@ public class IotController {
         this.alertRepository = alertRepository;
     }
 
+    @GetMapping("/status/{deviceId}")
+    public ResponseEntity<Map<String, Object>> getDeviceStatus(@PathVariable String deviceId) {
+        Optional<IotDevice> deviceOpt = deviceRepository.findById(deviceId);
+        if (deviceOpt.isEmpty()) {
+            return ResponseEntity.ok(Map.of("isOnline", false, "status", "DEVICE_NOT_FOUND"));
+        }
+        IotDevice device = deviceOpt.get();
+        boolean isOnline = device.getLastSeen() != null &&
+                Duration.between(device.getLastSeen(), LocalDateTime.now()).toMinutes() <= 5;
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("isOnline", isOnline);
+        resp.put("deviceId", device.getDeviceId());
+        resp.put("deviceName", device.getDeviceName());
+        resp.put("fieldLocation", device.getFieldLocation());
+        resp.put("lastSeen", device.getLastSeen() != null ? device.getLastSeen().toString() : null);
+        return ResponseEntity.ok(resp);
+    }
+
+    @GetMapping("/reading/latest/{deviceId}")
+    public ResponseEntity<SensorReading> getLatestReadingAlias(@PathVariable String deviceId) {
+        return readingRepository.findFirstByDeviceIdOrderByRecordedAtDesc(deviceId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/reading/history/{deviceId}")
+    public List<SensorReading> getReadingHistoryAlias(@PathVariable String deviceId,
+                                                     @RequestParam(defaultValue = "20") int limit) {
+        return readingRepository.findByDeviceIdOrderByRecordedAtDesc(deviceId, PageRequest.of(0, Math.min(limit, 100)));
+    }
+
+    @GetMapping("/irrigation/settings/{deviceId}")
+    public ResponseEntity<IrrigationSetting> getIrrigationSettingsAlias(@PathVariable String deviceId) {
+        return settingRepository.findByDeviceId(deviceId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     // ==========================================================
     // 1. DEVICE REGISTRATION & DISCOVERY
     // ==========================================================
