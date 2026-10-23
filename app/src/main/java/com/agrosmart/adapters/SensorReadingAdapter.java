@@ -1,19 +1,19 @@
 package com.agrosmart.adapters;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.agrosmart.R;
 import com.agrosmart.databinding.ItemSensorReadingBinding;
 import com.agrosmart.models.SensorReading;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SensorReadingAdapter extends RecyclerView.Adapter<SensorReadingAdapter.ViewHolder> {
 
@@ -35,7 +35,9 @@ public class SensorReadingAdapter extends RecyclerView.Adapter<SensorReadingAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(readings.get(position));
+        if (position >= 0 && position < readings.size()) {
+            holder.bind(readings.get(position));
+        }
     }
 
     @Override
@@ -52,32 +54,33 @@ public class SensorReadingAdapter extends RecyclerView.Adapter<SensorReadingAdap
         }
 
         public void bind(SensorReading reading) {
+            if (reading == null) return;
             binding.tvRecordedAt.setText(reading.getRecordedAt() != null ? reading.getRecordedAt() : "Recent");
-            binding.tvMoisturePct.setText(String.format("%.1f%%", reading.getSoilMoisturePct()));
+            binding.tvMoisturePct.setText(String.format(Locale.US, "%.1f%%", reading.getSoilMoisturePct()));
             binding.tvRawAdc.setText("ADC: " + reading.getSoilMoistureRaw());
 
             String status = reading.getMoistureStatus() != null ? reading.getMoistureStatus().toUpperCase() : "NORMAL";
             binding.tvMoistureBadge.setText(status);
 
             if ("DRY".equals(status)) {
-                binding.tvMoistureBadge.setBackgroundColor(Color.parseColor("#FFEBEE"));
+                binding.tvMoistureBadge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFCDD2")));
                 binding.tvMoistureBadge.setTextColor(Color.parseColor("#C62828"));
             } else if ("WET".equals(status)) {
-                binding.tvMoistureBadge.setBackgroundColor(Color.parseColor("#E1F5FE"));
+                binding.tvMoistureBadge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B3E5FC")));
                 binding.tvMoistureBadge.setTextColor(Color.parseColor("#0277BD"));
             } else {
-                binding.tvMoistureBadge.setBackgroundColor(Color.parseColor("#E8F5E9"));
+                binding.tvMoistureBadge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C8E6C9")));
                 binding.tvMoistureBadge.setTextColor(Color.parseColor("#2E7D32"));
             }
 
             if (reading.getTemperatureC() != null) {
-                binding.tvTemperature.setText(String.format("%.1f°C", reading.getTemperatureC()));
+                binding.tvTemperature.setText(String.format(Locale.US, "%.1f°C", reading.getTemperatureC()));
             } else {
                 binding.tvTemperature.setText("--");
             }
 
             if (reading.getHumidityPct() != null) {
-                binding.tvHumidity.setText(String.format("%.1f%%", reading.getHumidityPct()));
+                binding.tvHumidity.setText(String.format(Locale.US, "%.1f%%", reading.getHumidityPct()));
             } else {
                 binding.tvHumidity.setText("--");
             }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class CropHarvest implements Serializable {
     private String id;
+    private String farmerPhone;
     private String cropName;
     private String variety;
     private double harvestedQuintals;
@@ -31,6 +32,9 @@ public class CropHarvest implements Serializable {
     }
 
     public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getFarmerPhone() { return farmerPhone; }
+    public void setFarmerPhone(String farmerPhone) { this.farmerPhone = farmerPhone; }
     public String getCropName() { return cropName; }
     public String getVariety() { return variety; }
     public double getHarvestedQuintals() { return harvestedQuintals; }

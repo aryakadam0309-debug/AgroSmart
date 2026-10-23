@@ -5,6 +5,7 @@ import java.util.List;
 
 public class AgriOrder implements Serializable {
     private String orderId;
+    private String farmerPhone;
     private List<CartItem> items;
     private double totalAmount;
     private String paymentMethod; // "Razorpay (Online)", "Cash on Delivery"
@@ -29,6 +30,9 @@ public class AgriOrder implements Serializable {
     }
 
     public String getOrderId() { return orderId; }
+    public void setOrderId(String orderId) { this.orderId = orderId; }
+    public String getFarmerPhone() { return farmerPhone; }
+    public void setFarmerPhone(String farmerPhone) { this.farmerPhone = farmerPhone; }
     public List<CartItem> getItems() { return items; }
     public double getTotalAmount() { return totalAmount; }
     public String getPaymentMethod() { return paymentMethod; }

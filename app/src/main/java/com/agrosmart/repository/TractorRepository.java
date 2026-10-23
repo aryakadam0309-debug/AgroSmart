@@ -2,6 +2,7 @@ package com.agrosmart.repository;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,12 +10,18 @@ import androidx.lifecycle.MutableLiveData;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.models.TractorBooking;
+import com.agrosmart.network.ApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class TractorRepository {
 
+    private static final String TAG = "TractorRepo";
     private static TractorRepository instance;
     private final List<Tractor> tractorFleet = new ArrayList<>();
     private final List<TractorBooking> bookings = new ArrayList<>();
@@ -43,7 +50,6 @@ public class TractorRepository {
 
     public TractorRepository(Context context) {
         initTractors();
-        initSampleBookings();
         if (context != null) {
             initDb(context);
         }
@@ -100,17 +106,6 @@ public class TractorRepository {
         ));
     }
 
-    private void initSampleBookings() {
-        bookings.clear();
-        bookings.add(new TractorBooking(
-                "BK-1001", "TR01", "Mahindra 575 DI XP Plus",
-                "Arya Farmer", "9876543210", "15 Sep 2026",
-                4, 3200.0, "Plot 14, Farm Field Road, Nashik",
-                "Land tilling for Rabi wheat sowing", "CONFIRMED", "10 Sep 2026"
-        ));
-        dispatchBookings();
-    }
-
     private void dispatchBookings() {
         try {
             if (Looper.getMainLooper() != null && Looper.myLooper() == Looper.getMainLooper()) {
@@ -134,18 +129,70 @@ public class TractorRepository {
 
     public LiveData<List<Tractor>> getTractors(String brand) {
         MutableLiveData<List<Tractor>> liveData = new MutableLiveData<>();
-        List<Tractor> filtered = new ArrayList<>();
+        List<Tractor> initial = new ArrayList<>();
         for (Tractor t : tractorFleet) {
             if (brand == null || brand.equals("All Brands") || t.getBrand().equalsIgnoreCase(brand)) {
-                filtered.add(t);
+                initial.add(t);
             }
         }
-        liveData.setValue(filtered);
+        liveData.setValue(initial);
+
+        // Fetch live from MySQL backend
+        ApiClient.getInstance().getApi().getTractors(brand != null && !brand.equals("All Brands") ? brand : null)
+                .enqueue(new Callback<List<Tractor>>() {
+                    @Override
+                    public void onResponse(Call<List<Tractor>> call, Response<List<Tractor>> response) {
+                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                            synchronized (TractorRepository.this) {
+                                tractorFleet.clear();
+                                tractorFleet.addAll(response.body());
+                                if (dbHelper != null) {
+                                    for (Tractor tr : response.body()) {
+                                        dbHelper.addTractor(tr);
+                                    }
+                                }
+                            }
+                            liveData.postValue(response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Tractor>> call, Throwable t) {
+                        Log.w(TAG, "Backend unreachable, using cached tractor fleet: " + t.getMessage());
+                    }
+                });
+
         return liveData;
     }
 
     public LiveData<List<TractorBooking>> getBookings() {
         return bookingsLiveData;
+    }
+
+    public void loadFarmerBookings(String phone) {
+        ApiClient.getInstance().getApi().getFarmerBookings(phone)
+                .enqueue(new Callback<List<TractorBooking>>() {
+                    @Override
+                    public void onResponse(Call<List<TractorBooking>> call, Response<List<TractorBooking>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            synchronized (TractorRepository.this) {
+                                bookings.clear();
+                                bookings.addAll(response.body());
+                                if (dbHelper != null) {
+                                    for (TractorBooking tb : response.body()) {
+                                        dbHelper.addBooking(tb);
+                                    }
+                                }
+                            }
+                            dispatchBookings();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<TractorBooking>> call, Throwable t) {
+                        Log.w(TAG, "Could not sync bookings with backend: " + t.getMessage());
+                    }
+                });
     }
 
     public synchronized boolean hasBookingConflict(String tractorId, String bookingDate) {
@@ -175,15 +222,23 @@ public class TractorRepository {
         }
         dispatchBookings();
 
-        // In-app notification for the farmer and tractor owner
-        NotificationRepository.getInstance().addNotification(
-                "NOTIF-" + booking.getId(),
-                "🚜 Tractor Booking Confirmed",
-                "Booking #" + booking.getId() + " for " + booking.getTractorModel() + " on " + booking.getBookingDate() + " is confirmed.",
-                "Just now",
-                "BOOKING",
-                false
-        );
+        // Send to backend MySQL
+        ApiClient.getInstance().getApi().createBooking(booking)
+                .enqueue(new Callback<TractorBooking>() {
+                    @Override
+                    public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.i(TAG, "Booking persisted to MySQL successfully: " + response.body().getId());
+                        } else {
+                            Log.w(TAG, "Backend returned non-200 for booking: " + response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TractorBooking> call, Throwable t) {
+                        Log.w(TAG, "Saved booking locally, offline sync will retry: " + t.getMessage());
+                    }
+                });
 
         return true;
     }
@@ -200,13 +255,18 @@ public class TractorRepository {
         }
         dispatchBookings();
 
-        NotificationRepository.getInstance().addNotification(
-                "NOTIF-CANC-" + bookingId,
-                "🚜 Booking Cancelled",
-                "Tractor booking #" + bookingId + " has been cancelled.",
-                "Just now",
-                "BOOKING",
-                false
-        );
+        // Send cancel status to backend MySQL
+        ApiClient.getInstance().getApi().updateBookingStatus(bookingId, "CANCELLED")
+                .enqueue(new Callback<TractorBooking>() {
+                    @Override
+                    public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
+                        Log.i(TAG, "Booking cancellation persisted to MySQL");
+                    }
+
+                    @Override
+                    public void onFailure(Call<TractorBooking> call, Throwable t) {
+                        Log.w(TAG, "Failed to update booking status on backend: " + t.getMessage());
+                    }
+                });
     }
 }

@@ -3,6 +3,7 @@ package com.agrosmart.repository;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -136,7 +137,13 @@ public class IotRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     SensorReading r = response.body();
                     latestReadingLiveData.setValue(r);
-                    executorService.execute(() -> dbHelper.insertSensorReading(r));
+                    executorService.execute(() -> {
+                        try {
+                            dbHelper.insertSensorReading(r);
+                        } catch (Exception e) {
+                            Log.e("IotRepository", "Error caching reading: " + e.getMessage());
+                        }
+                    });
                 }
             }
 
@@ -155,8 +162,12 @@ public class IotRepository {
                     List<SensorReading> list = response.body();
                     historyLiveData.setValue(list);
                     executorService.execute(() -> {
-                        for (SensorReading r : list) {
-                            dbHelper.insertSensorReading(r);
+                        try {
+                            for (SensorReading r : list) {
+                                dbHelper.insertSensorReading(r);
+                            }
+                        } catch (Exception e) {
+                            Log.e("IotRepository", "Error caching history: " + e.getMessage());
                         }
                     });
                 }
@@ -176,7 +187,13 @@ public class IotRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     IrrigationSetting s = response.body();
                     settingsLiveData.setValue(s);
-                    executorService.execute(() -> dbHelper.saveIrrigationSetting(s));
+                    executorService.execute(() -> {
+                        try {
+                            dbHelper.saveIrrigationSetting(s);
+                        } catch (Exception e) {
+                            Log.e("IotRepository", "Error saving settings: " + e.getMessage());
+                        }
+                    });
                 }
             }
 
@@ -269,10 +286,23 @@ public class IotRepository {
             public void onResponse(Call<List<IotAlert>> call, Response<List<IotAlert>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<IotAlert> list = response.body();
+                    for (IotAlert a : list) {
+                        if (a.getTitle() == null || a.getTitle().trim().isEmpty()) {
+                            if (a.getAlertType() != null && !a.getAlertType().trim().isEmpty()) {
+                                a.setTitle(a.getAlertType().replace('_', ' ') + " Alert");
+                            } else {
+                                a.setTitle("IoT Alert");
+                            }
+                        }
+                    }
                     alertsLiveData.setValue(list);
                     executorService.execute(() -> {
-                        for (IotAlert a : list) {
-                            dbHelper.insertIotAlert(a);
+                        try {
+                            for (IotAlert a : list) {
+                                dbHelper.insertIotAlert(a);
+                            }
+                        } catch (Exception e) {
+                            Log.e("IotRepository", "Error saving alerts: " + e.getMessage());
                         }
                     });
                 }

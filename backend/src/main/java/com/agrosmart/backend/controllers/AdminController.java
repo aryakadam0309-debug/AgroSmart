@@ -34,10 +34,11 @@ public class AdminController {
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalFarmers", userRepository.count());
-        stats.put("activeTractors", tractorRepository.count());
-        stats.put("pendingBookings", bookingRepository.findByStatus("PENDING").size());
-        stats.put("totalCropsMonitored", cropPriceRepository.count());
-        stats.put("marketplaceRevenue", 48500.0);
+        stats.put("totalTractors", tractorRepository.count());
+        stats.put("totalBookings", bookingRepository.count());
+        stats.put("totalOrders", 0);
+        stats.put("totalProducts", cropPriceRepository.count());
+        stats.put("totalRevenue", 0.0);
         return stats;
     }
 }

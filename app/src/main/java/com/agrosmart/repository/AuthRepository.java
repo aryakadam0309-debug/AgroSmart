@@ -1,20 +1,33 @@
 package com.agrosmart.repository;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.models.User;
+import com.agrosmart.network.ApiClient;
+import com.agrosmart.network.AgroSmartApiService;
 import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.utils.ValidationUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AuthRepository {
 
     private final SessionManager sessionManager;
     private final AgroSmartDbHelper dbHelper;
+    private final AgroSmartApiService apiService;
 
     public AuthRepository(Context context) {
         this.sessionManager = new SessionManager(context);
         this.dbHelper = AgroSmartDbHelper.getInstance(context);
+        this.apiService = ApiClient.getBackendClient().create(AgroSmartApiService.class);
     }
 
     public interface AuthCallback {
@@ -39,11 +52,55 @@ public class AuthRepository {
 
         String cleanIdentifier = identifier.trim();
 
-        // 1. Try local SQLite database first for persistence
+        // 1. First attempt login against Spring Boot MySQL backend
+        Map<String, String> credentials = new HashMap<>();
+        credentials.put("phone", cleanIdentifier);
+        credentials.put("password", password);
+
+        apiService.loginUser(credentials).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Map<String, Object> body = response.body();
+                    boolean success = Boolean.TRUE.equals(body.get("success"));
+                    if (success) {
+                        String token = (String) body.get("token");
+                        String userRole = (String) body.get("role");
+                        String fullName = (String) body.get("fullName");
+                        String phone = (String) body.get("phone");
+
+                        User user = dbHelper.getUserByPhone(phone != null ? phone : cleanIdentifier);
+                        if (user == null) {
+                            user = new User(System.currentTimeMillis(), fullName != null ? fullName : "User",
+                                    phone != null ? phone : cleanIdentifier,
+                                    cleanIdentifier.contains("@") ? cleanIdentifier : null,
+                                    userRole != null ? userRole : role, token);
+                            dbHelper.registerUser(user, password);
+                        } else {
+                            user.setToken(token);
+                            if (userRole != null) user.setRole(userRole);
+                        }
+
+                        saveSessionAndReturn(user, callback);
+                        return;
+                    }
+                }
+                // Fallback to local SQLite if backend credentials check failed
+                loginOfflineFallback(cleanIdentifier, password, role, callback);
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                Log.w("AuthRepository", "Backend unreachable, attempting offline login: " + t.getMessage());
+                loginOfflineFallback(cleanIdentifier, password, role, callback);
+            }
+        });
+    }
+
+    private void loginOfflineFallback(String cleanIdentifier, String password, String role, AuthCallback callback) {
         User user = dbHelper.authenticateUser(cleanIdentifier, password, role);
 
         if (user == null) {
-            // Check if user exists in database with a wrong password
             if (dbHelper.checkUserExists(cleanIdentifier)) {
                 callback.onError("Incorrect password. Please verify your password.");
                 return;
@@ -74,23 +131,27 @@ public class AuthRepository {
         }
 
         if (user != null) {
-            if (user.getToken() == null) {
-                user.setToken("jwt_token_" + System.currentTimeMillis());
-            }
-            sessionManager.saveAuthSession(user.getToken(), user.getId(), user.getFullName(), user.getEmail(), user.getPhone(), user.getRole());
-            if (user.getLocation() != null && !user.getLocation().isEmpty()) {
-                sessionManager.setUserLocation(user.getLocation());
-            }
-            if (user.getFarmSize() != null) {
-                sessionManager.setUserFarmSize(user.getFarmSize());
-            }
-            if (user.getProfileImageUrl() != null) {
-                sessionManager.setProfileImage(user.getProfileImageUrl());
-            }
-            callback.onSuccess(user);
+            saveSessionAndReturn(user, callback);
         } else {
             callback.onError("No registered account found with this mobile or email. Please register first.");
         }
+    }
+
+    private void saveSessionAndReturn(User user, AuthCallback callback) {
+        if (user.getToken() == null) {
+            user.setToken("jwt_token_" + System.currentTimeMillis());
+        }
+        sessionManager.saveAuthSession(user.getToken(), user.getId(), user.getFullName(), user.getEmail(), user.getPhone(), user.getRole());
+        if (user.getLocation() != null && !user.getLocation().isEmpty()) {
+            sessionManager.setUserLocation(user.getLocation());
+        }
+        if (user.getFarmSize() != null) {
+            sessionManager.setUserFarmSize(user.getFarmSize());
+        }
+        if (user.getProfileImageUrl() != null) {
+            sessionManager.setProfileImage(user.getProfileImageUrl());
+        }
+        callback.onSuccess(user);
     }
 
     public void register(String fullName, String phone, String email, String password, String location, double farmSize, AuthCallback callback) {
@@ -105,10 +166,10 @@ public class AuthRepository {
         user.setFarmSize(farmSize);
         user.setToken("jwt_farmer_" + System.currentTimeMillis());
 
-        // Save to SQLite database
+        // 1. Save to SQLite database immediately
         dbHelper.registerUser(user, password);
 
-        // Save active session
+        // 2. Save active session
         sessionManager.saveAuthSession(user.getToken(), user.getId(), user.getFullName(), user.getEmail(), user.getPhone(), user.getRole());
         if (user.getLocation() != null && !user.getLocation().isEmpty()) {
             sessionManager.setUserLocation(user.getLocation());
@@ -116,6 +177,35 @@ public class AuthRepository {
         if (user.getFarmSize() != null) {
             sessionManager.setUserFarmSize(user.getFarmSize());
         }
+
+        // 3. Immediately persist into Spring Boot MySQL Backend database
+        Map<String, Object> req = new HashMap<>();
+        req.put("fullName", fullName);
+        req.put("phone", cleanPhone);
+        req.put("email", email);
+        req.put("password", password);
+        req.put("role", "ROLE_FARMER");
+        req.put("village", location != null && !location.isEmpty() ? location : "Field Village");
+        req.put("district", "Field District");
+        req.put("state", "Maharashtra");
+        req.put("landAreaAcres", farmSize);
+
+        apiService.registerUser(req).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i("AuthRepository", "New user persisted into MySQL database successfully: " + cleanPhone);
+                } else {
+                    Log.w("AuthRepository", "Backend rejected registration (HTTP " + response.code() + ")");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                Log.w("AuthRepository", "Backend offline during registration, saved in offline cache: " + t.getMessage());
+            }
+        });
+
         callback.onSuccess(user);
     }
 
@@ -134,7 +224,6 @@ public class AuthRepository {
         if (updated) {
             callback.onSuccess("Password reset successfully. You can now login with your new password.");
         } else {
-            // Check if it's the demo farmer number
             if ("9876543210".equals(cleanPhone)) {
                 callback.onSuccess("Password updated for demo account. Please login with new password.");
             } else {
@@ -185,6 +274,27 @@ public class AuthRepository {
         if (photoUrl != null) {
             sessionManager.setProfileImage(photoUrl);
         }
+
+        // Persist to MySQL Backend
+        Map<String, String> googlePayload = new HashMap<>();
+        googlePayload.put("idToken", idToken);
+        googlePayload.put("email", verifiedEmail);
+        googlePayload.put("displayName", name);
+        googlePayload.put("photoUrl", photoUrl);
+
+        apiService.googleAuth(googlePayload).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful()) {
+                    Log.i("AuthRepository", "Google user synced to MySQL successfully");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                Log.w("AuthRepository", "Google user backend sync skipped: " + t.getMessage());
+            }
+        });
 
         callback.onSuccess(user);
     }

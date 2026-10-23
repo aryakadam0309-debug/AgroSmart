@@ -1,6 +1,15 @@
 package com.agrosmart.network;
 
+import com.agrosmart.models.AgriOrder;
+import com.agrosmart.models.CropDisease;
+import com.agrosmart.models.CropGuide;
+import com.agrosmart.models.CropHarvest;
 import com.agrosmart.models.CropPrice;
+import com.agrosmart.models.FertilizerItem;
+import com.agrosmart.models.GovernmentScheme;
+import com.agrosmart.models.MarketProduct;
+import com.agrosmart.models.NewsItem;
+import com.agrosmart.models.NotificationItem;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.models.TractorBooking;
 
@@ -9,6 +18,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -31,6 +41,11 @@ public interface AgroSmartApiService {
     @POST("auth/google")
     Call<Map<String, Object>> googleAuth(
             @Body Map<String, String> googlePayload
+    );
+
+    @PUT("auth/profile")
+    Call<Map<String, Object>> updateProfile(
+            @Body Map<String, Object> profileData
     );
 
     // Mandi Bhav / Crop Prices
@@ -65,6 +80,100 @@ public interface AgroSmartApiService {
     // Admin Dashboard Stats
     @GET("admin/stats")
     Call<Map<String, Object>> getAdminStats();
+
+    // Marketplace Products & Orders
+    @GET("marketplace/products")
+    Call<List<MarketProduct>> getProducts(
+            @Query("category") String category,
+            @Query("search") String search
+    );
+
+    @GET("marketplace/products/{id}")
+    Call<MarketProduct> getProductById(
+            @Path("id") String id
+    );
+
+    @POST("marketplace/orders")
+    Call<AgriOrder> createOrder(
+            @Body AgriOrder order
+    );
+
+    @GET("marketplace/orders")
+    Call<List<AgriOrder>> getOrders(
+            @Query("phone") String phone
+    );
+
+    // Inventory Management (Fertilizers & Crop Harvests)
+    @GET("inventory/fertilizers")
+    Call<List<FertilizerItem>> getFertilizers(
+            @Query("phone") String phone
+    );
+
+    @POST("inventory/fertilizers")
+    Call<FertilizerItem> addFertilizer(
+            @Body FertilizerItem item
+    );
+
+    @DELETE("inventory/fertilizers/{id}")
+    Call<Void> deleteFertilizer(
+            @Path("id") String id
+    );
+
+    @GET("inventory/harvests")
+    Call<List<CropHarvest>> getHarvests(
+            @Query("phone") String phone
+    );
+
+    @POST("inventory/harvests")
+    Call<CropHarvest> addHarvest(
+            @Body CropHarvest item
+    );
+
+    @DELETE("inventory/harvests/{id}")
+    Call<Void> deleteHarvest(
+            @Path("id") String id
+    );
+
+    // Notifications & Announcements
+    @GET("notifications")
+    Call<List<NotificationItem>> getNotifications(
+            @Query("phone") String phone
+    );
+
+    @POST("notifications")
+    Call<NotificationItem> createNotification(
+            @Body NotificationItem item
+    );
+
+    @PUT("notifications/{id}/read")
+    Call<Void> markNotificationAsRead(
+            @Path("id") String id
+    );
+
+    @PUT("notifications/read-all")
+    Call<Map<String, Object>> markAllNotificationsAsRead(
+            @Query("phone") String phone
+    );
+
+    // Agri News & Government Schemes
+    @GET("news")
+    Call<List<NewsItem>> getNews(
+            @Query("category") String category
+    );
+
+    @GET("schemes")
+    Call<List<GovernmentScheme>> getSchemes(
+            @Query("category") String category
+    );
+
+    // Crop Diseases & Cultivation Guides
+    @GET("crops/diseases")
+    Call<List<CropDisease>> getCropDiseases(
+            @Query("crop") String crop
+    );
+
+    @GET("crops/guides")
+    Call<List<CropGuide>> getCropGuides();
 
     // IoT Smart Farming & Irrigation Module
     @GET("iot/status/{deviceId}")

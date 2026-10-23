@@ -1,12 +1,17 @@
 package com.agrosmart.backend.controllers;
 
+import com.agrosmart.backend.entities.NotificationItem;
 import com.agrosmart.backend.entities.Order;
+import com.agrosmart.backend.entities.OrderItem;
 import com.agrosmart.backend.entities.Product;
+import com.agrosmart.backend.repositories.NotificationRepository;
 import com.agrosmart.backend.repositories.OrderRepository;
 import com.agrosmart.backend.repositories.ProductRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -16,10 +21,14 @@ public class MarketplaceController {
 
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final NotificationRepository notificationRepository;
 
-    public MarketplaceController(ProductRepository productRepository, OrderRepository orderRepository) {
+    public MarketplaceController(ProductRepository productRepository, 
+                                 OrderRepository orderRepository,
+                                 NotificationRepository notificationRepository) {
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @GetMapping("/products")
@@ -46,10 +55,46 @@ public class MarketplaceController {
         if (order.getOrderId() == null || order.getOrderId().trim().isEmpty()) {
             order.setOrderId("ORD-" + System.currentTimeMillis());
         }
-        if (order.getItems() != null) {
-            order.getItems().forEach(item -> item.setOrder(order));
+        if (order.getOrderDate() == null || order.getOrderDate().trim().isEmpty()) {
+            order.setOrderDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")));
         }
-        return ResponseEntity.ok(orderRepository.save(order));
+        if (order.getStatus() == null || order.getStatus().trim().isEmpty()) {
+            order.setStatus("CONFIRMED");
+        }
+        if (order.getFarmerPhone() == null || order.getFarmerPhone().trim().isEmpty()) {
+            order.setFarmerPhone("9876543210");
+        }
+
+        if (order.getItems() != null) {
+            for (OrderItem item : order.getItems()) {
+                item.setOrder(order);
+                if (item.getProductId() != null && !item.getProductId().trim().isEmpty()) {
+                    productRepository.findById(item.getProductId()).ifPresent(p -> {
+                        int currentStock = p.getStockCount();
+                        int newStock = Math.max(0, currentStock - item.getQuantity());
+                        p.setStockCount(newStock);
+                        productRepository.save(p);
+                    });
+                }
+            }
+        }
+
+        Order saved = orderRepository.save(order);
+
+        // Record a persistent notification for the farmer
+        try {
+            NotificationItem notif = new NotificationItem();
+            notif.setId("NOTIF-" + System.currentTimeMillis());
+            notif.setFarmerPhone(order.getFarmerPhone());
+            notif.setTitle("🛍️ Order Confirmed: #" + saved.getOrderId());
+            notif.setMessage("Agri-inputs order (₹" + Math.round(saved.getTotalAmount()) + ") placed successfully via " + saved.getPaymentMethod() + ".");
+            notif.setTimestamp("Just now");
+            notif.setType("ORDER");
+            notif.setRead(false);
+            notificationRepository.save(notif);
+        } catch (Exception ignored) {}
+
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/orders")

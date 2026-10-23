@@ -7,4 +7,5 @@ import java.util.List;
 public interface TractorBookingRepository extends JpaRepository<TractorBooking, String> {
     List<TractorBooking> findByFarmerPhone(String farmerPhone);
     List<TractorBooking> findByStatus(String status);
+    List<TractorBooking> findByTractorIdAndBookingDate(String tractorId, String bookingDate);
 }

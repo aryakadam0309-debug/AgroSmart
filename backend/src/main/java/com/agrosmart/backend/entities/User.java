@@ -66,7 +66,11 @@ public class User {
     public String getProfileImageUrl() { return profileImageUrl; }
     public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
     public String getVillage() { return village; }
+    public void setVillage(String village) { this.village = village; }
     public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
     public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
     public Double getLandAreaAcres() { return landAreaAcres; }
+    public void setLandAreaAcres(Double landAreaAcres) { this.landAreaAcres = landAreaAcres; }
 }

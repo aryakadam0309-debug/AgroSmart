@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class NotificationItem implements Serializable {
     private String id;
+    private String farmerPhone;
     private String title;
     private String message;
     private String timestamp;
@@ -22,6 +23,9 @@ public class NotificationItem implements Serializable {
     }
 
     public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getFarmerPhone() { return farmerPhone; }
+    public void setFarmerPhone(String farmerPhone) { this.farmerPhone = farmerPhone; }
     public String getTitle() { return title; }
     public String getMessage() { return message; }
     public String getTimestamp() { return timestamp; }

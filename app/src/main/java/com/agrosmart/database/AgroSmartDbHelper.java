@@ -193,7 +193,7 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "farmer_id INTEGER NOT NULL, " +
                 "alert_type TEXT NOT NULL, " +
                 "severity TEXT NOT NULL, " +
-                "title TEXT NOT NULL, " +
+                "title TEXT, " +
                 "message TEXT NOT NULL, " +
                 "is_resolved INTEGER DEFAULT 0, " +
                 "created_at TEXT)");
@@ -877,20 +877,25 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     public boolean insertSensorReading(SensorReading reading) {
         if (reading == null || reading.getDeviceId() == null) return false;
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("id", reading.getId());
-        cv.put("device_id", reading.getDeviceId());
-        cv.put("farmer_id", reading.getFarmerId());
-        cv.put("soil_moisture_pct", reading.getSoilMoisturePct());
-        cv.put("soil_moisture_raw", reading.getSoilMoistureRaw());
-        cv.put("moisture_status", reading.getMoistureStatus());
-        if (reading.getTemperatureC() != null) cv.put("temperature_c", reading.getTemperatureC());
-        if (reading.getHumidityPct() != null) cv.put("humidity_pct", reading.getHumidityPct());
-        cv.put("sensor_status", reading.getSensorStatus());
-        cv.put("recorded_at", reading.getRecordedAt());
-        long result = db.insertWithOnConflict("sensor_readings", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
-        return result != -1;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("id", reading.getId() != null ? reading.getId() : "SR-" + System.currentTimeMillis());
+            cv.put("device_id", reading.getDeviceId());
+            cv.put("farmer_id", reading.getFarmerId());
+            cv.put("soil_moisture_pct", reading.getSoilMoisturePct());
+            cv.put("soil_moisture_raw", reading.getSoilMoistureRaw());
+            cv.put("moisture_status", reading.getMoistureStatus() != null ? reading.getMoistureStatus() : "OPTIMAL");
+            if (reading.getTemperatureC() != null) cv.put("temperature_c", reading.getTemperatureC());
+            if (reading.getHumidityPct() != null) cv.put("humidity_pct", reading.getHumidityPct());
+            cv.put("sensor_status", reading.getSensorStatus() != null ? reading.getSensorStatus() : "VALID");
+            cv.put("recorded_at", reading.getRecordedAt() != null ? reading.getRecordedAt() : "Just now");
+            long result = db.insertWithOnConflict("sensor_readings", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return result != -1;
+        } catch (Exception e) {
+            android.util.Log.e("AgroSmartDbHelper", "Error caching sensor reading: " + e.getMessage());
+            return false;
+        }
     }
 
     public SensorReading getLatestSensorReading(String deviceId) {
@@ -941,20 +946,25 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     public boolean saveIrrigationSetting(IrrigationSetting setting) {
         if (setting == null || setting.getDeviceId() == null) return false;
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("device_id", setting.getDeviceId());
-        cv.put("farmer_id", setting.getFarmerId());
-        cv.put("operating_mode", setting.getOperatingMode());
-        cv.put("low_moisture_start_threshold", setting.getLowMoistureStartThreshold());
-        cv.put("high_moisture_stop_threshold", setting.getHighMoistureStopThreshold());
-        cv.put("max_continuous_pump_sec", setting.getMaxContinuousPumpSec());
-        cv.put("cooldown_interval_sec", setting.getCooldownIntervalSec());
-        cv.put("alert_threshold_pct", setting.getAlertThresholdPct());
-        cv.put("updated_at", setting.getUpdatedAt());
-        if (setting.getUpdatedBy() != null) cv.put("updated_by", setting.getUpdatedBy());
-        long result = db.insertWithOnConflict("irrigation_settings", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
-        return result != -1;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("device_id", setting.getDeviceId());
+            cv.put("farmer_id", setting.getFarmerId());
+            cv.put("operating_mode", setting.getOperatingMode() != null ? setting.getOperatingMode() : "AUTO");
+            cv.put("low_moisture_start_threshold", setting.getLowMoistureStartThreshold());
+            cv.put("high_moisture_stop_threshold", setting.getHighMoistureStopThreshold());
+            cv.put("max_continuous_pump_sec", setting.getMaxContinuousPumpSec());
+            cv.put("cooldown_interval_sec", setting.getCooldownIntervalSec());
+            cv.put("alert_threshold_pct", setting.getAlertThresholdPct());
+            cv.put("updated_at", setting.getUpdatedAt() != null ? setting.getUpdatedAt() : "Just now");
+            if (setting.getUpdatedBy() != null) cv.put("updated_by", setting.getUpdatedBy());
+            long result = db.insertWithOnConflict("irrigation_settings", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return result != -1;
+        } catch (Exception e) {
+            android.util.Log.e("AgroSmartDbHelper", "Error saving irrigation settings: " + e.getMessage());
+            return false;
+        }
     }
 
     public IrrigationSetting getIrrigationSetting(String deviceId) {
@@ -983,21 +993,26 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     public boolean insertPumpCommand(PumpCommand cmd) {
         if (cmd == null || cmd.getCommandId() == null) return false;
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("command_id", cmd.getCommandId());
-        cv.put("device_id", cmd.getDeviceId());
-        cv.put("command", cmd.getCommand());
-        if (cmd.getDurationSeconds() != null) cv.put("duration_seconds", cmd.getDurationSeconds());
-        cv.put("trigger_source", cmd.getTriggerSource());
-        cv.put("requested_state", cmd.isRequestedState() ? 1 : 0);
-        if (cmd.getConfirmedState() != null) cv.put("confirmed_state", cmd.getConfirmedState() ? 1 : 0);
-        cv.put("status", cmd.getStatus());
-        cv.put("failure_reason", cmd.getFailureReason());
-        cv.put("created_at", cmd.getCreatedAt());
-        cv.put("executed_at", cmd.getExecutedAt());
-        long result = db.insertWithOnConflict("pump_commands", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
-        return result != -1;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("command_id", cmd.getCommandId());
+            cv.put("device_id", cmd.getDeviceId() != null ? cmd.getDeviceId() : "ESP32-AGRO-01");
+            cv.put("command", cmd.getCommand() != null ? cmd.getCommand() : "PUMP_STATUS");
+            if (cmd.getDurationSeconds() != null) cv.put("duration_seconds", cmd.getDurationSeconds());
+            cv.put("trigger_source", cmd.getTriggerSource() != null ? cmd.getTriggerSource() : "MANUAL");
+            cv.put("requested_state", cmd.isRequestedState() ? 1 : 0);
+            if (cmd.getConfirmedState() != null) cv.put("confirmed_state", cmd.getConfirmedState() ? 1 : 0);
+            cv.put("status", cmd.getStatus() != null ? cmd.getStatus() : "PENDING");
+            cv.put("failure_reason", cmd.getFailureReason());
+            cv.put("created_at", cmd.getCreatedAt() != null ? cmd.getCreatedAt() : "Just now");
+            cv.put("executed_at", cmd.getExecutedAt());
+            long result = db.insertWithOnConflict("pump_commands", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return result != -1;
+        } catch (Exception e) {
+            android.util.Log.e("AgroSmartDbHelper", "Error caching pump command: " + e.getMessage());
+            return false;
+        }
     }
 
     public PumpCommand getLatestPumpCommand(String deviceId) {
@@ -1038,19 +1053,33 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     public boolean insertIotAlert(IotAlert alert) {
         if (alert == null || alert.getId() == null) return false;
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("id", alert.getId());
-        cv.put("device_id", alert.getDeviceId());
-        cv.put("farmer_id", alert.getFarmerId());
-        cv.put("alert_type", alert.getAlertType());
-        cv.put("severity", alert.getSeverity());
-        cv.put("title", alert.getTitle());
-        cv.put("message", alert.getMessage());
-        cv.put("is_resolved", alert.isResolved() ? 1 : 0);
-        cv.put("created_at", alert.getCreatedAt());
-        long result = db.insertWithOnConflict("iot_alerts", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
-        return result != -1;
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("id", alert.getId());
+            cv.put("device_id", alert.getDeviceId() != null ? alert.getDeviceId() : "ESP32-AGRO-01");
+            cv.put("farmer_id", alert.getFarmerId());
+            cv.put("alert_type", alert.getAlertType() != null ? alert.getAlertType() : "INFO");
+            cv.put("severity", alert.getSeverity() != null ? alert.getSeverity() : "INFO");
+
+            String title = alert.getTitle();
+            if (title == null || title.trim().isEmpty()) {
+                if (alert.getAlertType() != null && !alert.getAlertType().trim().isEmpty()) {
+                    title = alert.getAlertType().replace('_', ' ') + " Alert";
+                } else {
+                    title = "IoT Alert";
+                }
+            }
+            cv.put("title", title);
+            cv.put("message", alert.getMessage() != null ? alert.getMessage() : "Sensor Alert Notification");
+            cv.put("is_resolved", alert.isResolved() ? 1 : 0);
+            cv.put("created_at", alert.getCreatedAt() != null ? alert.getCreatedAt() : "Just now");
+            long result = db.insertWithOnConflict("iot_alerts", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return result != -1;
+        } catch (Exception e) {
+            android.util.Log.e("AgroSmartDbHelper", "Error caching IoT alert: " + e.getMessage());
+            return false;
+        }
     }
 
     public List<IotAlert> getActiveAlerts(String deviceId) {
@@ -1111,11 +1140,7 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
             c.close();
         }
 
-        if (farmers < 5) farmers = 1248 + farmers;
-        if (tractors < 5) tractors = 84 + tractors;
-        if (bookings < 5) bookings = 342 + bookings;
-
-        return new AdminDashboardStats(farmers, tractors, bookings, 18, 530, 485200.0);
+        return new AdminDashboardStats(farmers, tractors, bookings, 0, 0, 0.0);
     }
 
     // ==========================================

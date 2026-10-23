@@ -29,6 +29,9 @@ public class IotAlert {
     @Column(nullable = false, length = 20)
     private String severity = "WARNING"; // 'INFO', 'WARNING', 'CRITICAL'
 
+    @Column(length = 100)
+    private String title;
+
     private boolean isRead = false;
 
     @Column(length = 50)
@@ -49,6 +52,7 @@ public class IotAlert {
         this.relatedReadingId = relatedReadingId;
         this.isRead = false;
         this.createdAt = LocalDateTime.now();
+        this.title = alertType != null ? alertType.replace('_', ' ') + " Alert" : "IoT Alert";
     }
 
     public String getId() { return id; }
@@ -68,6 +72,17 @@ public class IotAlert {
 
     public String getSeverity() { return severity; }
     public void setSeverity(String severity) { this.severity = severity; }
+
+    public String getTitle() {
+        if (title != null && !title.trim().isEmpty()) {
+            return title;
+        }
+        if (alertType != null) {
+            return alertType.replace('_', ' ') + " Alert";
+        }
+        return "IoT Alert";
+    }
+    public void setTitle(String title) { this.title = title; }
 
     public boolean isRead() { return isRead; }
     public void setRead(boolean read) { isRead = read; }

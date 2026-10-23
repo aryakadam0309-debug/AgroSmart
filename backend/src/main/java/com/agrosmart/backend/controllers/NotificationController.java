@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -41,5 +42,20 @@ public class NotificationController {
             notificationRepository.save(n);
             return ResponseEntity.ok(n);
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/read-all")
+    public ResponseEntity<?> markAllAsRead(@RequestParam(required = false) String phone) {
+        List<NotificationItem> list;
+        if (phone != null && !phone.trim().isEmpty()) {
+            list = notificationRepository.findByFarmerPhone(phone.trim());
+        } else {
+            list = notificationRepository.findAll();
+        }
+        for (NotificationItem n : list) {
+            n.setRead(true);
+        }
+        notificationRepository.saveAll(list);
+        return ResponseEntity.ok(Map.of("message", "All notifications marked as read"));
     }
 }

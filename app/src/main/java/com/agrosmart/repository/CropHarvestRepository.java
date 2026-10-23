@@ -2,18 +2,25 @@ package com.agrosmart.repository;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.models.CropHarvest;
+import com.agrosmart.network.ApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CropHarvestRepository {
 
+    private static final String TAG = "CropHarvestRepo";
     private static CropHarvestRepository instance;
     private final List<CropHarvest> harvestList = new ArrayList<>();
     private final MutableLiveData<List<CropHarvest>> harvestLiveData = new MutableLiveData<>();
@@ -95,6 +102,32 @@ public class CropHarvestRepository {
         return harvestLiveData;
     }
 
+    public void loadHarvests(String phone) {
+        ApiClient.getInstance().getApi().getHarvests(phone)
+                .enqueue(new Callback<List<CropHarvest>>() {
+                    @Override
+                    public void onResponse(Call<List<CropHarvest>> call, Response<List<CropHarvest>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            synchronized (CropHarvestRepository.this) {
+                                harvestList.clear();
+                                harvestList.addAll(response.body());
+                                if (dbHelper != null) {
+                                    for (CropHarvest ch : response.body()) {
+                                        dbHelper.addHarvest(ch, phone);
+                                    }
+                                }
+                            }
+                            dispatchHarvests();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<CropHarvest>> call, Throwable t) {
+                        Log.w(TAG, "Backend unreachable for harvest inventory: " + t.getMessage());
+                    }
+                });
+    }
+
     public synchronized boolean addHarvest(CropHarvest harvest) {
         if (harvest == null) return false;
         if (harvest.getHarvestedQuintals() <= 0) return false;
@@ -102,9 +135,26 @@ public class CropHarvestRepository {
 
         harvestList.add(0, harvest);
         if (dbHelper != null) {
-            dbHelper.addHarvest(harvest, "9876543210");
+            dbHelper.addHarvest(harvest, harvest.getFarmerPhone() != null ? harvest.getFarmerPhone() : "9876543210");
         }
         dispatchHarvests();
+
+        // Persist to MySQL
+        ApiClient.getInstance().getApi().addHarvest(harvest)
+                .enqueue(new Callback<CropHarvest>() {
+                    @Override
+                    public void onResponse(Call<CropHarvest> call, Response<CropHarvest> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.i(TAG, "Harvest saved to MySQL: " + response.body().getId());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CropHarvest> call, Throwable t) {
+                        Log.w(TAG, "Failed to persist harvest to MySQL: " + t.getMessage());
+                    }
+                });
+
         return true;
     }
 
@@ -115,33 +165,53 @@ public class CropHarvestRepository {
             dbHelper.deleteHarvest(id);
         }
         dispatchHarvests();
+
+        ApiClient.getInstance().getApi().deleteHarvest(id)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Log.i(TAG, "Harvest deleted from MySQL: " + id);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.w(TAG, "Failed to delete harvest on backend: " + t.getMessage());
+                    }
+                });
     }
 
     public synchronized boolean sellStock(String id, double quantitySold) {
         if (id == null || quantitySold <= 0) return false;
+        CropHarvest target = null;
         for (CropHarvest h : harvestList) {
             if (h.getId().equals(id)) {
                 if (quantitySold > h.getStockRemainingQuintals()) {
                     return false; // cannot sell more than remaining
                 }
                 h.setSoldQuintals(h.getSoldQuintals() + quantitySold);
+                target = h;
                 if (dbHelper != null) {
                     dbHelper.updateHarvestSold(id, quantitySold);
-                }
-                if (h.getStockRemainingQuintals() <= 0) {
-                    NotificationRepository.getInstance().addNotification(
-                            "NOTIF-HRV-OUT-" + id,
-                            "🌾 Crop Stock Sold Out",
-                            h.getCropName() + " harvest inventory has been completely sold.",
-                            "Just now",
-                            "INVENTORY",
-                            false
-                    );
                 }
                 break;
             }
         }
         dispatchHarvests();
+
+        if (target != null) {
+            ApiClient.getInstance().getApi().addHarvest(target)
+                    .enqueue(new Callback<CropHarvest>() {
+                        @Override
+                        public void onResponse(Call<CropHarvest> call, Response<CropHarvest> response) {
+                            Log.i(TAG, "Stock sale synced to MySQL");
+                        }
+
+                        @Override
+                        public void onFailure(Call<CropHarvest> call, Throwable t) {
+                            Log.w(TAG, "Failed to sync stock sale to MySQL: " + t.getMessage());
+                        }
+                    });
+        }
         return true;
     }
 }

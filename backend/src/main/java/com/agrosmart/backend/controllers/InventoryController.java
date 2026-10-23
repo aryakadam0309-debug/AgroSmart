@@ -2,8 +2,10 @@ package com.agrosmart.backend.controllers;
 
 import com.agrosmart.backend.entities.CropHarvestInventory;
 import com.agrosmart.backend.entities.FertilizerInventory;
+import com.agrosmart.backend.entities.NotificationItem;
 import com.agrosmart.backend.repositories.CropHarvestInventoryRepository;
 import com.agrosmart.backend.repositories.FertilizerInventoryRepository;
+import com.agrosmart.backend.repositories.NotificationRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +18,14 @@ public class InventoryController {
 
     private final FertilizerInventoryRepository fertilizerRepository;
     private final CropHarvestInventoryRepository harvestRepository;
+    private final NotificationRepository notificationRepository;
 
     public InventoryController(FertilizerInventoryRepository fertilizerRepository,
-                               CropHarvestInventoryRepository harvestRepository) {
+                               CropHarvestInventoryRepository harvestRepository,
+                               NotificationRepository notificationRepository) {
         this.fertilizerRepository = fertilizerRepository;
         this.harvestRepository = harvestRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     // Fertilizer Inventory
@@ -37,7 +42,26 @@ public class InventoryController {
         if (item.getId() == null || item.getId().trim().isEmpty()) {
             item.setId("FER-" + (System.currentTimeMillis() % 10000));
         }
-        return ResponseEntity.ok(fertilizerRepository.save(item));
+        if (item.getFarmerPhone() == null || item.getFarmerPhone().trim().isEmpty()) {
+            item.setFarmerPhone("9876543210");
+        }
+        FertilizerInventory saved = fertilizerRepository.save(item);
+
+        if (saved.getQuantityBags() <= saved.getLowStockThreshold()) {
+            try {
+                NotificationItem notif = new NotificationItem();
+                notif.setId("NOTIF-" + System.currentTimeMillis());
+                notif.setFarmerPhone(saved.getFarmerPhone());
+                notif.setTitle("⚠️ Low Stock Alert: " + saved.getName());
+                notif.setMessage("Inventory running low (" + saved.getQuantityBags() + " bags left). Reorder recommended.");
+                notif.setTimestamp("Just now");
+                notif.setType("INVENTORY");
+                notif.setRead(false);
+                notificationRepository.save(notif);
+            } catch (Exception ignored) {}
+        }
+
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/fertilizers/{id}")
@@ -59,6 +83,12 @@ public class InventoryController {
     public ResponseEntity<CropHarvestInventory> addHarvest(@RequestBody CropHarvestInventory item) {
         if (item.getId() == null || item.getId().trim().isEmpty()) {
             item.setId("HRV-" + (System.currentTimeMillis() % 10000));
+        }
+        if (item.getFarmerPhone() == null || item.getFarmerPhone().trim().isEmpty()) {
+            item.setFarmerPhone("9876543210");
+        }
+        if (item.getStockRemainingQuintals() <= 0 && item.getHarvestedQuintals() > 0) {
+            item.setStockRemainingQuintals(Math.max(0, item.getHarvestedQuintals() - item.getSoldQuintals()));
         }
         return ResponseEntity.ok(harvestRepository.save(item));
     }

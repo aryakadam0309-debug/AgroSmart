@@ -52,4 +52,24 @@ public class OrderItem {
 
     public double getSubtotal() { return subtotal; }
     public void setSubtotal(double subtotal) { this.subtotal = subtotal; }
+
+    @com.fasterxml.jackson.annotation.JsonProperty("product")
+    public void setProduct(java.util.Map<String, Object> productMap) {
+        if (productMap != null) {
+            if (productMap.containsKey("id") && (this.productId == null || this.productId.isEmpty())) {
+                this.productId = String.valueOf(productMap.get("id"));
+            }
+            if (productMap.containsKey("name") && (this.productName == null || this.productName.isEmpty())) {
+                this.productName = String.valueOf(productMap.get("name"));
+            }
+            if (productMap.containsKey("price")) {
+                try {
+                    this.unitPrice = Double.parseDouble(String.valueOf(productMap.get("price")));
+                    if (this.subtotal == 0.0) {
+                        this.subtotal = this.unitPrice * (this.quantity > 0 ? this.quantity : 1);
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+    }
 }

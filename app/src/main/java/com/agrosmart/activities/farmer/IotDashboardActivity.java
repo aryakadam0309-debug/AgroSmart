@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,7 +17,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,6 +26,7 @@ import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.adapters.SensorReadingAdapter;
 import com.agrosmart.databinding.ActivityIotDashboardBinding;
 import com.agrosmart.databinding.DialogConfigureThresholdsBinding;
+import com.agrosmart.models.IotAlert;
 import com.agrosmart.models.IrrigationSetting;
 import com.agrosmart.models.PumpCommand;
 import com.agrosmart.models.SensorReading;
@@ -36,7 +37,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -103,62 +103,60 @@ public class IotDashboardActivity extends BaseActivity {
         viewModel.getIsOnline().observe(this, isOnline -> {
             boolean online = Boolean.TRUE.equals(isOnline);
             if (online) {
-                binding.viewStatusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+                binding.viewStatusDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
                 binding.tvConnectionStatus.setText("Station Online (ESP32 Live)");
                 binding.tvLastSeen.setText("Last sync: Live");
                 binding.cardAlert.setVisibility(View.GONE);
             } else {
-                binding.viewStatusDot.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#E53935")));
-                binding.tvConnectionStatus.setText("No Physical Sensor Connected");
-                binding.tvLastSeen.setText("Hardware Offline (Waiting for ESP32)");
-
-                // Reset display when no hardware is streaming live
-                binding.tvMoistureValue.setText("--");
-                binding.pbMoisture.setProgress(0);
-                binding.tvRawSensorAdc.setText("Raw ADC: No Signal");
-                binding.tvMoistureStatusChip.setText("HARDWARE OFFLINE");
-                binding.tvMoistureStatusChip.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#EEEEEE")));
-                binding.tvMoistureStatusChip.setTextColor(Color.parseColor("#616161"));
-
-                binding.tvLiveTemp.setText("-- °C");
-                binding.tvLiveHumidity.setText("-- %");
+                binding.viewStatusDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E53935")));
+                binding.tvConnectionStatus.setText("Hardware Offline (Waiting for ESP32)");
+                SensorReading last = viewModel.getLatestReading().getValue();
+                if (last != null && last.getRecordedAt() != null) {
+                    binding.tvLastSeen.setText("Last Recorded: " + last.getRecordedAt());
+                } else {
+                    binding.tvLastSeen.setText("Hardware Offline (Waiting for ESP32)");
+                }
 
                 binding.cardAlert.setVisibility(View.VISIBLE);
-                binding.tvAlertTitle.setText("⚠️ Hardware Disconnected");
-                binding.tvAlertMessage.setText("No physical ESP32 or sensors are currently streaming data. Power on your ESP32 station and connect to Wi-Fi to view live telemetry.");
+                binding.tvAlertTitle.setText("⚠️ Station Hardware Offline");
+                binding.tvAlertMessage.setText("ESP32 station is not actively connected to Wi-Fi. Showing latest saved telemetry from database.");
             }
         });
 
         // Latest Sensor Reading (Moisture + DHT22)
         viewModel.getLatestReading().observe(this, reading -> {
-            boolean online = Boolean.TRUE.equals(viewModel.getIsOnline().getValue());
-            if (reading != null && online) {
-                binding.tvMoistureValue.setText(String.format(java.util.Locale.US, "%.1f", reading.getSoilMoisturePct()));
+            if (reading != null) {
+                boolean online = Boolean.TRUE.equals(viewModel.getIsOnline().getValue());
+                binding.tvMoistureValue.setText(String.format(Locale.US, "%.1f", reading.getSoilMoisturePct()));
                 binding.pbMoisture.setProgress((int) Math.round(reading.getSoilMoisturePct()));
                 binding.tvRawSensorAdc.setText("Raw ADC: " + reading.getSoilMoistureRaw());
 
-                String status = reading.getMoistureStatus() != null ? reading.getMoistureStatus().toUpperCase() : "MODERATE";
-                binding.tvMoistureStatusChip.setText(status);
+                String status = reading.getMoistureStatus() != null ? reading.getMoistureStatus().toUpperCase() : "NORMAL";
+                binding.tvMoistureStatusChip.setText(online ? status : (status + " (CACHED)"));
 
                 if ("DRY".equals(status)) {
-                    binding.tvMoistureStatusChip.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#FFCDD2")));
+                    binding.tvMoistureStatusChip.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFCDD2")));
                     binding.tvMoistureStatusChip.setTextColor(Color.parseColor("#C62828"));
-                    binding.pbMoisture.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#C62828")));
+                    binding.pbMoisture.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#C62828")));
                 } else if ("WET".equals(status)) {
-                    binding.tvMoistureStatusChip.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#B3E5FC")));
+                    binding.tvMoistureStatusChip.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B3E5FC")));
                     binding.tvMoistureStatusChip.setTextColor(Color.parseColor("#0277BD"));
-                    binding.pbMoisture.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#0277BD")));
+                    binding.pbMoisture.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#0277BD")));
                 } else {
-                    binding.tvMoistureStatusChip.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#C8E6C9")));
+                    binding.tvMoistureStatusChip.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C8E6C9")));
                     binding.tvMoistureStatusChip.setTextColor(Color.parseColor("#2E7D32"));
-                    binding.pbMoisture.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2E7D32")));
+                    binding.pbMoisture.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#2E7D32")));
                 }
 
                 if (reading.getTemperatureC() != null) {
-                    binding.tvLiveTemp.setText(String.format(java.util.Locale.US, "%.1f°C", reading.getTemperatureC()));
+                    binding.tvLiveTemp.setText(String.format(Locale.US, "%.1f°C", reading.getTemperatureC()));
+                } else {
+                    binding.tvLiveTemp.setText("-- °C");
                 }
                 if (reading.getHumidityPct() != null) {
-                    binding.tvLiveHumidity.setText(String.format(java.util.Locale.US, "%.1f%%", reading.getHumidityPct()));
+                    binding.tvLiveHumidity.setText(String.format(Locale.US, "%.1f%%", reading.getHumidityPct()));
+                } else {
+                    binding.tvLiveHumidity.setText("-- %");
                 }
             }
         });
@@ -170,7 +168,7 @@ public class IotDashboardActivity extends BaseActivity {
                 boolean isAuto = "AUTO".equalsIgnoreCase(settings.getOperatingMode());
                 binding.switchAutoMode.setChecked(isAuto);
 
-                String summary = String.format(java.util.Locale.US,
+                String summary = String.format(Locale.US,
                         "Auto thresholds: Start < %.0f%% • Stop > %.0f%% • Max: %ds • Cooldown: %ds",
                         settings.getLowMoistureStartThreshold(),
                         settings.getHighMoistureStopThreshold(),
@@ -193,16 +191,16 @@ public class IotDashboardActivity extends BaseActivity {
                     binding.tvConfirmedState.setText(conf ? "CONFIRMED ON (Relay Energized)" : "CONFIRMED OFF (Relay Disengaged)");
                     binding.tvConfirmedState.setTextColor(conf ? Color.parseColor("#2E7D32") : Color.parseColor("#757575"));
                 } else {
-                    binding.tvConfirmedState.setText("AWAITING ACK FROM ESP32 (" + cmd.getStatus() + ")");
+                    binding.tvConfirmedState.setText("AWAITING ACK FROM ESP32 (" + (cmd.getStatus() != null ? cmd.getStatus() : "PENDING") + ")");
                     binding.tvConfirmedState.setTextColor(Color.parseColor("#ED6C02"));
                 }
 
                 if (isPumpActive) {
                     binding.btnTogglePump.setText(R.string.iot_turn_off);
-                    binding.btnTogglePump.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#BA1A1A")));
+                    binding.btnTogglePump.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BA1A1A")));
                 } else {
                     binding.btnTogglePump.setText(R.string.iot_turn_on);
-                    binding.btnTogglePump.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2D6A4F")));
+                    binding.btnTogglePump.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2D6A4F")));
                 }
             }
         });
@@ -210,11 +208,17 @@ public class IotDashboardActivity extends BaseActivity {
         // Active Alerts
         viewModel.getAlerts().observe(this, alerts -> {
             if (alerts != null && !alerts.isEmpty()) {
+                IotAlert first = alerts.get(0);
                 binding.cardAlert.setVisibility(View.VISIBLE);
-                binding.tvAlertTitle.setText(alerts.get(0).getTitle());
-                binding.tvAlertMessage.setText(alerts.get(0).getMessage());
+                String title = first.getTitle() != null ? first.getTitle() : "⚠️ IoT Alert";
+                String msg = first.getMessage() != null ? first.getMessage() : "Sensor threshold triggered.";
+                binding.tvAlertTitle.setText(title);
+                binding.tvAlertMessage.setText(msg);
             } else {
-                binding.cardAlert.setVisibility(View.GONE);
+                Boolean isOnline = viewModel.getIsOnline().getValue();
+                if (Boolean.TRUE.equals(isOnline)) {
+                    binding.cardAlert.setVisibility(View.GONE);
+                }
             }
         });
 

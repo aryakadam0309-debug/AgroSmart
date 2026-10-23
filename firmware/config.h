@@ -11,8 +11,8 @@
 #define WIFI_PASSWORD       "KisanSmart2026"
 
 // 2. AgroSmart Spring Boot Backend REST Endpoint
-// For physical ESP32, replace with host PC's LAN IP (e.g., http://192.168.1.100:8080/api/iot)
-#define BACKEND_BASE_URL    "http://192.168.1.100:8080/api/iot"
+// For physical ESP32, replace with host PC's LAN IP (e.g., http://10.10.115.182:8080/api/iot)
+#define BACKEND_BASE_URL    "http://10.10.115.182:8080/api/iot"
 
 // 3. Device Station Credentials & Security
 #define DEVICE_ID           "ESP32-AGRO-01"

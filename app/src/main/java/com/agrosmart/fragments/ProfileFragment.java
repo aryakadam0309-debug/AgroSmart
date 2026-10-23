@@ -34,6 +34,8 @@ import com.agrosmart.activities.farmer.AddTractorActivity;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.FragmentProfileBinding;
 import com.agrosmart.models.User;
+import com.agrosmart.network.ApiClient;
+import com.agrosmart.network.AgroSmartApiService;
 import com.agrosmart.utils.Constants;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.utils.ValidationUtils;
@@ -41,8 +43,13 @@ import com.agrosmart.utils.ValidationUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
@@ -268,6 +275,29 @@ public class ProfileFragment extends Fragment {
         sessionManager.setUserEmail(email);
         sessionManager.setUserLocation(location);
         sessionManager.setUserFarmSize(farmSize);
+
+        // 3. Persist update directly into MySQL backend database
+        Map<String, Object> req = new HashMap<>();
+        req.put("phone", sessionManager.getUserPhone());
+        req.put("email", email);
+        req.put("fullName", name);
+        req.put("location", location);
+        req.put("farmSize", farmSize);
+
+        AgroSmartApiService apiService = ApiClient.getBackendClient().create(AgroSmartApiService.class);
+        apiService.updateProfile(req).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                if (response.isSuccessful()) {
+                    android.util.Log.i("ProfileFragment", "Profile synced with MySQL successfully");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                android.util.Log.w("ProfileFragment", "MySQL sync deferred (offline): " + t.getMessage());
+            }
+        });
 
         Toast.makeText(requireContext(), "Profile details updated successfully!", Toast.LENGTH_SHORT).show();
 

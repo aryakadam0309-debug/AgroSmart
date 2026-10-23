@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<NotificationItem, String> {
     List<NotificationItem> findByFarmerPhoneOrFarmerPhoneIsNullOrderByTimestampDesc(String farmerPhone);
+    List<NotificationItem> findByFarmerPhone(String farmerPhone);
 }
