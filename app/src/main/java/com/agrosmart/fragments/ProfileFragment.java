@@ -30,7 +30,6 @@ import com.agrosmart.R;
 import com.agrosmart.activities.admin.AdminDashboardActivity;
 import com.agrosmart.activities.auth.LanguageSelectionActivity;
 import com.agrosmart.activities.auth.LoginActivity;
-import com.agrosmart.activities.farmer.AddTractorActivity;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.FragmentProfileBinding;
 import com.agrosmart.models.User;
@@ -126,11 +125,9 @@ public class ProfileFragment extends Fragment {
             binding.tvProfileRoleBadge.setText("🛡️ SYSTEM ADMINISTRATOR");
             binding.tvProfileRoleBadge.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#33FFFFFF")));
             binding.btnAdminDashboard.setVisibility(View.VISIBLE);
-            binding.btnRentTractor.setVisibility(View.GONE);
         } else {
             binding.tvProfileRoleBadge.setText("🌱 REGISTERED FARMER");
             binding.btnAdminDashboard.setVisibility(View.GONE);
-            binding.btnRentTractor.setVisibility(View.VISIBLE);
         }
 
         binding.tvProfilePhone.setText("📱 Mobile: +91 " + (phone != null ? phone : "9876543210"));
@@ -180,12 +177,6 @@ public class ProfileFragment extends Fragment {
 
         // Save Profile Changes
         binding.btnSaveProfile.setOnClickListener(v -> saveProfileChanges());
-
-        // Rent Tractor Shortcut
-        binding.btnRentTractor.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), AddTractorActivity.class);
-            startActivity(intent);
-        });
 
         // Admin Dashboard Shortcut
         binding.btnAdminDashboard.setOnClickListener(v -> {

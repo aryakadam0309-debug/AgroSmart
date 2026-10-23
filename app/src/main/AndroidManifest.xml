@@ -87,29 +87,25 @@
         <activity
             android:name=".activities.admin.ManageCropPricesActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.admin.ManageTractorsActivity"
-            android:exported="false" />
 
-            <!-- Crop Prices / Mandi Bhav Activity -->
+        <!-- Crop Prices / Mandi Bhav Activity -->
         <activity
             android:name=".activities.farmer.CropPriceActivity"
             android:exported="false" />
-            <!-- Crop Guide Activities -->
+
+        <!-- Crop Guide Activities -->
         <activity android:name=".activities.farmer.CropGuideActivity" android:exported="false" />
         <activity android:name=".activities.farmer.CropGuideDetailActivity" android:exported="false" />
 
         <!-- Crop Disease Directory Activities -->
         <activity android:name=".activities.farmer.CropDiseaseActivity" android:exported="false" />
         <activity android:name=".activities.farmer.CropDiseaseDetailActivity" android:exported="false" />
-            <!-- Tractor Booking Activities -->
-        <activity android:name=".activities.farmer.TractorListActivity" android:exported="false" />
-        <activity android:name=".activities.farmer.BookTractorActivity" android:exported="false" />
-        <activity android:name=".activities.farmer.AddTractorActivity" android:exported="false" />
-            <!-- Farm Inventory Activities -->
+
+        <!-- Farm Inventory Activities -->
         <activity android:name=".activities.farmer.FertilizerInventoryActivity" android:exported="false" />
         <activity android:name=".activities.farmer.CropInventoryActivity" android:exported="false" />
-            <!-- Marketplace, Cart, Checkout & Notifications Activities -->
+
+        <!-- Marketplace, Cart, Checkout & Notifications Activities -->
         <activity android:name=".activities.farmer.MarketplaceActivity" android:exported="false" />
         <activity android:name=".activities.farmer.CartActivity" android:exported="false" />
         <activity android:name=".activities.farmer.OrderSuccessActivity" android:exported="false" />
