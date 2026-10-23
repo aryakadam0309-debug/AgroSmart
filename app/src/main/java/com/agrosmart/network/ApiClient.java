@@ -15,9 +15,10 @@ public class ApiClient {
 
     private static final String WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/";
     // Default USB reverse port-forwarding IP (http://127.0.0.1:8080/api/)
-    // With automatic fallback to Wi-Fi LAN IP if USB is unplugged
+    // With automatic fallback to Wi-Fi / Hotspot LAN IP (10.10.189.52)
     private static final String BACKEND_BASE_URL = "http://127.0.0.1:8080/api/";
-    private static final String WIFI_FALLBACK_HOST = "10.10.115.182";
+    private static final String WIFI_FALLBACK_HOST = "10.10.189.52";
+    private static volatile String preferredHost = "10.10.189.52";
 
     private static Retrofit weatherRetrofit = null;
     private static Retrofit backendRetrofit = null;
@@ -75,24 +76,32 @@ public class ApiClient {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            // Interceptor to automatically fallback between USB (127.0.0.1) and Wi-Fi LAN IP
+            // Interceptor to seamlessly route between Wi-Fi Hotspot IP (10.10.189.52) and USB reverse (127.0.0.1)
             Interceptor connectionFallbackInterceptor = new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
-                    Request request = chain.request();
-                    try {
-                        return chain.proceed(request);
-                    } catch (IOException primaryException) {
-                        HttpUrl url = request.url();
-                        String currentHost = url.host();
-                        String targetHost = (currentHost.equals("127.0.0.1") || currentHost.equals("localhost"))
-                                ? WIFI_FALLBACK_HOST
-                                : "127.0.0.1";
+                    Request originalRequest = chain.request();
+                    HttpUrl originalUrl = originalRequest.url();
 
-                        HttpUrl fallbackUrl = url.newBuilder().host(targetHost).build();
-                        Request fallbackRequest = request.newBuilder().url(fallbackUrl).build();
+                    // If preferredHost is different from request URL host, rewrite first
+                    Request requestToTry = originalRequest;
+                    if (!originalUrl.host().equals(preferredHost)) {
+                        HttpUrl rewrittenUrl = originalUrl.newBuilder().host(preferredHost).build();
+                        requestToTry = originalRequest.newBuilder().url(rewrittenUrl).build();
+                    }
+
+                    try {
+                        return chain.proceed(requestToTry);
+                    } catch (IOException primaryException) {
+                        // Alternate host
+                        String altHost = preferredHost.equals(WIFI_FALLBACK_HOST) ? "127.0.0.1" : WIFI_FALLBACK_HOST;
+                        HttpUrl fallbackUrl = originalUrl.newBuilder().host(altHost).build();
+                        Request fallbackRequest = originalRequest.newBuilder().url(fallbackUrl).build();
                         try {
-                            return chain.proceed(fallbackRequest);
+                            Response fallbackResponse = chain.proceed(fallbackRequest);
+                            // Switch preferredHost so subsequent requests avoid timeout
+                            preferredHost = altHost;
+                            return fallbackResponse;
                         } catch (IOException fallbackException) {
                             throw primaryException;
                         }
