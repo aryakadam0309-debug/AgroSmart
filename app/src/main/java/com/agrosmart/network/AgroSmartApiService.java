@@ -211,5 +211,74 @@ public interface AgroSmartApiService {
     Call<List<com.agrosmart.models.IotAlert>> getIotAlerts(
             @Path("deviceId") String deviceId
     );
+
+    // Soil Health Advisory
+    @GET("advisory/soil-health")
+    Call<List<com.agrosmart.models.SoilHealthRecord>> getSoilRecords(
+            @Query("phone") String phone
+    );
+
+    @POST("advisory/soil-health")
+    Call<com.agrosmart.models.SoilHealthRecord> saveSoilRecord(
+            @Body com.agrosmart.models.SoilHealthRecord record
+    );
+
+    // Regional Crop Recommendation & Rotation Planner
+    @GET("advisory/recommend-crops")
+    Call<Map<String, Object>> getCropRecommendations(
+            @Query("zone") String zone,
+            @Query("soil") String soil,
+            @Query("irrigation") String irrigation,
+            @Query("season") String season
+    );
+
+    @POST("advisory/rotation-plan")
+    Call<Map<String, Object>> evaluateRotationPlan(
+            @Body Map<String, String> payload
+    );
+
+    // Farm Expenses & Profitability Ledger
+    @GET("finance/expenses")
+    Call<Map<String, Object>> getFinances(
+            @Query("phone") String phone
+    );
+
+    @POST("finance/expenses")
+    Call<com.agrosmart.models.FarmExpense> saveExpense(
+            @Body com.agrosmart.models.FarmExpense expense
+    );
+
+    @DELETE("finance/expenses/{id}")
+    Call<Map<String, Object>> deleteExpense(
+            @Path("id") String id
+    );
+
+    // Regional Crop Disease Reporting & Triage
+    @GET("crops/disease-reports")
+    Call<List<com.agrosmart.models.DiseaseReport>> getDiseaseReports(
+            @Query("phone") String phone,
+            @Query("district") String district,
+            @Query("status") String status
+    );
+
+    @POST("crops/disease-reports")
+    Call<com.agrosmart.models.DiseaseReport> submitDiseaseReport(
+            @Body com.agrosmart.models.DiseaseReport report
+    );
+
+    @PUT("crops/disease-reports/{id}/status")
+    Call<com.agrosmart.models.DiseaseReport> updateDiseaseReportStatus(
+            @Path("id") String id,
+            @Body Map<String, String> payload
+    );
+
+    // Farmer Field Testing & Feedback
+    @GET("feedback")
+    Call<List<com.agrosmart.models.FarmerFeedback>> getAllFeedback();
+
+    @POST("feedback")
+    Call<com.agrosmart.models.FarmerFeedback> submitFeedback(
+            @Body com.agrosmart.models.FarmerFeedback feedback
+    );
 }
 

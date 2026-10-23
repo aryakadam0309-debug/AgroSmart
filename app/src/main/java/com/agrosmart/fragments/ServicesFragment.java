@@ -29,10 +29,13 @@ public class ServicesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.cardIotService.setOnClickListener(v -> openTarget("IoT Smart Farming", "com.agrosmart.activities.farmer.IotDashboardActivity"));
-        binding.cardTractorService.setOnClickListener(v -> openTarget("Tractor Rental", "com.agrosmart.activities.farmer.TractorListActivity"));
-        binding.cardRentOutTractor.setOnClickListener(v -> openTarget("Rent Out Tractor", "com.agrosmart.activities.farmer.AddTractorActivity"));
+        binding.cardSoilHealthService.setOnClickListener(v -> openTarget("Soil Health Advisor", "com.agrosmart.activities.farmer.SoilHealthActivity"));
+        binding.cardFarmExpensesService.setOnClickListener(v -> openTarget("Farm Expenses & Profitability", "com.agrosmart.activities.farmer.FarmExpensesActivity"));
+        binding.cardCropRecommendationService.setOnClickListener(v -> openTarget("Crop Recommendations", "com.agrosmart.activities.farmer.CropRecommendationActivity"));
         binding.cardFertilizerService.setOnClickListener(v -> openTarget("Fertilizer Inventory", "com.agrosmart.activities.farmer.FertilizerInventoryActivity"));
         binding.cardCropInventoryService.setOnClickListener(v -> openTarget("Crop Inventory", "com.agrosmart.activities.farmer.CropInventoryActivity"));
+        binding.cardReportDiseaseService.setOnClickListener(v -> openTarget("Report Disease Outbreak", "com.agrosmart.activities.farmer.DiseaseReportActivity"));
+        binding.cardFeedbackService.setOnClickListener(v -> openTarget("Share App Feedback", "com.agrosmart.activities.farmer.FarmerFeedbackActivity"));
     }
 
     private void openTarget(String title, String className) {

@@ -39,7 +39,8 @@
     <string name="nav_home">होम</string>
     <string name="nav_services">सेवाएं</string>
     <string name="nav_marketplace">बाज़ार</string>
-    <string name="nav_bookings">बुकिंग</string>
+    <string name="nav_bookings">कृषि सलाहकार</string>
+    <string name="nav_advisory">कृषि सलाहकार</string>
     <string name="nav_profile">प्रोफ़ाइल</string>
     <string name="search">खोजें</string>
     <string name="submit">जमा करें</string>
@@ -206,4 +207,63 @@
     <string name="manage_crop_prices">मंडी भाव प्रबंधित करें</string>
     <string name="manage_tractors">कृषि मशीनरी प्रबंधित करें</string>
     <string name="delivery_address_hint">वितरण पता / गाँव का नाम</string>
+    <!-- My Farm Today & Agro-Climatic Advisory -->
+    <string name="my_farm_today">मेरा खेत आज</string>
+    <string name="farm_advisory_alert">कृषि कार्य योजना</string>
+    <string name="kharif_season">खरीफ मौसम (मानसून)</string>
+    <string name="rabi_season">रबी मौसम (सर्दियों)</string>
+    <string name="zaid_season">जायद मौसम (गर्मी)</string>
+    <string name="crop_recommendation">फसल अनुशंसा व चक्र योजना</string>
+    <string name="crop_recommendation_subtitle">कृषि-जलवायु उपयुक्तता व नाइट्रोजन बहाली</string>
+    <string name="rotation_planner">फसल चक्र योजना</string>
+    <string name="recommend_btn">फसल उपयुक्तता जांचें</string>
+    <string name="select_zone">कृषि जलवायु क्षेत्र</string>
+    <string name="select_soil">मिट्टी का प्रकार</string>
+    <string name="select_irrigation">सिंचाई का साधन</string>
+    <string name="previous_crop">पिछली काटी गई फसल</string>
+    <string name="rotation_warning">एकल-फसल जोखिम चेतावनी</string>
+
+    <!-- Soil Health Advisor -->
+    <string name="soil_health_advisor">मृदा स्वास्थ्य सलाहकार</string>
+    <string name="soil_health_subtitle">मृदा स्वास्थ्य कार्ड विश्लेषण व संतुलित पोषण</string>
+    <string name="shc_title">मृदा स्वास्थ्य कार्ड (SHC) पैरामीटर</string>
+    <string name="soil_ph">मिट्टी का पीएच (सामू)</string>
+    <string name="electrical_conductivity">विद्युत चालकता EC (dS/m)</string>
+    <string name="organic_carbon">जैविक कार्बन OC (%)</string>
+    <string name="nitrogen_val">उपलब्ध नाइट्रोजन N (किग्रा/हे.)</string>
+    <string name="phosphorus_val">उपलब्ध फास्फोरस P₂O₅ (किग्रा/हे.)</string>
+    <string name="potassium_val">उपलब्ध पोटेशियम K₂O (किग्रा/हे.)</string>
+    <string name="zinc_val">उपलब्ध जिंक Zn (ppm)</string>
+    <string name="iron_val">उपलब्ध आयरन Fe (ppm)</string>
+    <string name="evaluate_soil">मृदा उर्वरता का विश्लेषण करें</string>
+
+    <!-- Cultivation Cost & Profitability Ledger -->
+    <string name="farm_expenses">खेती की लागत व लाभ</string>
+    <string name="farm_expenses_subtitle">कृषि खर्च बहीखाता, लागत व फसल बिक्री लाभ</string>
+    <string name="add_expense">कृषि खर्च दर्ज करें</string>
+    <string name="record_sale">फसल बिक्री राजस्व दर्ज करें</string>
+    <string name="expense_category">खर्च की श्रेणी</string>
+    <string name="expense_amount">खर्च की राशि (₹)</string>
+    <string name="expense_date">खर्च की तिथि</string>
+    <string name="total_investment">कुल कृषि खर्च</string>
+    <string name="gross_revenue">कुल फसल बिक्री राजस्व</string>
+    <string name="net_profit">शुद्ध कृषि लाभ / हानि</string>
+
+    <!-- Regional Crop Disease Outbreak Reporting -->
+    <string name="report_disease">फसल रोग प्रकोप दर्ज करें</string>
+    <string name="report_disease_subtitle">स्थानीय कृषि अधिकारियों और किसानों को सचेत करें</string>
+    <string name="disease_symptoms">देखे गए लक्षण व क्षति</string>
+    <string name="plant_part">प्रभावित पौधे का भाग (पत्ती, तना, फल, जड़)</string>
+    <string name="outbreak_severity">प्रकोप की गंभीरता</string>
+    <string name="submit_report">रोग रिपोर्ट सबमिट करें</string>
+    <string name="triage_status">सत्यापन स्थिति</string>
+
+    <!-- Farmer Field Testing & Feedback -->
+    <string name="share_feedback">ऐप पर प्रतिक्रिया दें</string>
+    <string name="share_feedback_subtitle">भारतीय किसानों के लिए एग्रोस्मार्ट को बेहतर बनाएं</string>
+    <string name="feedback_rating">उपयोगिता रेटिंग</string>
+    <string name="feedback_category">मॉड्यूल / श्रेणी</string>
+    <string name="feedback_msg">आपका अनुभव व सुझाव</string>
+    <string name="submit_feedback">किसान प्रतिक्रिया भेजें</string>
+    <string name="admin_feedback_title">किसान प्रतिक्रिया एवं समीक्षा</string>
 </resources>

@@ -17,6 +17,8 @@ import com.agrosmart.repository.IotRepository;
 import com.agrosmart.repository.WeatherRepository;
 import com.agrosmart.utils.SessionManager;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
@@ -40,16 +42,48 @@ public class HomeFragment extends Fragment {
 
         binding.tvFarmerName.setText(sessionManager.getUserName());
 
+        // Setup My Farm Today briefing date & season
+        setupMyFarmToday();
+
         // Navigation click listeners
+        binding.cardMyFarmToday.setOnClickListener(v -> openFeature("Soil Health Advisor", "com.agrosmart.activities.farmer.SoilHealthActivity"));
         binding.cardWeather.setOnClickListener(v -> openFeature("Weather Forecast", "com.agrosmart.activities.farmer.WeatherActivity"));
         binding.cardIotSmartFarming.setOnClickListener(v -> openFeature("IoT Smart Farming", "com.agrosmart.activities.farmer.IotDashboardActivity"));
         binding.cardCropPrices.setOnClickListener(v -> openFeature("Crop Prices", "com.agrosmart.activities.farmer.CropPriceActivity"));
         binding.cardSchemes.setOnClickListener(v -> openFeature("Govt Schemes", "com.agrosmart.activities.farmer.SchemeActivity"));
         binding.cardCropGuide.setOnClickListener(v -> openFeature("Crop Guide", "com.agrosmart.activities.farmer.CropGuideActivity"));
         binding.cardDiseaseInfo.setOnClickListener(v -> openFeature("Crop Diseases", "com.agrosmart.activities.farmer.CropDiseaseActivity"));
-        binding.cardTractorBooking.setOnClickListener(v -> openFeature("Tractor Booking", "com.agrosmart.activities.farmer.TractorListActivity"));
+        binding.cardCropRecommendation.setOnClickListener(v -> openFeature("Crop Recommendation", "com.agrosmart.activities.farmer.CropRecommendationActivity"));
         binding.cardNews.setOnClickListener(v -> openFeature("Agriculture News", "com.agrosmart.activities.farmer.NewsActivity"));
         binding.ivNotification.setOnClickListener(v -> openFeature("Notifications", "com.agrosmart.activities.farmer.NotificationsActivity"));
+    }
+
+    private void setupMyFarmToday() {
+        if (binding == null) return;
+        LocalDate now = LocalDate.now();
+        int month = now.getMonthValue();
+        String seasonName;
+        String stageName;
+        String advisory;
+
+        if (month >= 6 && month <= 10) {
+            seasonName = "Kharif Season (Monsoon)";
+            stageName = "Vegetative & Flowering Window";
+            advisory = "Monitor soil moisture closely; ensure balanced nitrogen-phosphorus top dressing.";
+        } else if (month >= 11 || month <= 2) {
+            seasonName = "Rabi Season (Winter)";
+            stageName = "Wheat & Gram Sowing / Tillering";
+            advisory = "Optimal cold window for wheat irrigation and pod-borer scouting on chickpea.";
+        } else {
+            seasonName = "Zaid Season (Summer)";
+            stageName = "Interim Groundnut / Vegetable Phase";
+            advisory = "Ensure drip irrigation or light evening watering to prevent heat stress.";
+        }
+
+        binding.tvFarmDate.setText(now.format(DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.getDefault())).toUpperCase());
+        binding.tvFarmSeason.setText(seasonName + " • " + stageName);
+        binding.tvDailyCropAdvisory.setText(advisory);
+        binding.tvMandiPulse.setText("Soybean: ₹4,850/Qtl (Pune APMC) • Wheat: ₹2,420/Qtl • Onion: ₹2,100/Qtl");
     }
 
     @Override
@@ -58,6 +92,7 @@ public class HomeFragment extends Fragment {
         if (binding != null && sessionManager != null) {
             binding.tvFarmerName.setText(sessionManager.getUserName());
         }
+        setupMyFarmToday();
         loadLiveWeather();
         loadIotStatus();
     }
@@ -74,6 +109,17 @@ public class HomeFragment extends Fragment {
                     binding.tvHumidity.setText("💧 Humidity: " + weather.getHumidity() + "%");
                     binding.tvWind.setText(String.format(Locale.getDefault(), "💨 Wind: %.0f km/h", weather.getWindSpeed()));
                     binding.tvRain.setText("🌧️ Rain: " + weather.getRainChance() + "%");
+
+                    // Dynamic agronomic precaution based on live weather
+                    if (weather.getRainChance() > 40) {
+                        binding.tvWeatherAlertPrecaution.setText("🌧️ High rain chance (" + weather.getRainChance() + "%): Defer foliar pesticide spray & clear drainage furrows.");
+                    } else if (weather.getHumidity() > 75) {
+                        binding.tvWeatherAlertPrecaution.setText("⚠️ High humidity (" + weather.getHumidity() + "%): Watch for fungal rust & downy mildew. Ensure field aeration.");
+                    } else if (weather.getCurrentTemp() > 34) {
+                        binding.tvWeatherAlertPrecaution.setText("☀️ High temperature (" + String.format(Locale.getDefault(), "%.0f", weather.getCurrentTemp()) + "°C): Water during evening hours to minimize evaporation losses.");
+                    } else {
+                        binding.tvWeatherAlertPrecaution.setText("🌤️ Favorable microclimate: Suitable for weeding, fertilizer top-dressing and field inspection.");
+                    }
                 }
             }
 

@@ -122,6 +122,36 @@
         <activity
             android:name=".activities.farmer.IotDeviceSetupActivity"
             android:exported="false" />
+
+        <!-- Soil Health Advisor -->
+        <activity
+            android:name=".activities.farmer.SoilHealthActivity"
+            android:exported="false" />
+
+        <!-- Regional Crop Recommendation & Rotation Planner -->
+        <activity
+            android:name=".activities.farmer.CropRecommendationActivity"
+            android:exported="false" />
+
+        <!-- Cultivation Cost & Profitability Ledger -->
+        <activity
+            android:name=".activities.farmer.FarmExpensesActivity"
+            android:exported="false" />
+
+        <!-- Regional Crop Disease Outbreak Reporting -->
+        <activity
+            android:name=".activities.farmer.DiseaseReportActivity"
+            android:exported="false" />
+
+        <!-- Farmer Field Testing Feedback -->
+        <activity
+            android:name=".activities.farmer.FarmerFeedbackActivity"
+            android:exported="false" />
+
+        <!-- Admin Field Reviews & Feedback Center -->
+        <activity
+            android:name=".activities.admin.AdminFeedbackActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

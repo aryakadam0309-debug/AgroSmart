@@ -19,6 +19,11 @@ import com.agrosmart.models.SensorReading;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.models.TractorBooking;
 import com.agrosmart.models.User;
+import com.agrosmart.models.SoilHealthRecord;
+import com.agrosmart.models.FarmExpense;
+import com.agrosmart.models.DiseaseReport;
+import com.agrosmart.models.FarmerFeedback;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,6 +213,63 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "image_url TEXT, " +
                 "source_name TEXT, " +
                 "published_date TEXT)");
+
+        
+        // 13. Soil Health Records Table
+        db.execSQL("CREATE TABLE IF NOT EXISTS soil_health_records (" +
+                "id TEXT PRIMARY KEY, " +
+                "farmer_phone TEXT NOT NULL, " +
+                "sample_date TEXT, " +
+                "field_name TEXT, " +
+                "ph REAL, " +
+                "electrical_conductivity REAL, " +
+                "organic_carbon REAL, " +
+                "nitrogen_kg_ha REAL, " +
+                "phosphorus_kg_ha REAL, " +
+                "potassium_kg_ha REAL, " +
+                "zinc_ppm REAL, " +
+                "iron_ppm REAL, " +
+                "fertility_rating TEXT, " +
+                "advisory_notes TEXT)");
+
+        // 14. Farm Expenses & Cultivation Profitability Table
+        db.execSQL("CREATE TABLE IF NOT EXISTS farm_expenses (" +
+                "id TEXT PRIMARY KEY, " +
+                "farmer_phone TEXT NOT NULL, " +
+                "entry_type TEXT NOT NULL, " +
+                "category TEXT NOT NULL, " +
+                "title TEXT NOT NULL, " +
+                "amount REAL NOT NULL, " +
+                "entry_date TEXT, " +
+                "crop_season TEXT, " +
+                "notes TEXT)");
+
+        // 15. Crop Disease Reports Table
+        db.execSQL("CREATE TABLE IF NOT EXISTS crop_disease_reports (" +
+                "id TEXT PRIMARY KEY, " +
+                "farmer_phone TEXT NOT NULL, " +
+                "farmer_name TEXT, " +
+                "crop_name TEXT NOT NULL, " +
+                "affected_part TEXT, " +
+                "symptoms TEXT NOT NULL, " +
+                "severity TEXT, " +
+                "village TEXT, " +
+                "district TEXT, " +
+                "image_url TEXT, " +
+                "reported_at TEXT, " +
+                "status TEXT, " +
+                "admin_advisory TEXT)");
+
+        // 16. Farmer Field Feedback Table
+        db.execSQL("CREATE TABLE IF NOT EXISTS farmer_feedback (" +
+                "id TEXT PRIMARY KEY, " +
+                "farmer_phone TEXT NOT NULL, " +
+                "farmer_name TEXT, " +
+                "rating INTEGER NOT NULL, " +
+                "category TEXT NOT NULL, " +
+                "comments TEXT NOT NULL, " +
+                "app_version TEXT, " +
+                "submitted_at TEXT)");
 
         // Seed default initial data
         seedInitialData(db);
@@ -1253,5 +1315,226 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
     public boolean deleteNews(long id) {
         SQLiteDatabase db = getWritableDatabase();
         return db.delete("agri_news", "id = ?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+    // =========================================================================
+    // SOIL HEALTH RECORDS CRUD
+    // =========================================================================
+
+    public boolean insertSoilHealthRecord(SoilHealthRecord r) {
+        if (r == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", r.getId());
+        cv.put("farmer_phone", r.getFarmerPhone());
+        cv.put("sample_date", r.getSampleDate());
+        cv.put("field_name", r.getFieldName());
+        if (r.getPh() != null) cv.put("ph", r.getPh());
+        if (r.getElectricalConductivity() != null) cv.put("electrical_conductivity", r.getElectricalConductivity());
+        if (r.getOrganicCarbon() != null) cv.put("organic_carbon", r.getOrganicCarbon());
+        if (r.getNitrogenKgHa() != null) cv.put("nitrogen_kg_ha", r.getNitrogenKgHa());
+        if (r.getPhosphorusKgHa() != null) cv.put("phosphorus_kg_ha", r.getPhosphorusKgHa());
+        if (r.getPotassiumKgHa() != null) cv.put("potassium_kg_ha", r.getPotassiumKgHa());
+        if (r.getZincPpm() != null) cv.put("zinc_ppm", r.getZincPpm());
+        if (r.getIronPpm() != null) cv.put("iron_ppm", r.getIronPpm());
+        cv.put("fertility_rating", r.getFertilityRating());
+        cv.put("advisory_notes", r.getAdvisoryNotes());
+        return db.insertWithOnConflict("soil_health_records", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+    }
+
+    public List<SoilHealthRecord> getSoilHealthRecords(String phone) {
+        List<SoilHealthRecord> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            if (phone != null && !phone.trim().isEmpty()) {
+                c = db.query("soil_health_records", null, "farmer_phone = ?", new String[]{phone}, null, null, "sample_date DESC");
+            } else {
+                c = db.query("soil_health_records", null, null, null, null, null, "sample_date DESC");
+            }
+            if (c != null && c.moveToFirst()) {
+                do {
+                    SoilHealthRecord r = new SoilHealthRecord();
+                    r.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    r.setFarmerPhone(c.getString(c.getColumnIndexOrThrow("farmer_phone")));
+                    r.setSampleDate(c.getString(c.getColumnIndexOrThrow("sample_date")));
+                    r.setFieldName(c.getString(c.getColumnIndexOrThrow("field_name")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("ph"))) r.setPh(c.getDouble(c.getColumnIndexOrThrow("ph")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("electrical_conductivity"))) r.setElectricalConductivity(c.getDouble(c.getColumnIndexOrThrow("electrical_conductivity")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("organic_carbon"))) r.setOrganicCarbon(c.getDouble(c.getColumnIndexOrThrow("organic_carbon")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("nitrogen_kg_ha"))) r.setNitrogenKgHa(c.getDouble(c.getColumnIndexOrThrow("nitrogen_kg_ha")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("phosphorus_kg_ha"))) r.setPhosphorusKgHa(c.getDouble(c.getColumnIndexOrThrow("phosphorus_kg_ha")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("potassium_kg_ha"))) r.setPotassiumKgHa(c.getDouble(c.getColumnIndexOrThrow("potassium_kg_ha")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("zinc_ppm"))) r.setZincPpm(c.getDouble(c.getColumnIndexOrThrow("zinc_ppm")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("iron_ppm"))) r.setIronPpm(c.getDouble(c.getColumnIndexOrThrow("iron_ppm")));
+                    r.setFertilityRating(c.getString(c.getColumnIndexOrThrow("fertility_rating")));
+                    r.setAdvisoryNotes(c.getString(c.getColumnIndexOrThrow("advisory_notes")));
+                    list.add(r);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    // =========================================================================
+    // FARM EXPENSES & PROFITABILITY CRUD
+    // =========================================================================
+
+    public boolean insertFarmExpense(FarmExpense e) {
+        if (e == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", e.getId());
+        cv.put("farmer_phone", e.getFarmerPhone());
+        cv.put("entry_type", e.getEntryType());
+        cv.put("category", e.getCategory());
+        cv.put("title", e.getTitle());
+        cv.put("amount", e.getAmount() != null ? e.getAmount() : 0.0);
+        cv.put("entry_date", e.getEntryDate());
+        cv.put("crop_season", e.getCropSeason());
+        cv.put("notes", e.getNotes());
+        return db.insertWithOnConflict("farm_expenses", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+    }
+
+    public List<FarmExpense> getFarmExpenses(String phone) {
+        List<FarmExpense> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            if (phone != null && !phone.trim().isEmpty()) {
+                c = db.query("farm_expenses", null, "farmer_phone = ?", new String[]{phone}, null, null, "entry_date DESC");
+            } else {
+                c = db.query("farm_expenses", null, null, null, null, null, "entry_date DESC");
+            }
+            if (c != null && c.moveToFirst()) {
+                do {
+                    FarmExpense e = new FarmExpense();
+                    e.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    e.setFarmerPhone(c.getString(c.getColumnIndexOrThrow("farmer_phone")));
+                    e.setEntryType(c.getString(c.getColumnIndexOrThrow("entry_type")));
+                    e.setCategory(c.getString(c.getColumnIndexOrThrow("category")));
+                    e.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
+                    e.setAmount(c.getDouble(c.getColumnIndexOrThrow("amount")));
+                    e.setEntryDate(c.getString(c.getColumnIndexOrThrow("entry_date")));
+                    e.setCropSeason(c.getString(c.getColumnIndexOrThrow("crop_season")));
+                    e.setNotes(c.getString(c.getColumnIndexOrThrow("notes")));
+                    list.add(e);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    public boolean deleteFarmExpense(String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete("farm_expenses", "id = ?", new String[]{id}) > 0;
+    }
+
+    // =========================================================================
+    // CROP DISEASE REPORTS CRUD
+    // =========================================================================
+
+    public boolean insertDiseaseReport(DiseaseReport r) {
+        if (r == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", r.getId());
+        cv.put("farmer_phone", r.getFarmerPhone());
+        cv.put("farmer_name", r.getFarmerName());
+        cv.put("crop_name", r.getCropName());
+        cv.put("affected_part", r.getAffectedPart());
+        cv.put("symptoms", r.getSymptoms());
+        cv.put("severity", r.getSeverity());
+        cv.put("village", r.getVillage());
+        cv.put("district", r.getDistrict());
+        cv.put("image_url", r.getImageUrl());
+        cv.put("reported_at", r.getReportedAt());
+        cv.put("status", r.getStatus());
+        cv.put("admin_advisory", r.getAdminAdvisory());
+        return db.insertWithOnConflict("crop_disease_reports", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+    }
+
+    public List<DiseaseReport> getDiseaseReports(String phone) {
+        List<DiseaseReport> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            if (phone != null && !phone.trim().isEmpty()) {
+                c = db.query("crop_disease_reports", null, "farmer_phone = ?", new String[]{phone}, null, null, "reported_at DESC");
+            } else {
+                c = db.query("crop_disease_reports", null, null, null, null, null, "reported_at DESC");
+            }
+            if (c != null && c.moveToFirst()) {
+                do {
+                    DiseaseReport r = new DiseaseReport();
+                    r.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    r.setFarmerPhone(c.getString(c.getColumnIndexOrThrow("farmer_phone")));
+                    r.setFarmerName(c.getString(c.getColumnIndexOrThrow("farmer_name")));
+                    r.setCropName(c.getString(c.getColumnIndexOrThrow("crop_name")));
+                    r.setAffectedPart(c.getString(c.getColumnIndexOrThrow("affected_part")));
+                    r.setSymptoms(c.getString(c.getColumnIndexOrThrow("symptoms")));
+                    r.setSeverity(c.getString(c.getColumnIndexOrThrow("severity")));
+                    r.setVillage(c.getString(c.getColumnIndexOrThrow("village")));
+                    r.setDistrict(c.getString(c.getColumnIndexOrThrow("district")));
+                    r.setImageUrl(c.getString(c.getColumnIndexOrThrow("image_url")));
+                    r.setReportedAt(c.getString(c.getColumnIndexOrThrow("reported_at")));
+                    r.setStatus(c.getString(c.getColumnIndexOrThrow("status")));
+                    r.setAdminAdvisory(c.getString(c.getColumnIndexOrThrow("admin_advisory")));
+                    list.add(r);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    // =========================================================================
+    // FARMER FIELD FEEDBACK CRUD
+    // =========================================================================
+
+    public boolean insertFeedback(FarmerFeedback f) {
+        if (f == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", f.getId());
+        cv.put("farmer_phone", f.getFarmerPhone());
+        cv.put("farmer_name", f.getFarmerName());
+        cv.put("rating", f.getRating());
+        cv.put("category", f.getCategory());
+        cv.put("comments", f.getComments());
+        cv.put("app_version", f.getAppVersion());
+        cv.put("submitted_at", f.getSubmittedAt());
+        return db.insertWithOnConflict("farmer_feedback", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+    }
+
+    public List<FarmerFeedback> getAllFarmerFeedback() {
+        List<FarmerFeedback> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.query("farmer_feedback", null, null, null, null, null, "submitted_at DESC");
+            if (c != null && c.moveToFirst()) {
+                do {
+                    FarmerFeedback f = new FarmerFeedback();
+                    f.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    f.setFarmerPhone(c.getString(c.getColumnIndexOrThrow("farmer_phone")));
+                    f.setFarmerName(c.getString(c.getColumnIndexOrThrow("farmer_name")));
+                    f.setRating(c.getInt(c.getColumnIndexOrThrow("rating")));
+                    f.setCategory(c.getString(c.getColumnIndexOrThrow("category")));
+                    f.setComments(c.getString(c.getColumnIndexOrThrow("comments")));
+                    f.setAppVersion(c.getString(c.getColumnIndexOrThrow("app_version")));
+                    f.setSubmittedAt(c.getString(c.getColumnIndexOrThrow("submitted_at")));
+                    list.add(f);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
     }
 }

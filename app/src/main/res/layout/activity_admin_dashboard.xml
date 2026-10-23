@@ -126,7 +126,7 @@
                     android:padding="12dp">
 
                     <TextView
-                        android:id="@+id/tvTotalTractors"
+                        android:id="@+id/tvTotalAdvisories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="84"
@@ -138,7 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Registered Tractors"
+                        android:text="Soil &amp; Crop Tests"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -169,7 +169,7 @@
                     android:padding="12dp">
 
                     <TextView
-                        android:id="@+id/tvTotalBookings"
+                        android:id="@+id/tvTotalFeedback"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="342"
@@ -181,7 +181,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Tractor Bookings"
+                        android:text="Farmer Reviews"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -461,9 +461,9 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 5. Manage Tractors &amp; Rentals -->
+                        <!-- 5. Farmer Feedback &amp; Field Reviews -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardManageTractors"
+                android:id="@+id/cardManageFeedback"
                 style="@style/Widget.AgroSmart.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -481,7 +481,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🚜"
+                        android:text="⭐"
                         android:textSize="28sp" />
 
                     <LinearLayout
@@ -494,7 +494,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tractor Listings &amp; Bookings"
+                            android:text="Farmer Feedback &amp; Field Reviews"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -502,7 +502,62 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Review rental requests and owner listings"
+                            android:text="Inspect farmer ratings, suggestions and field usability"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="➔"
+                        android:textColor="@color/forest_green_primary"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 6. Crop Disease Outbreak Triage -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTriageDisease"
+                style="@style/Widget.AgroSmart.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚨"
+                        android:textSize="28sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Disease Outbreak Triage"
+                            android:textColor="@color/text_primary"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Verify farmer disease reports and broadcast regional alerts"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>

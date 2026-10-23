@@ -281,3 +281,69 @@ CREATE TABLE IF NOT EXISTS `iot_alerts` (
     INDEX `idx_alert_farmer` (`farmer_id`, `created_at`)
 ) ENGINE=InnoDB;
 
+-- 20. Soil Health Records Table
+CREATE TABLE IF NOT EXISTS `soil_health_records` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_id` BIGINT NOT NULL,
+    `farmer_phone` VARCHAR(15),
+    `sample_date` VARCHAR(50),
+    `field_name` VARCHAR(100),
+    `soil_type` VARCHAR(50),
+    `nitrogen_n` DOUBLE,
+    `phosphorus_p` DOUBLE,
+    `potassium_k` DOUBLE,
+    `ph_level` DOUBLE,
+    `organic_carbon` DOUBLE,
+    `health_status` VARCHAR(50),
+    `fertilizer_advice` TEXT,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_soil_farmer` (`farmer_id`)
+) ENGINE=InnoDB;
+
+-- 21. Farm Expenses & Financial Ledger Table
+CREATE TABLE IF NOT EXISTS `farm_expenses` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_id` BIGINT NOT NULL,
+    `farmer_phone` VARCHAR(15),
+    `crop_name` VARCHAR(100),
+    `category` VARCHAR(50),
+    `amount` DOUBLE,
+    `description` VARCHAR(255),
+    `expense_date` VARCHAR(50),
+    `receipt_url` VARCHAR(255),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_expense_farmer` (`farmer_id`)
+) ENGINE=InnoDB;
+
+-- 22. Crop Disease Reports & Field Triage Table
+CREATE TABLE IF NOT EXISTS `crop_disease_reports` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_id` BIGINT NOT NULL,
+    `farmer_phone` VARCHAR(15),
+    `crop_name` VARCHAR(100),
+    `symptoms` TEXT,
+    `suspected_disease` VARCHAR(100),
+    `image_url` VARCHAR(255),
+    `status` VARCHAR(30) DEFAULT 'SUBMITTED',
+    `expert_notes` TEXT,
+    `reported_at` VARCHAR(50),
+    `resolved_at` VARCHAR(50),
+    INDEX `idx_disease_farmer` (`farmer_id`),
+    INDEX `idx_disease_status` (`status`)
+) ENGINE=InnoDB;
+
+-- 23. Farmer Feedback & Platform Reviews Table
+CREATE TABLE IF NOT EXISTS `farmer_feedback` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_id` BIGINT NOT NULL,
+    `farmer_phone` VARCHAR(15),
+    `farmer_name` VARCHAR(100),
+    `module_name` VARCHAR(50),
+    `rating` INT,
+    `comments` TEXT,
+    `submitted_at` VARCHAR(50),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_feedback_farmer` (`farmer_id`)
+) ENGINE=InnoDB;
+
+

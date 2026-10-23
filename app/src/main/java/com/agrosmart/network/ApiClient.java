@@ -31,6 +31,14 @@ public class ApiClient {
         return instance;
     }
 
+    public static AgroSmartApiService getApiService(android.content.Context context) {
+        return getInstance().getApi();
+    }
+
+    public static AgroSmartApiService getApiService() {
+        return getInstance().getApi();
+    }
+
     public AgroSmartApiService getApi() {
         if (apiService == null) {
             apiService = getBackendClient().create(AgroSmartApiService.class);

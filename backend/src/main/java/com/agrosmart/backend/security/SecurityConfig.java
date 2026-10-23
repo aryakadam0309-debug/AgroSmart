@@ -33,7 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/api/crops/**", "/api/tractors/**",
                                          "/api/marketplace/**", "/api/inventory/**", "/api/admin/**",
                                          "/api/guides/**", "/api/diseases/**", "/api/schemes/**",
-                                         "/api/news/**", "/api/notifications/**", "/api/iot/**").permitAll()
+                                         "/api/news/**", "/api/notifications/**", "/api/iot/**",
+                                         "/api/advisory/**", "/api/finance/**", "/api/feedback/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

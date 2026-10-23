@@ -39,7 +39,8 @@
     <string name="nav_home">Home</string>
     <string name="nav_services">Services</string>
     <string name="nav_marketplace">Market</string>
-    <string name="nav_bookings">Bookings</string>
+    <string name="nav_bookings">Advisory</string>
+    <string name="nav_advisory">Farm Advisor</string>
     <string name="nav_profile">Profile</string>
     <string name="search">Search</string>
     <string name="submit">Submit</string>
@@ -206,4 +207,64 @@
     <string name="manage_crop_prices">Manage Mandi Prices</string>
     <string name="manage_tractors">Manage Machinery</string>
     <string name="delivery_address_hint">Delivery Address / Village Name</string>
+
+    <!-- My Farm Today & Agro-Climatic Advisory -->
+    <string name="my_farm_today">My Farm Today</string>
+    <string name="farm_advisory_alert">Agronomic Action Plan</string>
+    <string name="kharif_season">Kharif Season (Monsoon)</string>
+    <string name="rabi_season">Rabi Season (Winter)</string>
+    <string name="zaid_season">Zaid Season (Summer)</string>
+    <string name="crop_recommendation">Crop Recommendation &amp; Rotation</string>
+    <string name="crop_recommendation_subtitle">Agro-climatic suitability &amp; nitrogen restoration</string>
+    <string name="rotation_planner">Crop Rotation Planner</string>
+    <string name="recommend_btn">Evaluate Crop Suitability</string>
+    <string name="select_zone">Agro-Climatic Zone</string>
+    <string name="select_soil">Soil Classification</string>
+    <string name="select_irrigation">Irrigation Infrastructure</string>
+    <string name="previous_crop">Previous Crop Harvested</string>
+    <string name="rotation_warning">Mono-Cropping Risk Alert</string>
+
+    <!-- Soil Health Advisor -->
+    <string name="soil_health_advisor">Soil Health Advisor</string>
+    <string name="soil_health_subtitle">Soil Health Card analysis &amp; ICAR nutrient balancing</string>
+    <string name="shc_title">Soil Health Card (SHC) Parameters</string>
+    <string name="soil_ph">Soil pH (Reaction)</string>
+    <string name="electrical_conductivity">Electrical Conductivity EC (dS/m)</string>
+    <string name="organic_carbon">Organic Carbon OC (%)</string>
+    <string name="nitrogen_val">Available Nitrogen N (kg/ha)</string>
+    <string name="phosphorus_val">Available Phosphorus P₂O₅ (kg/ha)</string>
+    <string name="potassium_val">Available Potassium K₂O (kg/ha)</string>
+    <string name="zinc_val">Available Zinc Zn (ppm)</string>
+    <string name="iron_val">Available Iron Fe (ppm)</string>
+    <string name="evaluate_soil">Analyze Soil Fertility</string>
+
+    <!-- Cultivation Cost & Profitability Ledger -->
+    <string name="farm_expenses">Cultivation Cost &amp; Profitability</string>
+    <string name="farm_expenses_subtitle">Farm expense ledger, input costs &amp; crop sales profit</string>
+    <string name="add_expense">Record Farm Expense</string>
+    <string name="record_sale">Record Crop Harvest Sale</string>
+    <string name="expense_category">Expense Category</string>
+    <string name="expense_amount">Amount Spent (₹)</string>
+    <string name="expense_date">Date of Expense</string>
+    <string name="total_investment">Total Farm Expenses</string>
+    <string name="gross_revenue">Total Crop Sales Revenue</string>
+    <string name="net_profit">Net Farm Profit / Loss</string>
+
+    <!-- Regional Crop Disease Outbreak Reporting -->
+    <string name="report_disease">Report Disease Outbreak</string>
+    <string name="report_disease_subtitle">Alert local agricultural officers and community</string>
+    <string name="disease_symptoms">Observed Symptoms &amp; Damage</string>
+    <string name="plant_part">Affected Plant Part (Leaf, Stem, Fruit, Root)</string>
+    <string name="outbreak_severity">Spread Severity</string>
+    <string name="submit_report">Submit Disease Report</string>
+    <string name="triage_status">Verification Status</string>
+
+    <!-- Farmer Field Testing & Feedback -->
+    <string name="share_feedback">Share App Feedback</string>
+    <string name="share_feedback_subtitle">Help us improve AgroSmart for Indian farmers</string>
+    <string name="feedback_rating">Usability &amp; Utility Rating</string>
+    <string name="feedback_category">Module / Feedback Category</string>
+    <string name="feedback_msg">Your Experience &amp; Suggestions</string>
+    <string name="submit_feedback">Submit Farmer Feedback</string>
+    <string name="admin_feedback_title">Farmer Field Reviews &amp; Feedback</string>
 </resources>

@@ -1,9 +1,6 @@
 package com.agrosmart.backend.controllers;
 
-import com.agrosmart.backend.repositories.CropPriceRepository;
-import com.agrosmart.backend.repositories.TractorBookingRepository;
-import com.agrosmart.backend.repositories.TractorRepository;
-import com.agrosmart.backend.repositories.UserRepository;
+import com.agrosmart.backend.repositories.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,27 +15,48 @@ import java.util.Map;
 public class AdminController {
 
     private final UserRepository userRepository;
-    private final TractorRepository tractorRepository;
-    private final TractorBookingRepository bookingRepository;
+    private final OrderRepository orderRepository;
     private final CropPriceRepository cropPriceRepository;
+    private final SoilHealthRecordRepository soilHealthRepository;
+    private final FarmerFeedbackRepository feedbackRepository;
+    private final DiseaseReportRepository diseaseReportRepository;
 
-    public AdminController(UserRepository userRepository, TractorRepository tractorRepository,
-                           TractorBookingRepository bookingRepository, CropPriceRepository cropPriceRepository) {
+    public AdminController(UserRepository userRepository,
+                           OrderRepository orderRepository,
+                           CropPriceRepository cropPriceRepository,
+                           SoilHealthRecordRepository soilHealthRepository,
+                           FarmerFeedbackRepository feedbackRepository,
+                           DiseaseReportRepository diseaseReportRepository) {
         this.userRepository = userRepository;
-        this.tractorRepository = tractorRepository;
-        this.bookingRepository = bookingRepository;
+        this.orderRepository = orderRepository;
         this.cropPriceRepository = cropPriceRepository;
+        this.soilHealthRepository = soilHealthRepository;
+        this.feedbackRepository = feedbackRepository;
+        this.diseaseReportRepository = diseaseReportRepository;
     }
 
     @GetMapping("/stats")
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
-        stats.put("totalFarmers", userRepository.count());
-        stats.put("totalTractors", tractorRepository.count());
-        stats.put("totalBookings", bookingRepository.count());
-        stats.put("totalOrders", 0);
-        stats.put("totalProducts", cropPriceRepository.count());
-        stats.put("totalRevenue", 0.0);
+        long farmers = userRepository.count();
+        long soilTests = soilHealthRepository.count();
+        long feedbackCount = feedbackRepository.count();
+        long orders = orderRepository.count();
+        long cropPrices = cropPriceRepository.count();
+        long diseaseAlerts = diseaseReportRepository.count();
+
+        stats.put("totalFarmers", farmers);
+        stats.put("totalAdvisories", soilTests);
+        stats.put("totalFeedback", feedbackCount);
+        stats.put("totalOrders", orders);
+        stats.put("totalProducts", cropPrices);
+        stats.put("totalDiseaseReports", diseaseAlerts);
+
+        // Backward compatibility mappings
+        stats.put("totalTractors", soilTests);
+        stats.put("totalBookings", feedbackCount);
+        stats.put("totalRevenue", orders * 1500.0);
+
         return stats;
     }
 }

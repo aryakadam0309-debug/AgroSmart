@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="expense_categories">
+        <item>Fertilizers &amp; Micronutrients</item>
+        <item>Seeds &amp; Planting Material</item>
+        <item>Labor (Sowing, Weeding, Spraying)</item>
+        <item>Irrigation &amp; Electricity / Diesel</item>
+        <item>Pesticides &amp; Crop Protection</item>
+        <item>Machinery &amp; Harvesting</item>
+        <item>Crop Harvest Sale (Revenue)</item>
+        <item>Other Miscellaneous</item>
+    </string-array>
+
+    <string-array name="disease_plant_parts">
+        <item>Leaves / Foliage</item>
+        <item>Stem &amp; Branches</item>
+        <item>Fruit / Pods / Earheads</item>
+        <item>Roots &amp; Collar Region</item>
+        <item>Whole Plant Wilting</item>
+    </string-array>
+
+    <string-array name="disease_severities">
+        <item>Moderate (5 - 20% plants affected)</item>
+        <item>Severe (20 - 50% field spread)</item>
+        <item>Critical Epidemic (> 50% field loss risk)</item>
+    </string-array>
+
+    <string-array name="feedback_categories">
+        <item>General Usability &amp; Design</item>
+        <item>IoT Sensor &amp; Irrigation Control</item>
+        <item>Soil Health &amp; Crop Recommendations</item>
+        <item>Mandi Prices &amp; Weather Accuracy</item>
+        <item>Crop Disease Directory</item>
+        <item>Feature Request / Suggestion</item>
+    </string-array>
+</resources>

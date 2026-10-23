@@ -1,0 +1,89 @@
+package com.agrosmart.backend.entities;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "crop_disease_reports")
+public class DiseaseReport {
+
+    @Id
+    @Column(name = "id", length = 50)
+    private String id;
+
+    @Column(name = "farmer_phone", length = 20, nullable = false)
+    private String farmerPhone;
+
+    @Column(name = "farmer_name", length = 100)
+    private String farmerName;
+
+    @Column(name = "crop_name", length = 100, nullable = false)
+    private String cropName;
+
+    @Column(name = "affected_part", length = 50)
+    private String affectedPart;
+
+    @Column(name = "symptoms", columnDefinition = "TEXT", nullable = false)
+    private String symptoms;
+
+    @Column(name = "severity", length = 30) // LOW, MEDIUM, SEVERE
+    private String severity;
+
+    @Column(name = "village", length = 100)
+    private String village;
+
+    @Column(name = "district", length = 100)
+    private String district;
+
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
+
+    @Column(name = "reported_at", length = 30)
+    private String reportedAt;
+
+    @Column(name = "status", length = 30) // REPORTED, UNDER_REVIEW, PRELIMINARY_SIGNAL, VERIFIED_ALERT, RESOLVED
+    private String status;
+
+    @Column(name = "admin_advisory", columnDefinition = "TEXT")
+    private String adminAdvisory;
+
+    public DiseaseReport() {}
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getFarmerPhone() { return farmerPhone; }
+    public void setFarmerPhone(String farmerPhone) { this.farmerPhone = farmerPhone; }
+
+    public String getFarmerName() { return farmerName; }
+    public void setFarmerName(String farmerName) { this.farmerName = farmerName; }
+
+    public String getCropName() { return cropName; }
+    public void setCropName(String cropName) { this.cropName = cropName; }
+
+    public String getAffectedPart() { return affectedPart; }
+    public void setAffectedPart(String affectedPart) { this.affectedPart = affectedPart; }
+
+    public String getSymptoms() { return symptoms; }
+    public void setSymptoms(String symptoms) { this.symptoms = symptoms; }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
+
+    public String getVillage() { return village; }
+    public void setVillage(String village) { this.village = village; }
+
+    public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public String getReportedAt() { return reportedAt; }
+    public void setReportedAt(String reportedAt) { this.reportedAt = reportedAt; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getAdminAdvisory() { return adminAdvisory; }
+    public void setAdminAdvisory(String adminAdvisory) { this.adminAdvisory = adminAdvisory; }
+}

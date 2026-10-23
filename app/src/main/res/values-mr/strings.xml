@@ -39,7 +39,8 @@
     <string name="nav_home">मुख्यपृष्ठ</string>
     <string name="nav_services">सेवा</string>
     <string name="nav_marketplace">बाजारपेठ</string>
-    <string name="nav_bookings">बुकिंग</string>
+    <string name="nav_bookings">कृषी सल्लागार</string>
+    <string name="nav_advisory">कृषी सल्लागार</string>
     <string name="nav_profile">माझे प्रोफाइल</string>
     <string name="search">शोधा</string>
     <string name="submit">सबमिट करा</string>
@@ -206,4 +207,63 @@
     <string name="manage_crop_prices">बाजारभाव व्यवस्थापन</string>
     <string name="manage_tractors">यंत्रसामग्री व्यवस्थापन</string>
     <string name="delivery_address_hint">वितरण पत्ता / गावाचे नाव</string>
+    <!-- My Farm Today & Agro-Climatic Advisory -->
+    <string name="my_farm_today">माझे शेत आज</string>
+    <string name="farm_advisory_alert">कृषी कार्य योजना</string>
+    <string name="kharif_season">खरीप हंगाम (पावसाळी)</string>
+    <string name="rabi_season">रब्बी हंगाम (हिवाळी)</string>
+    <string name="zaid_season">उन्हाळी हंगाम</string>
+    <string name="crop_recommendation">पीक शिफारस व फेरपालट</string>
+    <string name="crop_recommendation_subtitle">कृषी-हवामान अनुकूलता व नत्र संवर्धन</string>
+    <string name="rotation_planner">पीक फेरपालट योजना</string>
+    <string name="recommend_btn">पीक अनुकूलता तपासा</string>
+    <string name="select_zone">कृषी हवामान विभाग</string>
+    <string name="select_soil">मातीचा प्रकार</string>
+    <string name="select_irrigation">सिंचनाचा स्रोत</string>
+    <string name="previous_crop">मागील घेतलेले पीक</string>
+    <string name="rotation_warning">एकच पीक घेण्याचा इशारा</string>
+
+    <!-- Soil Health Advisor -->
+    <string name="soil_health_advisor">माती आरोग्य सल्लागार</string>
+    <string name="soil_health_subtitle">मृदा आरोग्य पत्रिका विश्लेषण व संतुलित खते</string>
+    <string name="shc_title">मृदा आरोग्य पत्रिका (SHC) घटक</string>
+    <string name="soil_ph">मातीचा सामू (pH)</string>
+    <string name="electrical_conductivity">विद्युत वाहकता EC (dS/m)</string>
+    <string name="organic_carbon">सेंद्रिय कर्ब OC (%)</string>
+    <string name="nitrogen_val">उपलब्ध नत्र N (किग्रॅ/हे.)</string>
+    <string name="phosphorus_val">उपलब्ध स्फुरद P₂O₅ (किग्रॅ/हे.)</string>
+    <string name="potassium_val">उपलब्ध पालाश K₂O (किग्रॅ/हे.)</string>
+    <string name="zinc_val">उपलब्ध जस्त Zn (ppm)</string>
+    <string name="iron_val">उपलब्ध लोह Fe (ppm)</string>
+    <string name="evaluate_soil">मातीची सुपीकता तपासा</string>
+
+    <!-- Cultivation Cost & Profitability Ledger -->
+    <string name="farm_expenses">शेती खर्च व नफा-तोटा</string>
+    <string name="farm_expenses_subtitle">शेती खर्च नोंदवही, निविष्ठा खर्च व विक्री नफा</string>
+    <string name="add_expense">शेती खर्च नोंदवा</string>
+    <string name="record_sale">पीक विक्री उत्पन्न नोंदवा</string>
+    <string name="expense_category">खर्चाचा प्रकार</string>
+    <string name="expense_amount">खर्च रक्कम (₹)</string>
+    <string name="expense_date">खर्चाची तारीख</string>
+    <string name="total_investment">एकूण शेती खर्च</string>
+    <string name="gross_revenue">एकूण पीक विक्री उत्पन्न</string>
+    <string name="net_profit">निव्वळ शेती नफा / तोटा</string>
+
+    <!-- Regional Crop Disease Outbreak Reporting -->
+    <string name="report_disease">पीक रोग प्रादुर्भाव नोंदवा</string>
+    <string name="report_disease_subtitle">स्थानिक कृषी अधिकारी व शेतकऱ्यांना सतर्क करा</string>
+    <string name="disease_symptoms">दिसलेली लक्षणे व नुकसान</string>
+    <string name="plant_part">बाधित वनस्पती भाग (पान, खोड, फळ, मूळ)</string>
+    <string name="outbreak_severity">प्रादुर्भावाची तीव्रता</string>
+    <string name="submit_report">रोग अहवाल पाठवा</string>
+    <string name="triage_status">पडताळणी स्थिती</string>
+
+    <!-- Farmer Field Testing & Feedback -->
+    <string name="share_feedback">अभिप्राय नोंदवा</string>
+    <string name="share_feedback_subtitle">भारतीय शेतकऱ्यांसाठी ॲग्रोस्मार्ट अधिक सक्षम बनवा</string>
+    <string name="feedback_rating">उपयुक्तता रेटिंग</string>
+    <string name="feedback_category">घटक / वर्ग</string>
+    <string name="feedback_msg">आपला अनुभव व सूचना</string>
+    <string name="submit_feedback">अभिप्राय सबमिट करा</string>
+    <string name="admin_feedback_title">शेतकरी अभिप्राय व पुनरावलोकन</string>
 </resources>
