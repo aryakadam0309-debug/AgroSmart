@@ -23,6 +23,7 @@ public class CropPrice {
     private double priceChange;
     private String updatedDate;
     private String arrivalQuantity;
+    private String marketDemand;
 
     public CropPrice() {}
 
@@ -56,4 +57,6 @@ public class CropPrice {
     public void setUpdatedDate(String updatedDate) { this.updatedDate = updatedDate; }
     public String getArrivalQuantity() { return arrivalQuantity; }
     public void setArrivalQuantity(String arrivalQuantity) { this.arrivalQuantity = arrivalQuantity; }
+    public String getMarketDemand() { return marketDemand; }
+    public void setMarketDemand(String marketDemand) { this.marketDemand = marketDemand; }
 }

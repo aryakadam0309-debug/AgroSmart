@@ -17,6 +17,8 @@ public class CropGuideViewModel extends ViewModel {
 
     private String currentQuery = "";
     private String currentSeason = "All Seasons";
+    private String currentRegion = "All Maharashtra";
+    private String currentSoilType = "All Soil Types";
 
     public CropGuideViewModel() {
         this.repository = CropGuideRepository.getInstance();
@@ -28,7 +30,7 @@ public class CropGuideViewModel extends ViewModel {
 
     public void loadGuides() {
         isLoading.setValue(true);
-        LiveData<List<CropGuide>> result = repository.getGuides(currentQuery, currentSeason);
+        LiveData<List<CropGuide>> result = repository.getGuides(currentQuery, currentSeason, currentRegion, currentSoilType);
         guides.setValue(result.getValue());
         isLoading.setValue(false);
     }
@@ -40,6 +42,12 @@ public class CropGuideViewModel extends ViewModel {
 
     public void filterBySeason(String season) {
         this.currentSeason = season;
+        loadGuides();
+    }
+
+    public void filterBySoilAndRegion(String soilType, String region) {
+        if (soilType != null) this.currentSoilType = soilType;
+        if (region != null) this.currentRegion = region;
         loadGuides();
     }
 

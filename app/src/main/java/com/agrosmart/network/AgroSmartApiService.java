@@ -237,6 +237,34 @@ public interface AgroSmartApiService {
             @Body Map<String, String> payload
     );
 
+    // Before You Sow - Crop Plan Simulator & Multi-Factor Engine
+    @POST("crops/recommend-and-simulate")
+    Call<Map<String, Object>> recommendAndSimulate(
+            @Body Map<String, Object> simulationRequest
+    );
+
+    @POST("crops/plans/save")
+    Call<com.agrosmart.models.SavedCropPlanModel> saveCropPlan(
+            @Body com.agrosmart.models.SavedCropPlanModel plan
+    );
+
+    @GET("crops/plans/my-plans")
+    Call<List<com.agrosmart.models.SavedCropPlanModel>> getMyCropPlans(
+            @Query("farmerPhone") String farmerPhone,
+            @Query("farmerId") Long farmerId
+    );
+
+    @PUT("crops/plans/{id}/status")
+    Call<Map<String, Object>> updateCropPlanPlantedStatus(
+            @Path("id") String id,
+            @Query("isPlanted") boolean isPlanted
+    );
+
+    @DELETE("crops/plans/{id}")
+    Call<Map<String, Object>> deleteCropPlan(
+            @Path("id") String id
+    );
+
     // Farm Expenses & Profitability Ledger
     @GET("finance/expenses")
     Call<Map<String, Object>> getFinances(

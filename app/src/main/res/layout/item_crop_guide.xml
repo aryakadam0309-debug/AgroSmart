@@ -49,6 +49,16 @@
                     android:textSize="12sp"
                     android:textStyle="italic"
                     android:textColor="@color/text_muted" />
+
+                <TextView
+                    android:id="@+id/tvGuideSoilRegion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="🌱 Black Cotton Soil • Western Maharashtra"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/deep_teal" />
             </LinearLayout>
 
             <TextView

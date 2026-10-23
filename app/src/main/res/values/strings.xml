@@ -37,6 +37,7 @@
 
     <!-- Navigation & Common -->
     <string name="nav_home">Home</string>
+    <string name="nav_crop_planner">Crop Planner</string>
     <string name="nav_services">Services</string>
     <string name="nav_marketplace">Market</string>
     <string name="nav_bookings">Advisory</string>

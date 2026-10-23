@@ -15,9 +15,12 @@ import java.util.*;
 public class AdvisoryController {
 
     private final SoilHealthRecordRepository soilHealthRepository;
+    private final com.agrosmart.backend.services.CropAdvisorService cropAdvisorService;
 
-    public AdvisoryController(SoilHealthRecordRepository soilHealthRepository) {
+    public AdvisoryController(SoilHealthRecordRepository soilHealthRepository,
+                              com.agrosmart.backend.services.CropAdvisorService cropAdvisorService) {
         this.soilHealthRepository = soilHealthRepository;
+        this.cropAdvisorService = cropAdvisorService;
     }
 
     // --- SOIL HEALTH CARD ADVISORY ---
@@ -96,80 +99,32 @@ public class AdvisoryController {
 
     @GetMapping("/recommend-crops")
     public ResponseEntity<?> recommendCrops(
-            @RequestParam(defaultValue = "Desh / Western Maharashtra") String zone,
-            @RequestParam(defaultValue = "Black Cotton Soil") String soil,
-            @RequestParam(defaultValue = "Well / Canal Irrigated") String irrigation,
+            @RequestParam(defaultValue = "Pune") String zone,
+            @RequestParam(defaultValue = "Medium Black") String soil,
+            @RequestParam(defaultValue = "LIMITED") String irrigation,
             @RequestParam(defaultValue = "Kharif") String season) {
 
-        List<Map<String, Object>> recommendations = new ArrayList<>();
+        String water = irrigation.toUpperCase().contains("WELL") || irrigation.toUpperCase().contains("CANAL") || irrigation.toUpperCase().contains("ASSURED")
+                ? "ASSURED"
+                : (irrigation.toUpperCase().contains("RAIN") ? "RAINFED" : "LIMITED");
 
-        if (zone.contains("Konkan") || zone.contains("Ghats")) {
+        Map<String, Object> simulation = cropAdvisorService.generateRecommendationsAndPlans(
+                zone, season, water, "PLAINS", "None", "MEDIUM", "BALANCED", soil,
+                false, false, false, false
+        );
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> plans = (List<Map<String, Object>>) simulation.getOrDefault("generatedPlans", Collections.emptyList());
+
+        List<Map<String, Object>> recommendations = new ArrayList<>();
+        for (Map<String, Object> plan : plans) {
             recommendations.add(Map.of(
-                    "cropName", "Paddy (Rice) - Karjat 3 / Ratnagiri 24",
-                    "season", "Kharif",
-                    "duration", "115 - 125 days",
-                    "expectedYield", "40 - 45 Qtl/ha",
-                    "suitabilityScore", 96,
-                    "justification", "High rainfall & acidic lateritic soil perfectly matched for transplanted lowland rice."
-            ));
-            recommendations.add(Map.of(
-                    "cropName", "Finger Millet (Nagli / Ragi)",
-                    "season", "Kharif",
-                    "duration", "95 - 105 days",
-                    "expectedYield", "18 - 22 Qtl/ha",
-                    "suitabilityScore", 92,
-                    "justification", "Extremely resilient to heavy rainfall on hilly lateritic slopes with high calcium content."
-            ));
-        } else if (zone.contains("Marathwada")) {
-            recommendations.add(Map.of(
-                    "cropName", "Soybean (JS-335 / MAUS-158) + Tur (BDN-711) Intercrop",
-                    "season", "Kharif",
-                    "duration", "Soybean 95d, Tur 160d",
-                    "expectedYield", "Soybean 22 Qtl/ha + Tur 12 Qtl/ha",
-                    "suitabilityScore", 95,
-                    "justification", "4:2 row intercropping provides drought risk hedging and biological nitrogen fixation."
-            ));
-            recommendations.add(Map.of(
-                    "cropName", "Chickpea / Gram (Harbara - Vijay / Digvijay)",
-                    "season", "Rabi",
-                    "duration", "90 - 105 days",
-                    "expectedYield", "20 - 25 Qtl/ha",
-                    "suitabilityScore", 94,
-                    "justification", "Deep taproot system thrives on residual moisture in medium black soils."
-            ));
-        } else if (zone.contains("Vidarbha")) {
-            recommendations.add(Map.of(
-                    "cropName", "Bt Cotton + Greengram (Moong) Strip Cropping",
-                    "season", "Kharif",
-                    "duration", "150 - 165 days",
-                    "expectedYield", "25 - 30 Qtl/ha seed cotton",
-                    "suitabilityScore", 94,
-                    "justification", "Ideal for deep black cotton vertisols with early moong harvest generating interim cashflow."
-            ));
-            recommendations.add(Map.of(
-                    "cropName", "Soybean (Phule Sangam - KDS 726)",
-                    "season", "Kharif",
-                    "duration", "100 - 105 days",
-                    "expectedYield", "25 - 30 Qtl/ha",
-                    "suitabilityScore", 95,
-                    "justification", "Rust-resistant variety with proven high yield performance across Vidarbha."
-            ));
-        } else { // Desh / Western Maharashtra
-            recommendations.add(Map.of(
-                    "cropName", "Onion (Bhima Super / Phule Samarth)",
-                    "season", "Kharif / Late Kharif",
-                    "duration", "105 - 120 days",
-                    "expectedYield", "250 - 300 Qtl/ha",
-                    "suitabilityScore", 96,
-                    "justification", "High commercial value in Pune/Nashik belts with well-drained fertile soils."
-            ));
-            recommendations.add(Map.of(
-                    "cropName", "Wheat (Trimbak / Lokwan) after Legume Harvest",
-                    "season", "Rabi",
-                    "duration", "110 - 120 days",
-                    "expectedYield", "45 - 50 Qtl/ha",
-                    "suitabilityScore", 93,
-                    "justification", "Excellent cold tolerance in November-December sowing with assured irrigation."
+                    "cropName", plan.getOrDefault("cropName", "") + " (" + plan.getOrDefault("variety", "") + ")",
+                    "season", season,
+                    "duration", plan.getOrDefault("durationDays", ""),
+                    "expectedYield", plan.getOrDefault("targetYield", ""),
+                    "suitabilityScore", plan.getOrDefault("suitabilityScore", 90),
+                    "justification", plan.getOrDefault("suitabilityReason", "")
             ));
         }
 

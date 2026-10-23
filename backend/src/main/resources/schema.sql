@@ -346,4 +346,35 @@ CREATE TABLE IF NOT EXISTS `farmer_feedback` (
     INDEX `idx_feedback_farmer` (`farmer_id`)
 ) ENGINE=InnoDB;
 
+-- 24. Saved Crop Plans & Simulator Scenarios
+CREATE TABLE IF NOT EXISTS `saved_crop_plans` (
+    `id` VARCHAR(50) PRIMARY KEY,
+    `farmer_id` BIGINT,
+    `farmer_phone` VARCHAR(15) NOT NULL,
+    `farmer_name` VARCHAR(100),
+    `district` VARCHAR(50) NOT NULL,
+    `taluka` VARCHAR(50),
+    `season` VARCHAR(30) NOT NULL,
+    `crop_name` VARCHAR(100) NOT NULL,
+    `variety` VARCHAR(100),
+    `plan_type` VARCHAR(50) NOT NULL,
+    `water_availability` VARCHAR(50),
+    `land_type` VARCHAR(50),
+    `soil_type` VARCHAR(50),
+    `previous_crop` VARCHAR(100),
+    `investment_budget` VARCHAR(50),
+    `farmer_goal` VARCHAR(50),
+    `duration_days` VARCHAR(50),
+    `estimated_cost_per_acre` DOUBLE,
+    `target_yield` VARCHAR(100),
+    `suitability_reason` TEXT,
+    `key_risks` TEXT,
+    `university_source` VARCHAR(200),
+    `is_planted` BOOLEAN DEFAULT FALSE,
+    `created_date` VARCHAR(50),
+    INDEX `idx_crop_plan_farmer` (`farmer_phone`),
+    INDEX `idx_crop_plan_district` (`district`)
+) ENGINE=InnoDB;
+
+
 

@@ -23,6 +23,7 @@ import com.agrosmart.models.SoilHealthRecord;
 import com.agrosmart.models.FarmExpense;
 import com.agrosmart.models.DiseaseReport;
 import com.agrosmart.models.FarmerFeedback;
+import com.agrosmart.models.SavedCropPlanModel;
 
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.List;
 public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "agrosmart_local.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     private static AgroSmartDbHelper instance;
 
@@ -271,6 +272,33 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "app_version TEXT, " +
                 "submitted_at TEXT)");
 
+        // 17. Saved Crop Plans & Simulator Scenarios
+        db.execSQL("CREATE TABLE IF NOT EXISTS saved_crop_plans (" +
+                "id TEXT PRIMARY KEY, " +
+                "farmer_id INTEGER, " +
+                "farmer_phone TEXT NOT NULL, " +
+                "farmer_name TEXT, " +
+                "district TEXT NOT NULL, " +
+                "taluka TEXT, " +
+                "season TEXT NOT NULL, " +
+                "crop_name TEXT NOT NULL, " +
+                "variety TEXT, " +
+                "plan_type TEXT NOT NULL, " +
+                "water_availability TEXT, " +
+                "land_type TEXT, " +
+                "soil_type TEXT, " +
+                "previous_crop TEXT, " +
+                "investment_budget TEXT, " +
+                "farmer_goal TEXT, " +
+                "duration_days TEXT, " +
+                "estimated_cost_per_acre REAL, " +
+                "target_yield TEXT, " +
+                "suitability_reason TEXT, " +
+                "key_risks TEXT, " +
+                "university_source TEXT, " +
+                "is_planted INTEGER DEFAULT 0, " +
+                "created_date TEXT)");
+
         // Seed default initial data
         seedInitialData(db);
     }
@@ -289,6 +317,11 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS pump_commands");
         db.execSQL("DROP TABLE IF EXISTS iot_alerts");
         db.execSQL("DROP TABLE IF EXISTS agri_news");
+        db.execSQL("DROP TABLE IF EXISTS soil_health_records");
+        db.execSQL("DROP TABLE IF EXISTS farm_expenses");
+        db.execSQL("DROP TABLE IF EXISTS crop_disease_reports");
+        db.execSQL("DROP TABLE IF EXISTS farmer_feedback");
+        db.execSQL("DROP TABLE IF EXISTS saved_crop_plans");
         onCreate(db);
     }
 
@@ -1536,5 +1569,110 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
             if (c != null) c.close();
         }
         return list;
+    }
+
+    // =========================================================================
+    // SAVED CROP PLANS & SIMULATOR PERSISTENCE CRUD
+    // =========================================================================
+
+    public boolean insertOrUpdateCropPlan(SavedCropPlanModel plan) {
+        if (plan == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", plan.getId() != null ? plan.getId() : "PLAN-" + System.currentTimeMillis());
+        if (plan.getFarmerId() != null) cv.put("farmer_id", plan.getFarmerId());
+        cv.put("farmer_phone", plan.getFarmerPhone() != null ? plan.getFarmerPhone() : "");
+        cv.put("farmer_name", plan.getFarmerName());
+        cv.put("district", plan.getDistrict() != null ? plan.getDistrict() : "");
+        cv.put("taluka", plan.getTaluka());
+        cv.put("season", plan.getSeason() != null ? plan.getSeason() : "");
+        cv.put("crop_name", plan.getCropName() != null ? plan.getCropName() : "");
+        cv.put("variety", plan.getVariety());
+        cv.put("plan_type", plan.getPlanType() != null ? plan.getPlanType() : "BALANCED_BEST_FIT");
+        cv.put("water_availability", plan.getWaterAvailability());
+        cv.put("land_type", plan.getLandType());
+        cv.put("soil_type", plan.getSoilType());
+        cv.put("previous_crop", plan.getPreviousCrop());
+        cv.put("investment_budget", plan.getInvestmentBudget());
+        cv.put("farmer_goal", plan.getFarmerGoal());
+        cv.put("duration_days", plan.getDurationDays());
+        if (plan.getEstimatedCostPerAcre() != null) {
+            cv.put("estimated_cost_per_acre", plan.getEstimatedCostPerAcre());
+        }
+        cv.put("target_yield", plan.getTargetYield());
+        cv.put("suitability_reason", plan.getSuitabilityReason());
+        cv.put("key_risks", plan.getKeyRisks());
+        cv.put("university_source", plan.getUniversitySource());
+        cv.put("is_planted", plan.getIsPlanted() ? 1 : 0);
+        cv.put("created_date", plan.getCreatedDate() != null ? plan.getCreatedDate() : "");
+
+        long rowId = db.insertWithOnConflict("saved_crop_plans", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        return rowId != -1;
+    }
+
+    public List<SavedCropPlanModel> getSavedCropPlansByPhone(String phone) {
+        List<SavedCropPlanModel> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            String selection = null;
+            String[] selectionArgs = null;
+            if (phone != null && !phone.trim().isEmpty()) {
+                selection = "farmer_phone = ?";
+                selectionArgs = new String[]{phone.trim()};
+            }
+            c = db.query("saved_crop_plans", null, selection, selectionArgs, null, null, "created_date DESC");
+            if (c != null && c.moveToFirst()) {
+                do {
+                    SavedCropPlanModel p = new SavedCropPlanModel();
+                    p.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("farmer_id"))) {
+                        p.setFarmerId(c.getLong(c.getColumnIndexOrThrow("farmer_id")));
+                    }
+                    p.setFarmerPhone(c.getString(c.getColumnIndexOrThrow("farmer_phone")));
+                    p.setFarmerName(c.getString(c.getColumnIndexOrThrow("farmer_name")));
+                    p.setDistrict(c.getString(c.getColumnIndexOrThrow("district")));
+                    p.setTaluka(c.getString(c.getColumnIndexOrThrow("taluka")));
+                    p.setSeason(c.getString(c.getColumnIndexOrThrow("season")));
+                    p.setCropName(c.getString(c.getColumnIndexOrThrow("crop_name")));
+                    p.setVariety(c.getString(c.getColumnIndexOrThrow("variety")));
+                    p.setPlanType(c.getString(c.getColumnIndexOrThrow("plan_type")));
+                    p.setWaterAvailability(c.getString(c.getColumnIndexOrThrow("water_availability")));
+                    p.setLandType(c.getString(c.getColumnIndexOrThrow("land_type")));
+                    p.setSoilType(c.getString(c.getColumnIndexOrThrow("soil_type")));
+                    p.setPreviousCrop(c.getString(c.getColumnIndexOrThrow("previous_crop")));
+                    p.setInvestmentBudget(c.getString(c.getColumnIndexOrThrow("investment_budget")));
+                    p.setFarmerGoal(c.getString(c.getColumnIndexOrThrow("farmer_goal")));
+                    p.setDurationDays(c.getString(c.getColumnIndexOrThrow("duration_days")));
+                    if (!c.isNull(c.getColumnIndexOrThrow("estimated_cost_per_acre"))) {
+                        p.setEstimatedCostPerAcre(c.getDouble(c.getColumnIndexOrThrow("estimated_cost_per_acre")));
+                    }
+                    p.setTargetYield(c.getString(c.getColumnIndexOrThrow("target_yield")));
+                    p.setSuitabilityReason(c.getString(c.getColumnIndexOrThrow("suitability_reason")));
+                    p.setKeyRisks(c.getString(c.getColumnIndexOrThrow("key_risks")));
+                    p.setUniversitySource(c.getString(c.getColumnIndexOrThrow("university_source")));
+                    p.setIsPlanted(c.getInt(c.getColumnIndexOrThrow("is_planted")) == 1);
+                    p.setCreatedDate(c.getString(c.getColumnIndexOrThrow("created_date")));
+                    list.add(p);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    public boolean updateCropPlanPlantedStatus(String id, boolean isPlanted) {
+        if (id == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("is_planted", isPlanted ? 1 : 0);
+        return db.update("saved_crop_plans", cv, "id = ?", new String[]{id}) > 0;
+    }
+
+    public boolean deleteSavedCropPlan(String id) {
+        if (id == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        return db.delete("saved_crop_plans", "id = ?", new String[]{id}) > 0;
     }
 }

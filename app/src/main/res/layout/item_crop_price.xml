@@ -73,6 +73,23 @@
             android:textColor="@color/deep_teal"
             android:textStyle="bold" />
 
+        <!-- Market Demand / Need in Market Indicator -->
+        <TextView
+            android:id="@+id/tvMarketDemand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_rounded_card"
+            android:backgroundTint="#ECFDF5"
+            android:paddingStart="8dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="3dp"
+            android:text="🔥 High Market Need (Need is MORE)"
+            android:textColor="#047857"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

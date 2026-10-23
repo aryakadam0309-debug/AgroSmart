@@ -32,7 +32,7 @@ public class CropGuideDetailActivity extends BaseActivity {
         binding.detailQuickStats.setText(String.format("Season: %s • Duration: %s • Yield: %s",
                 guide.getSeason(), guide.getDuration(), guide.getExpectedYield()));
 
-        binding.detailSoil.setText("🌱 Soil: " + guide.getSoilType());
+        binding.detailSoil.setText("🌱 Soil: " + guide.getSoilType() + "\n📍 Targeted Region: " + guide.getRegion());
         binding.detailClimate.setText("🌡️ Optimal Temperature: " + guide.getTemperature());
         binding.detailWater.setText("💧 Water Need: " + guide.getWaterRequirement());
 

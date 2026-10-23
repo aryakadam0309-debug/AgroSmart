@@ -5,17 +5,9 @@
         android:icon="@drawable/ic_nav_home"
         android:title="@string/nav_home" />
     <item
-        android:id="@+id/nav_services"
-        android:icon="@drawable/ic_nav_services"
-        android:title="@string/nav_services" />
-    <item
-        android:id="@+id/nav_marketplace"
-        android:icon="@drawable/ic_nav_marketplace"
-        android:title="@string/nav_marketplace" />
-    <item
-        android:id="@+id/nav_bookings"
+        android:id="@+id/nav_crop_planner"
         android:icon="@drawable/ic_leaf_logo"
-        android:title="@string/nav_advisory" />
+        android:title="@string/nav_crop_planner" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_nav_profile"

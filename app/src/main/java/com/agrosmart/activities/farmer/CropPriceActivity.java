@@ -101,6 +101,7 @@ public class CropPriceActivity extends BaseActivity {
         TextView tvMin = dialogView.findViewById(R.id.dialogMinPrice);
         TextView tvModal = dialogView.findViewById(R.id.dialogModalPrice);
         TextView tvMax = dialogView.findViewById(R.id.dialogMaxPrice);
+        TextView tvMarketNeed = dialogView.findViewById(R.id.dialogMarketNeed);
         TextView tvAdvisory = dialogView.findViewById(R.id.dialogAdvisory);
         View btnClose = dialogView.findViewById(R.id.btnCloseDialog);
 
@@ -109,6 +110,20 @@ public class CropPriceActivity extends BaseActivity {
         tvMin.setText(String.format("₹%,.0f", price.getMinPrice()));
         tvModal.setText(String.format("₹%,.0f", price.getModalPrice()));
         tvMax.setText(String.format("₹%,.0f", price.getMaxPrice()));
+
+        // Display Market Need (Demand Status)
+        tvMarketNeed.setText(price.getMarketDemandExplanation());
+        String demand = price.getMarketDemand();
+        if ("HIGH_DEMAND".equalsIgnoreCase(demand)) {
+            tvMarketNeed.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFECFDF5));
+            tvMarketNeed.setTextColor(0xFF065F46);
+        } else if ("LOW_DEMAND".equalsIgnoreCase(demand)) {
+            tvMarketNeed.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFFEF2F2));
+            tvMarketNeed.setTextColor(0xFF991B1B);
+        } else {
+            tvMarketNeed.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFF0F9FF));
+            tvMarketNeed.setTextColor(0xFF0369A1);
+        }
 
         if ("UP".equalsIgnoreCase(price.getTrend())) {
             tvAdvisory.setText("📈 Bullish Demand: Prices increased by ₹" + price.getPriceChange() + " today. Good window to liquidate stock at peak APMC rates.");

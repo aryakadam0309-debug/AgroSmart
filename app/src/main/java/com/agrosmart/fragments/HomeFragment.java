@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
         setupMyFarmToday();
 
         // Navigation click listeners
-        binding.cardMyFarmToday.setOnClickListener(v -> openFeature("Soil Health Advisor", "com.agrosmart.activities.farmer.SoilHealthActivity"));
+        binding.cardMyFarmToday.setOnClickListener(v -> openFeature("Crop Planner", "com.agrosmart.activities.farmer.CropRecommendationActivity"));
         binding.cardWeather.setOnClickListener(v -> openFeature("Weather Forecast", "com.agrosmart.activities.farmer.WeatherActivity"));
         binding.cardIotSmartFarming.setOnClickListener(v -> openFeature("IoT Smart Farming", "com.agrosmart.activities.farmer.IotDashboardActivity"));
         binding.cardCropPrices.setOnClickListener(v -> openFeature("Crop Prices", "com.agrosmart.activities.farmer.CropPriceActivity"));
@@ -150,7 +150,7 @@ public class HomeFragment extends Fragment {
             binding.tvIotBadge.setText("HARDWARE OFFLINE");
             binding.tvIotMoisture.setText("🌱 Soil Moisture: -- %");
             binding.tvIotTemp.setText("⛅ Temp: -- °C");
-            binding.tvIotPump.setText("Pump: STANDBY 💧");
+            
         }
     }
 

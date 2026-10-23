@@ -73,6 +73,20 @@ public class CropPriceAdapter extends RecyclerView.Adapter<CropPriceAdapter.Pric
             binding.tvPriceRange.setText(String.format("Min: ₹%,.0f  |  Max: ₹%,.0f", price.getMinPrice(), price.getMaxPrice()));
             binding.tvUpdatedTime.setText("Updated: " + price.getUpdatedDate());
 
+            // Market Demand / Need in Market Indicator
+            String demand = price.getMarketDemand();
+            binding.tvMarketDemand.setText(price.getMarketDemandLabel());
+            if ("HIGH_DEMAND".equalsIgnoreCase(demand)) {
+                binding.tvMarketDemand.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFECFDF5));
+                binding.tvMarketDemand.setTextColor(0xFF047857);
+            } else if ("LOW_DEMAND".equalsIgnoreCase(demand)) {
+                binding.tvMarketDemand.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFFEF2F2));
+                binding.tvMarketDemand.setTextColor(0xFFB91C1C);
+            } else {
+                binding.tvMarketDemand.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0xFFF0F9FF));
+                binding.tvMarketDemand.setTextColor(0xFF0369A1);
+            }
+
             if ("UP".equalsIgnoreCase(price.getTrend())) {
                 binding.tvTrend.setBackground(ContextCompat.getDrawable(ctx, R.drawable.bg_trend_up));
                 binding.tvTrend.setTextColor(ContextCompat.getColor(ctx, R.color.status_success));

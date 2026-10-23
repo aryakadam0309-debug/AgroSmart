@@ -62,6 +62,7 @@ public class CropGuideAdapter extends RecyclerView.Adapter<CropGuideAdapter.Guid
         void bind(CropGuide guide) {
             binding.tvCropGuideName.setText(guide.getCropName());
             binding.tvScientificName.setText(guide.getScientificName());
+            binding.tvGuideSoilRegion.setText("🌱 " + guide.getSoilType() + " • " + guide.getRegion());
             binding.tvSeasonChip.setText(guide.getSeason() + " Season");
             binding.tvDuration.setText(guide.getDuration());
             binding.tvYield.setText(guide.getExpectedYield());

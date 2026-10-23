@@ -36,6 +36,7 @@
     <string name="cancel">रद्द करें</string>
 
     <!-- Navigation & Common -->
+    <string name="nav_crop_planner">फसल योजनाकार</string>
     <string name="nav_home">होम</string>
     <string name="nav_services">सेवाएं</string>
     <string name="nav_marketplace">बाज़ार</string>

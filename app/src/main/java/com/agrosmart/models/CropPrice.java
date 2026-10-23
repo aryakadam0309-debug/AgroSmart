@@ -18,6 +18,7 @@ public class CropPrice implements Serializable {
     private double priceChange;
     private String updatedDate;
     private String arrivalQuantity;
+    private String marketDemand; // "HIGH_DEMAND", "LOW_DEMAND", "STEADY_DEMAND"
 
     public CropPrice() {}
 
@@ -26,6 +27,16 @@ public class CropPrice implements Serializable {
                      double minPrice, double maxPrice, double modalPrice,
                      String priceUnit, String trend, double priceChange,
                      String updatedDate, String arrivalQuantity) {
+        this(id, cropName, category, variety, marketName, state, district,
+                minPrice, maxPrice, modalPrice, priceUnit, trend, priceChange,
+                updatedDate, arrivalQuantity, null);
+    }
+
+    public CropPrice(String id, String cropName, String category, String variety,
+                     String marketName, String state, String district,
+                     double minPrice, double maxPrice, double modalPrice,
+                     String priceUnit, String trend, double priceChange,
+                     String updatedDate, String arrivalQuantity, String marketDemand) {
         this.id = id;
         this.cropName = cropName;
         this.category = category;
@@ -41,6 +52,7 @@ public class CropPrice implements Serializable {
         this.priceChange = priceChange;
         this.updatedDate = updatedDate;
         this.arrivalQuantity = arrivalQuantity;
+        this.marketDemand = marketDemand;
     }
 
     public String getId() { return id; }
@@ -87,4 +99,35 @@ public class CropPrice implements Serializable {
 
     public String getArrivalQuantity() { return arrivalQuantity; }
     public void setArrivalQuantity(String arrivalQuantity) { this.arrivalQuantity = arrivalQuantity; }
+
+    public String getMarketDemand() {
+        if (marketDemand != null && !marketDemand.isEmpty()) return marketDemand;
+        if ("UP".equalsIgnoreCase(trend) || priceChange > 0) return "HIGH_DEMAND";
+        if ("DOWN".equalsIgnoreCase(trend) || priceChange < 0) return "LOW_DEMAND";
+        return "STEADY_DEMAND";
+    }
+
+    public void setMarketDemand(String marketDemand) { this.marketDemand = marketDemand; }
+
+    public String getMarketDemandLabel() {
+        String md = getMarketDemand();
+        if ("HIGH_DEMAND".equalsIgnoreCase(md)) {
+            return "🔥 High Market Need (Need is MORE)";
+        } else if ("LOW_DEMAND".equalsIgnoreCase(md)) {
+            return "❄️ Low Market Need (Need is LESS / Surplus)";
+        } else {
+            return "⚖️ Steady Market Need (Balanced Demand)";
+        }
+    }
+
+    public String getMarketDemandExplanation() {
+        String md = getMarketDemand();
+        if ("HIGH_DEMAND".equalsIgnoreCase(md)) {
+            return "🔥 NEED IS MORE IN MARKET: Strong buyer demand & high wholesale inquiry. Arrivals are quickly absorbed at premium rates. Favorable time to liquidate stocks at peak APMC rates.";
+        } else if ("LOW_DEMAND".equalsIgnoreCase(md)) {
+            return "❄️ NEED IS LESS IN MARKET: Market arrival surplus exceeds current merchant absorption. Prices are softening. If dry warehouse storage is available, consider holding or staggering sales.";
+        } else {
+            return "⚖️ BALANCED NEED IN MARKET: Normal supply and steady absorption across APMC yards. Stable daily rates with steady local miller buying.";
+        }
+    }
 }

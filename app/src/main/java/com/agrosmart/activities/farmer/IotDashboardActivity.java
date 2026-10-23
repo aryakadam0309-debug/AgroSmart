@@ -47,8 +47,6 @@ public class IotDashboardActivity extends BaseActivity {
     private ActivityIotDashboardBinding binding;
     private IotViewModel viewModel;
     private SensorReadingAdapter historyAdapter;
-    private IrrigationSetting currentSettings;
-    private boolean isPumpActive = false;
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<String[]> locationPermissionLauncher;
     private SessionManager sessionManager;
@@ -161,50 +159,6 @@ public class IotDashboardActivity extends BaseActivity {
             }
         });
 
-        // Irrigation Settings
-        viewModel.getSettings().observe(this, settings -> {
-            if (settings != null) {
-                this.currentSettings = settings;
-                boolean isAuto = "AUTO".equalsIgnoreCase(settings.getOperatingMode());
-                binding.switchAutoMode.setChecked(isAuto);
-
-                String summary = String.format(Locale.US,
-                        "Auto thresholds: Start < %.0f%% • Stop > %.0f%% • Max: %ds • Cooldown: %ds",
-                        settings.getLowMoistureStartThreshold(),
-                        settings.getHighMoistureStopThreshold(),
-                        settings.getMaxContinuousPumpSec(),
-                        settings.getCooldownIntervalSec());
-                binding.tvThresholdSummary.setText(summary);
-            }
-        });
-
-        // Pump Command & Confirmed State
-        viewModel.getLatestPumpCommand().observe(this, cmd -> {
-            if (cmd != null) {
-                boolean req = cmd.isRequestedState();
-                binding.tvRequestedState.setText(req ? "ON" : "OFF");
-                binding.tvRequestedState.setTextColor(req ? Color.parseColor("#2E7D32") : Color.parseColor("#757575"));
-
-                Boolean conf = cmd.getConfirmedState();
-                if (conf != null) {
-                    isPumpActive = conf;
-                    binding.tvConfirmedState.setText(conf ? "CONFIRMED ON (Relay Energized)" : "CONFIRMED OFF (Relay Disengaged)");
-                    binding.tvConfirmedState.setTextColor(conf ? Color.parseColor("#2E7D32") : Color.parseColor("#757575"));
-                } else {
-                    binding.tvConfirmedState.setText("AWAITING ACK FROM ESP32 (" + (cmd.getStatus() != null ? cmd.getStatus() : "PENDING") + ")");
-                    binding.tvConfirmedState.setTextColor(Color.parseColor("#ED6C02"));
-                }
-
-                if (isPumpActive) {
-                    binding.btnTogglePump.setText(R.string.iot_turn_off);
-                    binding.btnTogglePump.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BA1A1A")));
-                } else {
-                    binding.btnTogglePump.setText(R.string.iot_turn_on);
-                    binding.btnTogglePump.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2D6A4F")));
-                }
-            }
-        });
-
         // Active Alerts
         viewModel.getAlerts().observe(this, alerts -> {
             if (alerts != null && !alerts.isEmpty()) {
@@ -248,111 +202,6 @@ public class IotDashboardActivity extends BaseActivity {
 
         binding.swipeRefresh.setOnRefreshListener(() -> viewModel.refresh());
 
-        // Mode switch listener
-        binding.switchAutoMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (currentSettings != null) {
-                String newMode = isChecked ? "AUTO" : "MANUAL";
-                if (!newMode.equalsIgnoreCase(currentSettings.getOperatingMode())) {
-                    currentSettings.setOperatingMode(newMode);
-                    viewModel.saveSettings(currentSettings, new IotRepository.OperationCallback() {
-                        @Override
-                        public void onSuccess(String message) {
-                            Toast.makeText(IotDashboardActivity.this, "Mode updated: " + newMode, Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(String error) {
-                            Toast.makeText(IotDashboardActivity.this, error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-
-        // Manual Pump Button
-        binding.btnTogglePump.setOnClickListener(v -> {
-            boolean turnOn = !isPumpActive;
-            String prompt = turnOn ? "Turn irrigation pump ON?" : "Turn irrigation pump OFF?";
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Pump Operation Confirmation")
-                    .setMessage(prompt)
-                    .setPositiveButton("Confirm", (dialog, which) -> {
-                        viewModel.togglePump(turnOn, 300, new IotRepository.OperationCallback() {
-                            @Override
-                            public void onSuccess(String message) {
-                                Toast.makeText(IotDashboardActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                Toast.makeText(IotDashboardActivity.this, error, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        });
-
-        // Threshold Configuration Dialog
-        binding.btnConfigThresholds.setOnClickListener(v -> showConfigureThresholdsDialog());
-    }
-
-    private void showConfigureThresholdsDialog() {
-        DialogConfigureThresholdsBinding dialogBinding = DialogConfigureThresholdsBinding.inflate(
-                LayoutInflater.from(this)
-        );
-
-        if (currentSettings != null) {
-            dialogBinding.etStartThreshold.setText(String.valueOf(currentSettings.getLowMoistureStartThreshold()));
-            dialogBinding.etStopThreshold.setText(String.valueOf(currentSettings.getHighMoistureStopThreshold()));
-            dialogBinding.etMaxRuntime.setText(String.valueOf(currentSettings.getMaxContinuousPumpSec()));
-            dialogBinding.etCooldown.setText(String.valueOf(currentSettings.getCooldownIntervalSec()));
-        }
-
-        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
-                .setView(dialogBinding.getRoot())
-                .setPositiveButton("Save Settings", (d, which) -> {
-                    try {
-                        double startThresh = Double.parseDouble(dialogBinding.etStartThreshold.getText().toString().trim());
-                        double stopThresh = Double.parseDouble(dialogBinding.etStopThreshold.getText().toString().trim());
-                        int maxRuntime = Integer.parseInt(dialogBinding.etMaxRuntime.getText().toString().trim());
-                        int cooldown = Integer.parseInt(dialogBinding.etCooldown.getText().toString().trim());
-
-                        if (startThresh >= stopThresh) {
-                            Toast.makeText(this, "Validation Error: Start threshold must be lower than stop threshold to prevent relay chattering!", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        if (currentSettings == null) {
-                            currentSettings = new IrrigationSetting();
-                            currentSettings.setDeviceId(viewModel.getCurrentDeviceId());
-                            currentSettings.setFarmerId(1L);
-                        }
-
-                        currentSettings.setLowMoistureStartThreshold(startThresh);
-                        currentSettings.setHighMoistureStopThreshold(stopThresh);
-                        currentSettings.setMaxContinuousPumpSec(maxRuntime);
-                        currentSettings.setCooldownIntervalSec(cooldown);
-
-                        viewModel.saveSettings(currentSettings, new IotRepository.OperationCallback() {
-                            @Override
-                            public void onSuccess(String message) {
-                                Toast.makeText(IotDashboardActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                Toast.makeText(IotDashboardActivity.this, error, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(this, "Please enter valid numeric values", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .create();
-
-        dialog.show();
     }
 
     private void showLocationDialog() {

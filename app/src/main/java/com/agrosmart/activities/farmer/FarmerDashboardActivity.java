@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.agrosmart.R;
 import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.databinding.ActivityFarmerDashboardBinding;
+import com.agrosmart.fragments.CropPlannerFragment;
 import com.agrosmart.fragments.FarmAdvisorFragment;
 import com.agrosmart.fragments.HomeFragment;
 import com.agrosmart.fragments.MarketplaceFragment;
@@ -38,12 +39,8 @@ public class FarmerDashboardActivity extends BaseActivity {
 
             if (itemId == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
-            } else if (itemId == R.id.nav_services) {
-                selectedFragment = new ServicesFragment();
-            } else if (itemId == R.id.nav_marketplace) {
-                selectedFragment = new MarketplaceFragment();
-            } else if (itemId == R.id.nav_bookings) {
-                selectedFragment = new FarmAdvisorFragment();
+            } else if (itemId == R.id.nav_crop_planner) {
+                selectedFragment = new CropPlannerFragment();
             } else if (itemId == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
             }

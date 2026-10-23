@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E2E8F0"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header: Plan Type Badge & Suitability Score -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvPlanBadge"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Plan A: Balanced Best Fit"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/forest_green_dark"
+                android:background="@drawable/badge_rounded_green"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp" />
+
+            <TextView
+                android:id="@+id/tvSuitabilityScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="96% Fit"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#065F46"
+                android:background="#D1FAE5"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Crop Name and Variety -->
+        <TextView
+            android:id="@+id/tvCropName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Soybean (Phule Sangam - KDS 726)"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/tvUniversitySource"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="MPKV Rahuri / VNMKV Parbhani"
+            android:textSize="12sp"
+            android:textColor="@color/text_muted" />
+
+        <!-- Key Specs Row (Duration, Water, Cost, Yield) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:background="@color/bg_surface_tint"
+            android:padding="10dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Duration"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+                <TextView
+                    android:id="@+id/tvDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100-105 Days"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Water"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+                <TextView
+                    android:id="@+id/tvWaterDemand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Limited / Rainfed"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Target Yield"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+                <TextView
+                    android:id="@+id/tvTargetYield"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25-30 Qtl/ha"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green_primary" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Estimated Cost -->
+        <TextView
+            android:id="@+id/tvEstimatedCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Estimated Production Cost: ₹18,000 / acre"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary" />
+
+        <!-- Suitability Reasons -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Scientific Recommendation Rationale:"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/forest_green_dark" />
+
+        <TextView
+            android:id="@+id/tvSuitabilityReasons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="• Verified agro-climatic fit for district\n• Optimal nitrogen fixation following previous crop"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:lineSpacingExtra="2dp" />
+
+        <!-- Key Risks & Precautions -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Key Risks &amp; Precautions:"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#B91C1C" />
+
+        <TextView
+            android:id="@+id/tvKeyRisks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="• Vulnerable to continuous water-logging during pod filling."
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            android:lineSpacingExtra="2dp" />
+
+        <!-- Action Button: Save Plan -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSavePlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Save This Seasonal Plan"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            app:cornerRadius="10dp"
+            android:backgroundTint="@color/forest_green_primary"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

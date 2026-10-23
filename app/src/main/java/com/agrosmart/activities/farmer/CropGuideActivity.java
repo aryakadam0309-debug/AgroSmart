@@ -24,6 +24,23 @@ public class CropGuideActivity extends BaseActivity {
     private CropGuideViewModel viewModel;
     private CropGuideAdapter adapter;
 
+    private final String[] regions = {
+            "All Maharashtra",
+            "Western Maharashtra (Pune, Satara, Solapur, Nashik)",
+            "Marathwada (Chhatrapati Sambhajinagar, Latur, Nanded)",
+            "Vidarbha (Nagpur, Akola, Amravati)",
+            "Konkan (Ratnagiri, Sindhudurg, Raigad)"
+    };
+
+    private final String[] soilTypes = {
+            "All Soil Types",
+            "Black Cotton Soil (Regur)",
+            "Red Lateritic Soil",
+            "Sandy Loam Soil",
+            "Alluvial / Loamy Soil",
+            "Clayey Lowland Soil"
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +50,35 @@ public class CropGuideActivity extends BaseActivity {
         viewModel = new ViewModelProvider(this).get(CropGuideViewModel.class);
 
         setupToolbar();
+        setupSoilAndRegionSpinners();
         setupRecyclerView();
         setupFilters();
         observeViewModel();
+    }
+
+    private void setupSoilAndRegionSpinners() {
+        android.widget.ArrayAdapter<String> regionAdapter = new android.widget.ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, regions);
+        binding.spnGuideRegion.setAdapter(regionAdapter);
+
+        android.widget.ArrayAdapter<String> soilAdapter = new android.widget.ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, soilTypes);
+        binding.spnGuideSoil.setAdapter(soilAdapter);
+
+        android.widget.AdapterView.OnItemSelectedListener listener = new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                String selectedRegion = (String) binding.spnGuideRegion.getSelectedItem();
+                String selectedSoil = (String) binding.spnGuideSoil.getSelectedItem();
+                viewModel.filterBySoilAndRegion(selectedSoil, selectedRegion);
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        };
+
+        binding.spnGuideRegion.setOnItemSelectedListener(listener);
+        binding.spnGuideSoil.setOnItemSelectedListener(listener);
     }
 
     private void setupToolbar() {
