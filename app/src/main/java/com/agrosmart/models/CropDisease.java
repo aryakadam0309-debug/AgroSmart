@@ -13,12 +13,21 @@ public class CropDisease implements Serializable {
     private String preventiveMeasures;
     private String organicRemedy;
     private String chemicalControl;
+    private String region; // "Western Maharashtra", "Vidarbha", "Marathwada", "Konkan", "All Maharashtra"
 
     public CropDisease() {}
 
     public CropDisease(String id, String cropName, String diseaseName, String causalOrganism,
                        String severity, String symptoms, String favorableConditions,
                        String preventiveMeasures, String organicRemedy, String chemicalControl) {
+        this(id, cropName, diseaseName, causalOrganism, severity, symptoms, favorableConditions,
+                preventiveMeasures, organicRemedy, chemicalControl, "All Maharashtra");
+    }
+
+    public CropDisease(String id, String cropName, String diseaseName, String causalOrganism,
+                       String severity, String symptoms, String favorableConditions,
+                       String preventiveMeasures, String organicRemedy, String chemicalControl,
+                       String region) {
         this.id = id;
         this.cropName = cropName;
         this.diseaseName = diseaseName;
@@ -29,6 +38,7 @@ public class CropDisease implements Serializable {
         this.preventiveMeasures = preventiveMeasures;
         this.organicRemedy = organicRemedy;
         this.chemicalControl = chemicalControl;
+        this.region = region != null ? region : "All Maharashtra";
     }
 
     public String getId() { return id; }
@@ -41,4 +51,6 @@ public class CropDisease implements Serializable {
     public String getPreventiveMeasures() { return preventiveMeasures; }
     public String getOrganicRemedy() { return organicRemedy; }
     public String getChemicalControl() { return chemicalControl; }
+    public String getRegion() { return region != null ? region : "All Maharashtra"; }
+    public void setRegion(String region) { this.region = region; }
 }

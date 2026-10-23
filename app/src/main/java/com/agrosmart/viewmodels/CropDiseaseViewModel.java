@@ -17,6 +17,7 @@ public class CropDiseaseViewModel extends ViewModel {
 
     private String currentQuery = "";
     private String currentCrop = "All Crops";
+    private String currentRegion = "All Maharashtra";
 
     public CropDiseaseViewModel() {
         this.repository = CropDiseaseRepository.getInstance();
@@ -28,7 +29,7 @@ public class CropDiseaseViewModel extends ViewModel {
 
     public void loadDiseases() {
         isLoading.setValue(true);
-        LiveData<List<CropDisease>> res = repository.getDiseases(currentQuery, currentCrop);
+        LiveData<List<CropDisease>> res = repository.getDiseases(currentQuery, currentCrop, currentRegion);
         diseases.setValue(res.getValue());
         isLoading.setValue(false);
     }
@@ -40,6 +41,11 @@ public class CropDiseaseViewModel extends ViewModel {
 
     public void filterByCrop(String crop) {
         this.currentCrop = crop;
+        loadDiseases();
+    }
+
+    public void filterByRegion(String region) {
+        this.currentRegion = region != null ? region : "All Maharashtra";
         loadDiseases();
     }
 

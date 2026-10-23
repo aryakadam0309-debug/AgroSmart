@@ -32,6 +32,8 @@ public class CropDisease {
     @Column(columnDefinition = "TEXT")
     private String chemicalControl;
 
+    private String region;
+
     public CropDisease() {}
 
     public String getId() { return id; }
@@ -63,4 +65,7 @@ public class CropDisease {
 
     public String getChemicalControl() { return chemicalControl; }
     public void setChemicalControl(String chemicalControl) { this.chemicalControl = chemicalControl; }
+
+    public String getRegion() { return region != null ? region : "All Maharashtra"; }
+    public void setRegion(String region) { this.region = region; }
 }

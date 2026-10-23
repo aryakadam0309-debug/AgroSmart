@@ -29,7 +29,7 @@ public class CropDiseaseDetailActivity extends BaseActivity {
     private void bindData(CropDisease disease) {
         binding.detailDiseaseName.setText(disease.getDiseaseName());
         binding.detailCropAndPathogen.setText(disease.getCropName() + " • Pathogen: " + disease.getCausalOrganism());
-        binding.detailConditions.setText("⚠️ Favorable Weather: " + disease.getFavorableConditions());
+        binding.detailConditions.setText("⚠️ Favorable Weather: " + disease.getFavorableConditions() + "\n📍 Vulnerable Geographic Zones: " + disease.getRegion());
         binding.detailSymptoms.setText(disease.getSymptoms());
         binding.detailPrevention.setText(disease.getPreventiveMeasures());
         binding.detailOrganic.setText(disease.getOrganicRemedy());

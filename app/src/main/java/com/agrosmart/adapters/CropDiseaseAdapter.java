@@ -63,6 +63,7 @@ public class CropDiseaseAdapter extends RecyclerView.Adapter<CropDiseaseAdapter.
             binding.tvDiseaseCrop.setText("Crop: " + disease.getCropName());
             binding.tvDiseaseTitle.setText(disease.getDiseaseName());
             binding.tvSeverityBadge.setText(disease.getSeverity());
+            binding.tvDiseaseRegion.setText("📍 Prevalent in: " + disease.getRegion());
             binding.tvCausalOrganism.setText("Pathogen: " + disease.getCausalOrganism());
             binding.tvSymptomsPreview.setText("Symptoms: " + disease.getSymptoms());
 

@@ -27,7 +27,7 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Notice Banner: Strictly Encyclopedia / No Camera or AI -->
+        <!-- Notice Banner: Strictly Encyclopedia / Verified Remedies -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,38 +40,84 @@
             android:textSize="12sp"
             android:textColor="@color/forest_green_dark" />
 
+        <!-- Region Selector Card: Filter Out Irrelevant Diseases -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="10dp"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="14dp"
             app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#CBD5E1"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📍 Select Agro-Climatic Region"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green_dark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Only diseases prevalent in your region will be shown (irrelevant diseases hidden):"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+
+                <Spinner
+                    android:id="@+id/spnDiseaseRegion"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_spinner_border" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Search Input -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="1dp"
             app:strokeWidth="1dp"
             app:strokeColor="@color/divider_line">
 
             <EditText
                 android:id="@+id/etSearchDisease"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="44dp"
                 android:background="@null"
                 android:hint="Search disease or symptom (e.g. Rust, Blight)..."
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="@color/text_primary"
                 android:textColorHint="@color/text_muted"
                 android:inputType="text" />
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Crop Filter Chips -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="6dp">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupCropFilter"
@@ -88,11 +134,11 @@
                     android:text="All Crops" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipWheatD"
+                    android:id="@+id/chipCottonD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wheat" />
+                    android:text="Cotton" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipSoybeanD"
@@ -102,11 +148,25 @@
                     android:text="Soybean" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipCottonD"
+                    android:id="@+id/chipSugarcaneD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cotton" />
+                    android:text="Sugarcane" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipOnionD"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Onion" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPomegranateD"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pomegranate" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipRiceD"
@@ -114,6 +174,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rice" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipWheatD"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wheat" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTurD"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pigeonpea" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipTomatoD"
@@ -147,9 +221,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="No disease entries matched your search."
+                    android:text="No disease entries matched your region/crop filter."
                     android:textColor="@color/text_muted"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:visibility="gone" />
             </FrameLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

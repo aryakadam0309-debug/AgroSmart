@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,6 +26,14 @@ public class CropDiseaseActivity extends BaseActivity {
     private CropDiseaseViewModel viewModel;
     private CropDiseaseAdapter adapter;
 
+    private final String[] regions = {
+            "All Maharashtra (All Prevalent Diseases)",
+            "Western Maharashtra (Pune, Satara, Solapur, Nashik, Kolhapur)",
+            "Marathwada (Chhatrapati Sambhajinagar, Latur, Nanded, Jalna)",
+            "Vidarbha (Nagpur, Akola, Amravati, Yavatmal, Wardha)",
+            "Konkan (Ratnagiri, Sindhudurg, Raigad, Palghar)"
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +43,7 @@ public class CropDiseaseActivity extends BaseActivity {
         viewModel = new ViewModelProvider(this).get(CropDiseaseViewModel.class);
 
         setupToolbar();
+        setupRegionSpinner();
         setupRecyclerView();
         setupFilters();
         observeViewModel();
@@ -40,6 +51,23 @@ public class CropDiseaseActivity extends BaseActivity {
 
     private void setupToolbar() {
         binding.toolbarDisease.setNavigationOnClickListener(v -> finish());
+    }
+
+    private void setupRegionSpinner() {
+        ArrayAdapter<String> regionAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_dropdown_item, regions);
+        binding.spnDiseaseRegion.setAdapter(regionAdapter);
+
+        binding.spnDiseaseRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedRegion = (String) binding.spnDiseaseRegion.getSelectedItem();
+                viewModel.filterByRegion(selectedRegion);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private void setupRecyclerView() {

@@ -67,10 +67,20 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvCausalOrganism"
+            android:id="@+id/tvDiseaseRegion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:text="📍 Prevalent in: Western Maharashtra, Vidarbha"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/forest_green_dark" />
+
+        <TextView
+            android:id="@+id/tvCausalOrganism"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:text="Pathogen: Fungal (Puccinia striiformis)"
             android:textSize="12sp"
             android:textColor="@color/text_muted" />
