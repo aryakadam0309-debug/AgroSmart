@@ -40,11 +40,32 @@ public class DiseaseReport {
     @Column(name = "reported_at", length = 30)
     private String reportedAt;
 
-    @Column(name = "status", length = 30) // REPORTED, UNDER_REVIEW, PRELIMINARY_SIGNAL, VERIFIED_ALERT, RESOLVED
+    @Column(name = "status", length = 30) // REPORTED, UNDER_REVIEW, PRELIMINARY_SIGNAL, VERIFIED_ALERT, RESOLVED, PENDING_REVIEW, VERIFIED, NOT_VERIFIED
     private String status;
 
     @Column(name = "admin_advisory", columnDefinition = "TEXT")
     private String adminAdvisory;
+
+    @Column(name = "problem_category", length = 100)
+    private String problemCategory;
+
+    @Column(name = "growth_stage", length = 50)
+    private String growthStage;
+
+    @Column(name = "review_note", columnDefinition = "TEXT")
+    private String reviewNote;
+
+    @Column(name = "admin_guidance", columnDefinition = "TEXT")
+    private String adminGuidance;
+
+    @Column(name = "admin_source", length = 150)
+    private String adminSource;
+
+    @Column(name = "reviewed_by", length = 50)
+    private String reviewedBy;
+
+    @Column(name = "reviewed_at", length = 50)
+    private String reviewedAt;
 
     public DiseaseReport() {}
 
@@ -86,4 +107,25 @@ public class DiseaseReport {
 
     public String getAdminAdvisory() { return adminAdvisory; }
     public void setAdminAdvisory(String adminAdvisory) { this.adminAdvisory = adminAdvisory; }
+
+    public String getProblemCategory() { return problemCategory; }
+    public void setProblemCategory(String problemCategory) { this.problemCategory = problemCategory; }
+
+    public String getGrowthStage() { return growthStage; }
+    public void setGrowthStage(String growthStage) { this.growthStage = growthStage; }
+
+    public String getReviewNote() { return reviewNote; }
+    public void setReviewNote(String reviewNote) { this.reviewNote = reviewNote; }
+
+    public String getAdminGuidance() { return adminGuidance; }
+    public void setAdminGuidance(String adminGuidance) { this.adminGuidance = adminGuidance; }
+
+    public String getAdminSource() { return adminSource; }
+    public void setAdminSource(String adminSource) { this.adminSource = adminSource; }
+
+    public String getReviewedBy() { return reviewedBy; }
+    public void setReviewedBy(String reviewedBy) { this.reviewedBy = reviewedBy; }
+
+    public String getReviewedAt() { return reviewedAt; }
+    public void setReviewedAt(String reviewedAt) { this.reviewedAt = reviewedAt; }
 }

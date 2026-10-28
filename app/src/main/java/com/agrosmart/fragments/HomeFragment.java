@@ -52,6 +52,7 @@ public class HomeFragment extends Fragment {
         binding.cardDiseaseInfo.setOnClickListener(v -> openFeature("Crop Diseases", "com.agrosmart.activities.farmer.CropDiseaseActivity"));
         binding.cardCropRecommendation.setOnClickListener(v -> openFeature("Crop Recommendation", "com.agrosmart.activities.farmer.CropRecommendationActivity"));
         binding.cardNews.setOnClickListener(v -> openFeature("Agriculture News", "com.agrosmart.activities.farmer.NewsActivity"));
+        binding.cardCropWatch.setOnClickListener(v -> openFeature("Crop Watch", "com.agrosmart.activities.farmer.CropWatchActivity"));
         binding.ivNotification.setOnClickListener(v -> openFeature("Notifications", "com.agrosmart.activities.farmer.NotificationsActivity"));
     }
 

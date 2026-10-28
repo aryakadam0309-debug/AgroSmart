@@ -326,4 +326,41 @@
     <string name="change_language_btn">Change Language (भाषा बदला / बदलें)</string>
     <string name="land_holding">Land Holding</string>
     <string name="registered_phone">Registered Phone</string>
+
+    <!-- Crop Watch Strings -->
+    <string name="crop_watch_title">Crop Watch</string>
+    <string name="crop_watch_subtitle">Report crop problems and local alerts</string>
+    <string name="tab_report_problem">Report Problem</string>
+    <string name="tab_my_reports">My Reports</string>
+    <string name="tab_local_alerts">Local Alerts</string>
+    <string name="crop_watch_banner_title">Community Crop Watch</string>
+    <string name="crop_watch_banner_desc">Report unusual symptoms or pests to help identify localized problem clusters and receive verified agronomy guidance.</string>
+    <string name="label_affected_crop">Affected Crop:</string>
+    <string name="label_problem_category">Observed Problem Category:</string>
+    <string name="label_growth_stage">Crop Growth Stage:</string>
+    <string name="label_district">District</string>
+    <string name="label_village">Village / Locality</string>
+    <string name="hint_problem_description">Describe observed symptoms (optional)</string>
+    <string name="label_crop_photo_optional">Attach Photograph (Optional):</string>
+    <string name="btn_attach_photo">Choose Photo</string>
+    <string name="btn_submit_crop_report">Submit Problem Report</string>
+    <string name="empty_my_reports_title">No Reports Submitted Yet</string>
+    <string name="empty_my_reports_desc">Use the \'Report Problem\' tab to report symptoms or pest sightings on your farm.</string>
+    <string name="empty_alerts_title">No Active Regional Alerts</string>
+    <string name="empty_alerts_desc">No significant crop problem clusters or disease warnings in your locality at present.</string>
+    <string name="error_district_required">District is required</string>
+    <string name="crop_report_submitted_title">Report Submitted Successfully</string>
+    <string name="crop_report_submitted_msg">Your crop problem report has been recorded and submitted for agronomic triage.</string>
+    <string name="label_report_id">Reference ID</string>
+    <string name="label_crop">Crop</string>
+    <string name="label_status">Status</string>
+    <string name="crop_report_clustering_notice">Notice: Multiple similar reports from the same area help agricultural officers identify potential problem clusters to issue local advisories.</string>
+    <string name="btn_view_my_reports">View My Reports</string>
+    <string name="btn_ok">OK</string>
+    <string name="title_crop_watch_review">Crop Watch Review</string>
+    <string name="tab_admin_reports">Farmer Reports</string>
+    <string name="tab_admin_clusters">Potential Clusters</string>
+    <string name="tab_admin_alerts">Regional Alerts</string>
+    <string name="admin_crop_watch_review">Crop Watch Review</string>
+    <string name="admin_crop_watch_review_desc">Review farmer reports, clusters &amp; publish regional alerts</string>
 </resources>

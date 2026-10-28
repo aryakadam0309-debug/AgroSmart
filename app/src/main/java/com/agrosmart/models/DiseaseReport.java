@@ -14,8 +14,15 @@ public class DiseaseReport implements Serializable {
     private String district;
     private String imageUrl;
     private String reportedAt;
-    private String status; // REPORTED, UNDER_REVIEW, PRELIMINARY_SIGNAL, VERIFIED_ALERT, RESOLVED
+    private String status; // PENDING_REVIEW, UNDER_REVIEW, VERIFIED, NOT_VERIFIED, DUPLICATE, RESOLVED
     private String adminAdvisory;
+    private String problemCategory;
+    private String growthStage;
+    private String reviewNote;
+    private String adminGuidance;
+    private String adminSource;
+    private String reviewedBy;
+    private String reviewedAt;
 
     public DiseaseReport() {}
 
@@ -57,4 +64,25 @@ public class DiseaseReport implements Serializable {
 
     public String getAdminAdvisory() { return adminAdvisory; }
     public void setAdminAdvisory(String adminAdvisory) { this.adminAdvisory = adminAdvisory; }
+
+    public String getProblemCategory() { return problemCategory; }
+    public void setProblemCategory(String problemCategory) { this.problemCategory = problemCategory; }
+
+    public String getGrowthStage() { return growthStage; }
+    public void setGrowthStage(String growthStage) { this.growthStage = growthStage; }
+
+    public String getReviewNote() { return reviewNote; }
+    public void setReviewNote(String reviewNote) { this.reviewNote = reviewNote; }
+
+    public String getAdminGuidance() { return adminGuidance; }
+    public void setAdminGuidance(String adminGuidance) { this.adminGuidance = adminGuidance; }
+
+    public String getAdminSource() { return adminSource; }
+    public void setAdminSource(String adminSource) { this.adminSource = adminSource; }
+
+    public String getReviewedBy() { return reviewedBy; }
+    public void setReviewedBy(String reviewedBy) { this.reviewedBy = reviewedBy; }
+
+    public String getReviewedAt() { return reviewedAt; }
+    public void setReviewedAt(String reviewedAt) { this.reviewedAt = reviewedAt; }
 }

@@ -1,6 +1,8 @@
 package com.agrosmart.network;
 
 import com.agrosmart.models.AgriOrder;
+import com.agrosmart.models.CropAlert;
+import com.agrosmart.models.CropCluster;
 import com.agrosmart.models.CropDisease;
 import com.agrosmart.models.CropGuide;
 import com.agrosmart.models.CropHarvest;
@@ -16,12 +18,15 @@ import com.agrosmart.models.TractorBooking;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -298,6 +303,38 @@ public interface AgroSmartApiService {
     Call<com.agrosmart.models.DiseaseReport> updateDiseaseReportStatus(
             @Path("id") String id,
             @Body Map<String, String> payload
+    );
+
+    @PUT("crops/disease-reports/{id}/review")
+    Call<com.agrosmart.models.DiseaseReport> reviewDiseaseReport(
+            @Path("id") String id,
+            @Body Map<String, String> payload
+    );
+
+    @GET("crops/disease-reports/clusters")
+    Call<List<CropCluster>> getCropClusters();
+
+    @GET("crops/disease-reports/alerts")
+    Call<List<CropAlert>> getCropAlerts(
+            @Query("district") String district,
+            @Query("status") String status
+    );
+
+    @POST("crops/disease-reports/alerts")
+    Call<CropAlert> publishCropAlert(
+            @Body CropAlert alert
+    );
+
+    @PUT("crops/disease-reports/alerts/{id}/status")
+    Call<CropAlert> updateAlertStatus(
+            @Path("id") String id,
+            @Body Map<String, String> payload
+    );
+
+    @Multipart
+    @POST("crops/disease-reports/upload-image")
+    Call<Map<String, Object>> uploadCropImage(
+            @Part MultipartBody.Part file
     );
 
     // Farmer Field Testing & Feedback

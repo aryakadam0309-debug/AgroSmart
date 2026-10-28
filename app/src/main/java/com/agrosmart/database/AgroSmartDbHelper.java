@@ -36,7 +36,7 @@ import java.util.List;
 public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "agrosmart_local.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     private static AgroSmartDbHelper instance;
 
@@ -260,7 +260,31 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "image_url TEXT, " +
                 "reported_at TEXT, " +
                 "status TEXT, " +
-                "admin_advisory TEXT)");
+                "admin_advisory TEXT, " +
+                "problem_category TEXT, " +
+                "growth_stage TEXT, " +
+                "review_note TEXT, " +
+                "admin_guidance TEXT, " +
+                "admin_source TEXT, " +
+                "reviewed_by TEXT, " +
+                "reviewed_at TEXT)");
+
+        // 15B. Community Crop Alerts Table
+        db.execSQL("CREATE TABLE IF NOT EXISTS crop_alerts (" +
+                "id TEXT PRIMARY KEY, " +
+                "crop_name TEXT NOT NULL, " +
+                "district TEXT NOT NULL, " +
+                "village TEXT, " +
+                "alert_title TEXT NOT NULL, " +
+                "severity TEXT, " +
+                "summary TEXT NOT NULL, " +
+                "report_count INTEGER, " +
+                "authority TEXT, " +
+                "recommended_actions TEXT, " +
+                "status TEXT, " +
+                "published_by TEXT, " +
+                "published_at TEXT, " +
+                "resolved_at TEXT)");
 
         // 16. Farmer Field Feedback Table
         db.execSQL("CREATE TABLE IF NOT EXISTS farmer_feedback (" +
@@ -334,6 +358,30 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         } catch (Exception ignored) {
             // Column already exists
         }
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN problem_category TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN growth_stage TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN review_note TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN admin_guidance TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN admin_source TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN reviewed_by TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN reviewed_at TEXT"); } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS crop_alerts (" +
+                    "id TEXT PRIMARY KEY, " +
+                    "crop_name TEXT NOT NULL, " +
+                    "district TEXT NOT NULL, " +
+                    "village TEXT, " +
+                    "alert_title TEXT NOT NULL, " +
+                    "severity TEXT, " +
+                    "summary TEXT NOT NULL, " +
+                    "report_count INTEGER, " +
+                    "authority TEXT, " +
+                    "recommended_actions TEXT, " +
+                    "status TEXT, " +
+                    "published_by TEXT, " +
+                    "published_at TEXT, " +
+                    "resolved_at TEXT)");
+        } catch (Exception ignored) {}
     }
 
     private void seedInitialData(SQLiteDatabase db) {
@@ -1558,6 +1606,13 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         cv.put("reported_at", r.getReportedAt());
         cv.put("status", r.getStatus());
         cv.put("admin_advisory", r.getAdminAdvisory());
+        cv.put("problem_category", r.getProblemCategory());
+        cv.put("growth_stage", r.getGrowthStage());
+        cv.put("review_note", r.getReviewNote());
+        cv.put("admin_guidance", r.getAdminGuidance());
+        cv.put("admin_source", r.getAdminSource());
+        cv.put("reviewed_by", r.getReviewedBy());
+        cv.put("reviewed_at", r.getReviewedAt());
         return db.insertWithOnConflict("crop_disease_reports", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
     }
 
@@ -1587,7 +1642,98 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                     r.setReportedAt(c.getString(c.getColumnIndexOrThrow("reported_at")));
                     r.setStatus(c.getString(c.getColumnIndexOrThrow("status")));
                     r.setAdminAdvisory(c.getString(c.getColumnIndexOrThrow("admin_advisory")));
+
+                    int idxCat = c.getColumnIndex("problem_category");
+                    if (idxCat != -1) r.setProblemCategory(c.getString(idxCat));
+                    int idxStage = c.getColumnIndex("growth_stage");
+                    if (idxStage != -1) r.setGrowthStage(c.getString(idxStage));
+                    int idxNote = c.getColumnIndex("review_note");
+                    if (idxNote != -1) r.setReviewNote(c.getString(idxNote));
+                    int idxGuidance = c.getColumnIndex("admin_guidance");
+                    if (idxGuidance != -1) r.setAdminGuidance(c.getString(idxGuidance));
+                    int idxSource = c.getColumnIndex("admin_source");
+                    if (idxSource != -1) r.setAdminSource(c.getString(idxSource));
+                    int idxReviewer = c.getColumnIndex("reviewed_by");
+                    if (idxReviewer != -1) r.setReviewedBy(c.getString(idxReviewer));
+                    int idxRevAt = c.getColumnIndex("reviewed_at");
+                    if (idxRevAt != -1) r.setReviewedAt(c.getString(idxRevAt));
+
                     list.add(r);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    // =========================================================================
+    // COMMUNITY CROP ALERTS CRUD
+    // =========================================================================
+
+    public boolean insertCropAlert(com.agrosmart.models.CropAlert a) {
+        if (a == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", a.getId());
+        cv.put("crop_name", a.getCropName());
+        cv.put("district", a.getDistrict());
+        cv.put("village", a.getVillage());
+        cv.put("alert_title", a.getAlertTitle());
+        cv.put("severity", a.getSeverity());
+        cv.put("summary", a.getSummary());
+        cv.put("report_count", a.getReportCount());
+        cv.put("authority", a.getAuthority());
+        cv.put("recommended_actions", a.getRecommendedActions());
+        cv.put("status", a.getStatus());
+        cv.put("published_by", a.getPublishedBy());
+        cv.put("published_at", a.getPublishedAt());
+        cv.put("resolved_at", a.getResolvedAt());
+        return db.insertWithOnConflict("crop_alerts", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+    }
+
+    public List<com.agrosmart.models.CropAlert> getCropAlerts(String district, String status) {
+        List<com.agrosmart.models.CropAlert> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            String selection = null;
+            List<String> argsList = new ArrayList<>();
+
+            if (status != null && !status.trim().isEmpty() && !"ALL".equalsIgnoreCase(status)) {
+                selection = "status = ?";
+                argsList.add(status.trim().toUpperCase());
+            }
+            if (district != null && !district.trim().isEmpty()) {
+                if (selection == null) {
+                    selection = "district = ?";
+                } else {
+                    selection += " AND district = ?";
+                }
+                argsList.add(district.trim());
+            }
+
+            String[] args = argsList.isEmpty() ? null : argsList.toArray(new String[0]);
+            c = db.query("crop_alerts", null, selection, args, null, null, "published_at DESC");
+
+            if (c != null && c.moveToFirst()) {
+                do {
+                    com.agrosmart.models.CropAlert a = new com.agrosmart.models.CropAlert();
+                    a.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    a.setCropName(c.getString(c.getColumnIndexOrThrow("crop_name")));
+                    a.setDistrict(c.getString(c.getColumnIndexOrThrow("district")));
+                    a.setVillage(c.getString(c.getColumnIndexOrThrow("village")));
+                    a.setAlertTitle(c.getString(c.getColumnIndexOrThrow("alert_title")));
+                    a.setSeverity(c.getString(c.getColumnIndexOrThrow("severity")));
+                    a.setSummary(c.getString(c.getColumnIndexOrThrow("summary")));
+                    a.setReportCount(c.getInt(c.getColumnIndexOrThrow("report_count")));
+                    a.setAuthority(c.getString(c.getColumnIndexOrThrow("authority")));
+                    a.setRecommendedActions(c.getString(c.getColumnIndexOrThrow("recommended_actions")));
+                    a.setStatus(c.getString(c.getColumnIndexOrThrow("status")));
+                    a.setPublishedBy(c.getString(c.getColumnIndexOrThrow("published_by")));
+                    a.setPublishedAt(c.getString(c.getColumnIndexOrThrow("published_at")));
+                    a.setResolvedAt(c.getString(c.getColumnIndexOrThrow("resolved_at")));
+                    list.add(a);
                 } while (c.moveToNext());
             }
         } finally {

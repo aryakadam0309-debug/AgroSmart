@@ -139,6 +139,18 @@
             android:name=".activities.farmer.DiseaseReportActivity"
             android:exported="false" />
 
+        <!-- Crop Watch — Community Problem Detection & Alerts -->
+        <activity
+            android:name=".activities.farmer.CropWatchActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Admin Crop Watch Review -->
+        <activity
+            android:name=".activities.admin.AdminCropWatchActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Farmer Field Testing Feedback -->
         <activity
             android:name=".activities.farmer.FarmerFeedbackActivity"

@@ -11,4 +11,6 @@ public interface DiseaseReportRepository extends JpaRepository<DiseaseReport, St
     List<DiseaseReport> findByFarmerPhoneOrderByReportedAtDesc(String farmerPhone);
     List<DiseaseReport> findByDistrictOrderByReportedAtDesc(String district);
     List<DiseaseReport> findByStatusOrderByReportedAtDesc(String status);
+    List<DiseaseReport> findByCropNameOrderByReportedAtDesc(String cropName);
+    List<DiseaseReport> findAllByOrderByReportedAtDesc();
 }

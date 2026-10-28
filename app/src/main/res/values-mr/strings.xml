@@ -325,4 +325,41 @@
     <string name="change_language_btn">भाषा बदला (Change Language)</string>
     <string name="land_holding">जमीन क्षेत्र</string>
     <string name="registered_phone">नोंदणीकृत मोबाईल</string>
+
+    <!-- Crop Watch Strings Marathi -->
+    <string name="crop_watch_title">पीक संरक्षण (Crop Watch)</string>
+    <string name="crop_watch_subtitle">पीक समस्यांची नोंद आणि स्थानिक सूचना</string>
+    <string name="tab_report_problem">समस्या नोंदवा</string>
+    <string name="tab_my_reports">माझे अहवाल</string>
+    <string name="tab_local_alerts">स्थानिक सूचना</string>
+    <string name="crop_watch_banner_title">समुदाय पीक संरक्षण (Crop Watch)</string>
+    <string name="crop_watch_banner_desc">स्थानिक कीड व रोगांचा प्रादुर्भाव ओळखण्यासाठी आणि अधिकृत कृषी सल्ला मिळवण्यासाठी असामान्य लक्षणे नोंदवा.</string>
+    <string name="label_affected_crop">बाधित पीक:</string>
+    <string name="label_problem_category">निरीक्षण केलेली समस्या श्रेणी:</string>
+    <string name="label_growth_stage">पिकाची वाढीची अवस्था:</string>
+    <string name="label_district">जिल्हा</string>
+    <string name="label_village">गाव / परिसर</string>
+    <string name="hint_problem_description">दिसणारी लक्षणे थोडक्यात सांगा (ऐच्छिक)</string>
+    <string name="label_crop_photo_optional">पिकाचे छायाचित्र जोडा (ऐच्छिक):</string>
+    <string name="btn_attach_photo">फोटो निवडा</string>
+    <string name="btn_submit_crop_report">समस्या अहवाल सबमिट करा</string>
+    <string name="empty_my_reports_title">अद्याप कोणताही अहवाल नाही</string>
+    <string name="empty_my_reports_desc">आपल्या शेतातील कीड किंवा रोगाची लक्षणे नोंदवण्यासाठी \'समस्या नोंदवा\' टॅब वापरा.</string>
+    <string name="empty_alerts_title">कोणतीही सक्रिय स्थानिक सूचना नाही</string>
+    <string name="empty_alerts_desc">सध्या आपल्या परिसरात कोणतीही मोठी पीक समस्या किंवा रोगाचा इशारा नाही.</string>
+    <string name="error_district_required">जिल्हा आवश्यक आहे</string>
+    <string name="crop_report_submitted_title">अहवाल यशस्वीरीत्या सबमिट झाला</string>
+    <string name="crop_report_submitted_msg">आपला पीक समस्या अहवाल नोंदवला गेला असून कृषी अधिकाऱ्यांच्या पडताळणीसाठी पाठवला आहे.</string>
+    <string name="label_report_id">संदर्भ क्रमांक</string>
+    <string name="label_crop">पीक</string>
+    <string name="label_status">स्थिती</string>
+    <string name="crop_report_clustering_notice">टीप: एकाच भागातून येणारे एकापेक्षा जास्त अहवाल कृषी अधिकाऱ्यांना समस्या समजून स्थानिक सल्ला देण्यास मदत करतात.</string>
+    <string name="btn_view_my_reports">माझे अहवाल पहा</string>
+    <string name="btn_ok">ठीक आहे</string>
+    <string name="title_crop_watch_review">क्रॉप वॉच पुनरावलोकन</string>
+    <string name="tab_admin_reports">शेतकरी अहवाल</string>
+    <string name="tab_admin_clusters">संभाव्य क्लस्टर्स</string>
+    <string name="tab_admin_alerts">स्थानिक सूचना</string>
+    <string name="admin_crop_watch_review">क्रॉप वॉच पुनरावलोकन</string>
+    <string name="admin_crop_watch_review_desc">शेतकरी अहवाल, क्लस्टर्स तपासा आणि स्थानिक सूचना प्रसिद्ध करा</string>
 </resources>

@@ -325,4 +325,41 @@
     <string name="change_language_btn">भाषा बदलें (Change Language)</string>
     <string name="land_holding">भूमि क्षेत्र</string>
     <string name="registered_phone">पंजीकृत मोबाइल</string>
+
+    <!-- Crop Watch Strings Hindi -->
+    <string name="crop_watch_title">फसल सुरक्षा (Crop Watch)</string>
+    <string name="crop_watch_subtitle">फसल समस्याओं की रिपोर्ट और स्थानीय अलर्ट</string>
+    <string name="tab_report_problem">समस्या रिपोर्ट करें</string>
+    <string name="tab_my_reports">मेरी रिपोर्ट्स</string>
+    <string name="tab_local_alerts">स्थानीय अलर्ट</string>
+    <string name="crop_watch_banner_title">सामुदायिक फसल सुरक्षा (Crop Watch)</string>
+    <string name="crop_watch_banner_desc">स्थानीय कीट और रोगों की पहचान करने और प्रमाणित कृषि सलाह पाने के लिए असामान्य लक्षणों की रिपोर्ट करें।</string>
+    <string name="label_affected_crop">प्रभावित फसल:</string>
+    <string name="label_problem_category">देखी गई समस्या श्रेणी:</string>
+    <string name="label_growth_stage">फसल विकास अवस्था:</string>
+    <string name="label_district">जिला</string>
+    <string name="label_village">गाँव / क्षेत्र</string>
+    <string name="hint_problem_description">देखे गए लक्षणों का विवरण दें (वैकल्पिक)</string>
+    <string name="label_crop_photo_optional">फसल की फोटो संलग्न करें (वैकल्पिक):</string>
+    <string name="btn_attach_photo">फोटो चुनें</string>
+    <string name="btn_submit_crop_report">समस्या रिपोर्ट सबमिट करें</string>
+    <string name="empty_my_reports_title">अभी तक कोई रिपोर्ट सबमिट नहीं की गई</string>
+    <string name="empty_my_reports_desc">अपने खेत में कीट या बीमारी के लक्षण रिपोर्ट करने के लिए \'समस्या रिपोर्ट करें\' टैब का उपयोग करें।</string>
+    <string name="empty_alerts_title">कोई सक्रिय क्षेत्रीय अलर्ट नहीं</string>
+    <string name="empty_alerts_desc">वर्तमान में आपके क्षेत्र में कोई गंभीर फसल समस्या क्लस्टर या बीमारी की चेतावनी नहीं है।</string>
+    <string name="error_district_required">जिला आवश्यक है</string>
+    <string name="crop_report_submitted_title">रिपोर्ट सफलतापूर्वक सबमिट हुई</string>
+    <string name="crop_report_submitted_msg">आपकी फसल समस्या रिपोर्ट दर्ज कर ली गई है और कृषि जांच के लिए भेजी गई है।</string>
+    <string name="label_report_id">संदर्भ आईडी</string>
+    <string name="label_crop">फसल</string>
+    <string name="label_status">स्थिति</string>
+    <string name="crop_report_clustering_notice">सूचना: एक ही क्षेत्र से आने वाली कई रिपोर्ट कृषि अधिकारियों को क्लस्टर की पहचान कर स्थानीय सलाह जारी करने में मदद करती हैं।</string>
+    <string name="btn_view_my_reports">मेरी रिपोर्ट्स देखें</string>
+    <string name="btn_ok">ठीक है</string>
+    <string name="title_crop_watch_review">क्रॉप वॉच समीक्षा</string>
+    <string name="tab_admin_reports">किसान रिपोर्ट्स</string>
+    <string name="tab_admin_clusters">संभावित क्लस्टर</string>
+    <string name="tab_admin_alerts">क्षेत्रीय अलर्ट</string>
+    <string name="admin_crop_watch_review">क्रॉप वॉच समीक्षा</string>
+    <string name="admin_crop_watch_review_desc">किसान रिपोर्ट, क्लस्टर जांचें और क्षेत्रीय अलर्ट जारी करें</string>
 </resources>

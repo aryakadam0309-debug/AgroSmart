@@ -88,8 +88,8 @@ public class AdminDashboardActivity extends BaseActivity {
         binding.cardManageFeedback.setOnClickListener(v ->
                 startActivity(new Intent(this, AdminFeedbackActivity.class)));
 
-        binding.cardTriageDisease.setOnClickListener(v ->
-                startActivity(new Intent(this, DiseaseReportActivity.class)));
+        binding.cardCropWatchReview.setOnClickListener(v ->
+                startActivity(new Intent(this, AdminCropWatchActivity.class)));
 
         binding.cardBroadcastAlerts.setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationsActivity.class)));
