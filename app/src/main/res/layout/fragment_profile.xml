@@ -12,14 +12,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Top Profile Header & Avatar Card -->
+        <!-- Top Profile Header & Avatar Hero Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="14dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="3dp"
             app:strokeColor="@color/divider_line"
             app:strokeWidth="1dp">
 
@@ -30,11 +30,11 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingTop="28dp"
-                android:paddingBottom="24dp"
+                android:paddingBottom="22dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp">
 
-                <!-- Circular Avatar Container with Camera Badge -->
+                <!-- Circular Avatar with Camera Badge -->
                 <FrameLayout
                     android:layout_width="104dp"
                     android:layout_height="104dp">
@@ -50,31 +50,31 @@
                         app:strokeColor="@color/white"
                         app:strokeWidth="3dp" />
 
-                    <!-- Camera icon badge for changing photo -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnChangeAvatar"
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_gravity="bottom|end"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackground"
                         app:cardBackgroundColor="@color/forest_green_dark"
-                        app:cardCornerRadius="17dp"
+                        app:cardCornerRadius="16dp"
                         app:cardElevation="4dp"
                         app:strokeColor="@color/white"
                         app:strokeWidth="2dp">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
                             android:layout_gravity="center"
-                            android:contentDescription="Change profile picture"
+                            android:contentDescription="Change Photo"
                             android:src="@android:drawable/ic_menu_camera"
                             app:tint="@color/white" />
                     </com.google.android.material.card.MaterialCardView>
                 </FrameLayout>
 
+                <!-- Farmer Name -->
                 <TextView
                     android:id="@+id/tvProfileNameHeader"
                     android:layout_width="wrap_content"
@@ -85,31 +85,207 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <!-- Role Badge -->
-                <TextView
-                    android:id="@+id/tvProfileRoleBadge"
+                <!-- Badges Row: Role & Sync State -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:background="@drawable/bg_rounded_card"
-                    android:backgroundTint="#33FFFFFF"
-                    android:paddingStart="14dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="4dp"
-                    android:text="🌱 REGISTERED FARMER"
-                    android:textColor="@color/forest_green_surface"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvProfileRoleBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_rounded_card"
+                        android:backgroundTint="#33FFFFFF"
+                        android:paddingStart="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/registered_farmer"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSyncStatusBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_rounded_card"
+                        android:backgroundTint="#26FFFFFF"
+                        android:paddingStart="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/database_synced"
+                        android:textColor="@color/forest_green_surface"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Quick Farm Stats Chips Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:orientation="horizontal">
+
+            <!-- Stat 1: Acreage -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider_line"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🌾"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tvStatFarmSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="5.0 Ac"
+                        android:textColor="@color/forest_green_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/land_holding"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Stat 2: Location -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_weight="1.2"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider_line"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📍"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tvStatLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Maharashtra"
+                        android:textColor="@color/forest_green_dark"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/farm_location"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Stat 3: Status -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/divider_line"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🛡️"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tvStatRole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/active_status"
+                        android:textColor="@color/forest_green_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
         <!-- VIEW MODE CARD -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardProfileView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="14dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="16dp"
             app:cardElevation="1dp"
@@ -125,7 +301,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Farmer &amp; Farm Information"
+                    android:text="@string/personal_info"
                     android:textColor="@color/forest_green_dark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -141,7 +317,7 @@
                     android:id="@+id/tvProfilePhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="12dp"
                     android:text="📱 Mobile: +91 9876543210"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
@@ -150,7 +326,7 @@
                     android:id="@+id/tvProfileEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="12dp"
                     android:text="✉️ Email: farmer@agrosmart.in"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
@@ -159,8 +335,8 @@
                     android:id="@+id/tvProfileLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="📍 Farm Location: Mumbai, Maharashtra"
+                    android:layout_marginBottom="12dp"
+                    android:text="📍 Farm Location: Maharashtra"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
 
@@ -169,7 +345,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="🌾 Farm Size: 5.5 Acres"
+                    android:text="🌾 Farm Size: 5.0 Acres"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp" />
 
@@ -178,7 +354,7 @@
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✏️ Edit Profile Details"
+                    android:text="@string/edit_profile"
                     android:textColor="@color/forest_green_primary"
                     app:strokeColor="@color/forest_green_primary" />
             </LinearLayout>
@@ -189,7 +365,7 @@
             android:id="@+id/cardProfileEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="14dp"
             android:visibility="gone"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="16dp"
@@ -206,7 +382,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="✏️ Edit Profile Information"
+                    android:text="@string/edit_profile_title"
                     android:textColor="@color/forest_green_dark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -215,7 +391,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="Full Name *"
+                    android:hint="@string/full_name"
                     app:boxCornerRadiusBottomEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusTopEnd="10dp"
@@ -233,7 +409,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="Email Address"
+                    android:hint="@string/email_address"
                     app:boxCornerRadiusBottomEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusTopEnd="10dp"
@@ -251,7 +427,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="Farm Location / Village *"
+                    android:hint="@string/farm_location"
                     app:boxCornerRadiusBottomEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusTopEnd="10dp"
@@ -270,7 +446,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📡 Detect GPS Location"
+                    android:text="@string/detect_gps"
                     android:textColor="@color/forest_green_primary"
                     android:textSize="12sp" />
 
@@ -278,7 +454,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:hint="Farm Holdings (Acres) *"
+                    android:hint="@string/farm_size_acres"
                     app:boxCornerRadiusBottomEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusTopEnd="10dp"
@@ -305,7 +481,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="✕ Cancel"
+                        android:text="@string/cancel"
                         android:textColor="@color/text_secondary" />
 
                     <com.google.android.material.button.MaterialButton
@@ -316,13 +492,13 @@
                         android:layout_marginStart="10dp"
                         android:layout_weight="1.2"
                         android:backgroundTint="@color/forest_green_primary"
-                        android:text="💾 Save Changes"
+                        android:text="@string/save_changes"
                         android:textColor="@color/white" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Quick Actions & Settings Card -->
+        <!-- Quick Actions, Preferences & Database Sync Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -342,7 +518,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Preferences &amp; Actions"
+                    android:text="@string/app_settings"
                     android:textColor="@color/forest_green_dark"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -354,14 +530,15 @@
                     android:layout_marginBottom="14dp"
                     android:background="@color/divider_line" />
 
+                <!-- Manual Cloud Database Sync Button -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAdminDashboard"
+                    android:id="@+id/btnSyncDatabase"
                     style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:text="⚙️ Admin Control Center"
-                    android:visibility="gone" />
+                    android:text="@string/sync_database"
+                    android:textColor="@color/forest_green_dark" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnChangeLanguage"
@@ -369,7 +546,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:text="🌐 Change Language (भाषा बदला)" />
+                    android:text="@string/change_language_btn" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAdminDashboard"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/admin_control_center"
+                    android:visibility="gone" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLogout"

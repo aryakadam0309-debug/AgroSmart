@@ -36,7 +36,7 @@ import java.util.List;
 public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "agrosmart_local.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private static AgroSmartDbHelper instance;
 
@@ -63,7 +63,8 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "role TEXT NOT NULL DEFAULT 'ROLE_FARMER', " +
                 "location TEXT, " +
                 "farm_size REAL DEFAULT 1.0, " +
-                "profile_image_url TEXT)");
+                "profile_image_url TEXT, " +
+                "is_synced INTEGER DEFAULT 0)");
 
         // 2. Tractors Table
         db.execSQL("CREATE TABLE IF NOT EXISTS tractors (" +
@@ -325,6 +326,16 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        try {
+            db.execSQL("ALTER TABLE users ADD COLUMN is_synced INTEGER DEFAULT 0");
+        } catch (Exception ignored) {
+            // Column already exists
+        }
+    }
+
     private void seedInitialData(SQLiteDatabase db) {
         // Seed default farmer
         ContentValues userValues = new ContentValues();
@@ -556,8 +567,9 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
     // ==========================================
     public User authenticateUser(String phoneOrEmail, String password, String role) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE (phone = ? OR email = ?) AND password = ? AND role = ?",
-                new String[]{phoneOrEmail, phoneOrEmail, password, role});
+        // Allow flexible authentication by phone or email and password
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE (phone = ? OR email = ?) AND password = ?",
+                new String[]{phoneOrEmail, phoneOrEmail, password});
         if (cursor != null && cursor.moveToFirst()) {
             User user = new User();
             user.setId(cursor.getLong(cursor.getColumnIndexOrThrow("id")));
@@ -656,12 +668,70 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         cv.put("role", user.getRole() != null ? user.getRole() : "ROLE_FARMER");
         cv.put("location", user.getLocation());
         cv.put("farm_size", user.getFarmSize());
-        long id = db.insertWithOnConflict("users", null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+        cv.put("is_synced", 0);
+        long id = db.insertWithOnConflict("users", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         if (id > 0) {
             user.setId(id);
             return true;
+        } else {
+            int rows = db.update("users", cv, "phone = ?", new String[]{user.getPhone()});
+            return rows > 0;
         }
-        return false;
+    }
+
+    public void markUserSynced(String phone, boolean synced) {
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("is_synced", synced ? 1 : 0);
+            db.update("users", cv, "phone = ?", new String[]{phone});
+        } catch (Exception e) {
+            android.util.Log.e("AgroSmartDbHelper", "Error updating is_synced: " + e.getMessage());
+        }
+    }
+
+    public boolean isUserSynced(String phone) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT is_synced FROM users WHERE phone = ?", new String[]{phone});
+        boolean synced = false;
+        if (cursor != null && cursor.moveToFirst()) {
+            synced = cursor.getInt(0) == 1;
+            cursor.close();
+        } else if (cursor != null) {
+            cursor.close();
+        }
+        return synced;
+    }
+
+    public java.util.List<java.util.Map<String, String>> getPendingSyncUsers() {
+        java.util.List<java.util.Map<String, String>> list = new java.util.ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE is_synced = 0 OR is_synced IS NULL", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                java.util.Map<String, String> map = new java.util.HashMap<>();
+                int nameIdx = cursor.getColumnIndex("full_name");
+                int phoneIdx = cursor.getColumnIndex("phone");
+                int emailIdx = cursor.getColumnIndex("email");
+                int passIdx = cursor.getColumnIndex("password");
+                int roleIdx = cursor.getColumnIndex("role");
+                int locIdx = cursor.getColumnIndex("location");
+                int farmIdx = cursor.getColumnIndex("farm_size");
+
+                map.put("fullName", nameIdx != -1 ? cursor.getString(nameIdx) : "Farmer");
+                map.put("phone", phoneIdx != -1 ? cursor.getString(phoneIdx) : "");
+                map.put("email", emailIdx != -1 ? cursor.getString(emailIdx) : "");
+                map.put("password", passIdx != -1 ? cursor.getString(passIdx) : "");
+                map.put("role", roleIdx != -1 ? cursor.getString(roleIdx) : "ROLE_FARMER");
+                map.put("location", locIdx != -1 ? cursor.getString(locIdx) : "Maharashtra");
+                map.put("farmSize", farmIdx != -1 ? String.valueOf(cursor.getDouble(farmIdx)) : "1.0");
+                list.add(map);
+            } while (cursor.moveToNext());
+            cursor.close();
+        } else if (cursor != null) {
+            cursor.close();
+        }
+        return list;
     }
 
     public boolean resetUserPassword(String phone, String newPassword) {

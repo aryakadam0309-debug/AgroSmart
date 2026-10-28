@@ -153,7 +153,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Partly Cloudy • Favorable for Field Spraying"
+                    android:text="@string/weather_condition_sample"
                     android:textColor="@color/golden_harvest"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -189,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="DEMO STRATEGY ACTIVE: Displaying simulated offline farm forecast for Software Engineering evaluation."
+                    android:text="@string/weather_demo_banner"
                     android:textColor="#856404"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -236,7 +236,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Humidity"
+                            android:text="@string/humidity"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -274,7 +274,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Wind"
+                            android:text="@string/wind_speed"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -321,7 +321,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rain Chance"
+                            android:text="@string/rainfall"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -359,7 +359,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pressure"
+                            android:text="@string/pressure"
                             android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>

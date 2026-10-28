@@ -191,7 +191,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginEnd="12dp"
-                            android:text="OR"
+                            android:text="@string/or_text"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -209,7 +209,7 @@
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="Continue with Google"
+                        android:text="@string/continue_with_google"
                         android:textColor="@color/text_primary"
                         app:cornerRadius="8dp" />
 

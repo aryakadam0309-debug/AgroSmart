@@ -63,7 +63,25 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         if (userRepository.existsByPhone(req.phone)) {
-            return ResponseEntity.badRequest().body(new AuthResponse(false, null, null, null, null, "Phone number already in use."));
+            // If phone already registered, update user record to maintain dual-mode sync consistency
+            java.util.Optional<User> existingUserOpt = userRepository.findByPhone(req.phone);
+            if (existingUserOpt.isPresent()) {
+                User existing = existingUserOpt.get();
+                if (req.fullName != null && !req.fullName.isEmpty()) existing.setFullName(req.fullName);
+                if (req.email != null && !req.email.isEmpty()) existing.setEmail(req.email);
+                if (req.password != null && !req.password.isEmpty()) {
+                    existing.setPassword(passwordEncoder.encode(req.password));
+                }
+                if (req.village != null) existing.setVillage(req.village);
+                if (req.district != null) existing.setDistrict(req.district);
+                if (req.state != null) existing.setState(req.state);
+                if (req.landAreaAcres != null) existing.setLandAreaAcres(req.landAreaAcres);
+
+                User updated = userRepository.save(existing);
+                loginLogRepository.save(new UserLoginLog(updated.getId(), updated.getPhone(), updated.getRole(), "SUCCESS_UPDATED_SYNC"));
+                String token = tokenProvider.generateToken(updated.getPhone(), updated.getRole());
+                return ResponseEntity.ok(new AuthResponse(true, token, updated.getRole(), updated.getFullName(), updated.getPhone(), "Registration updated and synchronized successfully!"));
+            }
         }
 
         String encodedPassword = passwordEncoder.encode(req.password);

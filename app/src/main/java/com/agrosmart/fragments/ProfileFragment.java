@@ -122,18 +122,36 @@ public class ProfileFragment extends Fragment {
 
         String role = sessionManager.getUserRole();
         if (Constants.ROLE_ADMIN.equals(role)) {
-            binding.tvProfileRoleBadge.setText("🛡️ SYSTEM ADMINISTRATOR");
+            binding.tvProfileRoleBadge.setText(getString(R.string.system_admin));
             binding.tvProfileRoleBadge.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#33FFFFFF")));
             binding.btnAdminDashboard.setVisibility(View.VISIBLE);
         } else {
-            binding.tvProfileRoleBadge.setText("🌱 REGISTERED FARMER");
+            binding.tvProfileRoleBadge.setText(getString(R.string.registered_farmer));
             binding.btnAdminDashboard.setVisibility(View.GONE);
         }
 
-        binding.tvProfilePhone.setText("📱 Mobile: +91 " + (phone != null ? phone : "9876543210"));
-        binding.tvProfileEmail.setText("✉️ Email: " + (email != null && !email.isEmpty() ? email : "Not specified"));
-        binding.tvProfileLocation.setText("📍 Farm Location: " + (location != null && !location.isEmpty() ? location : "Mumbai, Maharashtra"));
-        binding.tvProfileFarmSize.setText("🌾 Farm Size: " + farmSize + " Acres");
+        // Live Database Sync Badge
+        boolean isSynced = phone != null && dbHelper.isUserSynced(phone);
+        if (isSynced) {
+            binding.tvSyncStatusBadge.setText(getString(R.string.database_synced));
+            binding.tvSyncStatusBadge.setTextColor(Color.parseColor("#E8F5E9"));
+            binding.tvSyncStatusBadge.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#334CAF50")));
+        } else {
+            binding.tvSyncStatusBadge.setText(getString(R.string.database_offline_pending));
+            binding.tvSyncStatusBadge.setTextColor(Color.parseColor("#FFF3E0"));
+            binding.tvSyncStatusBadge.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#33FF9800")));
+        }
+
+        // Quick Stats Tiles
+        binding.tvStatFarmSize.setText(String.format(Locale.getDefault(), "%.1f Ac", farmSize));
+        binding.tvStatLocation.setText(location != null && !location.isEmpty() ? location : "Maharashtra");
+        binding.tvStatRole.setText(getString(R.string.active_status));
+
+        // Details Card
+        binding.tvProfilePhone.setText("📱 " + getString(R.string.registered_phone) + ": +91 " + (phone != null ? phone : "9876543210"));
+        binding.tvProfileEmail.setText("✉️ " + getString(R.string.email_address) + ": " + (email != null && !email.isEmpty() ? email : "farmer@agrosmart.in"));
+        binding.tvProfileLocation.setText("📍 " + getString(R.string.farm_location) + ": " + (location != null && !location.isEmpty() ? location : "Maharashtra"));
+        binding.tvProfileFarmSize.setText("🌾 " + getString(R.string.farm_size_acres) + ": " + farmSize);
 
         // Load avatar image
         loadAvatarImage(profileImage);
@@ -190,8 +208,29 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
 
+        // Manual Cloud Database Sync Button
+        binding.btnSyncDatabase.setOnClickListener(v -> syncDatabaseNow());
+
         // Logout with confirmation
         binding.btnLogout.setOnClickListener(v -> showLogoutConfirmation());
+    }
+
+    private void syncDatabaseNow() {
+        Toast.makeText(requireContext(), "Checking cloud database connectivity...", Toast.LENGTH_SHORT).show();
+        binding.btnSyncDatabase.setEnabled(false);
+        binding.btnSyncDatabase.setText("Synchronizing with MySQL...");
+
+        com.agrosmart.repository.AuthRepository authRepo = new com.agrosmart.repository.AuthRepository(requireContext());
+        authRepo.syncPendingUsersWithBackend((syncedCount, pendingCount, message) -> {
+            if (isAdded() && getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    binding.btnSyncDatabase.setEnabled(true);
+                    binding.btnSyncDatabase.setText(R.string.sync_database);
+                    populateProfileUI();
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 
     private void enterEditMode() {

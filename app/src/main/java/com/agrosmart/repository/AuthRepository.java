@@ -194,9 +194,10 @@ public class AuthRepository {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    dbHelper.markUserSynced(cleanPhone, true);
                     Log.i("AuthRepository", "New user persisted into MySQL database successfully: " + cleanPhone);
                 } else {
-                    Log.w("AuthRepository", "Backend rejected registration (HTTP " + response.code() + ")");
+                    Log.w("AuthRepository", "Backend rejected registration (HTTP " + response.code() + "), stored in local SQLite");
                 }
             }
 
@@ -207,6 +208,64 @@ public class AuthRepository {
         });
 
         callback.onSuccess(user);
+    }
+
+    public interface SyncCallback {
+        void onSyncComplete(int syncedCount, int pendingCount, String message);
+    }
+
+    public void syncPendingUsersWithBackend(SyncCallback callback) {
+        new Thread(() -> {
+            java.util.List<Map<String, String>> pendingList = dbHelper.getPendingSyncUsers();
+            if (pendingList == null || pendingList.isEmpty()) {
+                if (callback != null) callback.onSyncComplete(0, 0, "All local records are already synchronized with MySQL database.");
+                return;
+            }
+
+            int[] counts = new int[]{0, pendingList.size()};
+            for (Map<String, String> userMap : pendingList) {
+                String phone = userMap.get("phone");
+                String fullName = userMap.get("fullName");
+                String email = userMap.get("email");
+                String password = userMap.get("password");
+                String role = userMap.get("role");
+                String location = userMap.get("location");
+                double farmSize = 1.0;
+                try {
+                    farmSize = Double.parseDouble(userMap.get("farmSize"));
+                } catch (Exception ignored) {}
+
+                Map<String, Object> req = new HashMap<>();
+                req.put("fullName", fullName);
+                req.put("phone", phone);
+                req.put("email", email);
+                req.put("password", password != null && !password.isEmpty() ? password : "password123");
+                req.put("role", role != null ? role : "ROLE_FARMER");
+                req.put("village", location != null && !location.isEmpty() ? location : "Field Village");
+                req.put("district", "Field District");
+                req.put("state", "Maharashtra");
+                req.put("landAreaAcres", farmSize);
+
+                try {
+                    Response<Map<String, Object>> response = apiService.registerUser(req).execute();
+                    if (response.isSuccessful()) {
+                        dbHelper.markUserSynced(phone, true);
+                        counts[0]++;
+                        Log.i("AuthRepository", "Synced offline user to MySQL: " + phone);
+                    }
+                } catch (Exception e) {
+                    Log.w("AuthRepository", "Failed syncing user " + phone + ": " + e.getMessage());
+                }
+            }
+
+            if (callback != null) {
+                int remaining = counts[1] - counts[0];
+                String msg = counts[0] > 0
+                        ? "Successfully synchronized " + counts[0] + " user(s) to MySQL database!"
+                        : (remaining > 0 ? "Backend offline. " + remaining + " user(s) safely stored in local database." : "Database is up to date.");
+                callback.onSyncComplete(counts[0], remaining, msg);
+            }
+        }).start();
     }
 
     public void resetPassword(String phone, String newPassword, ResetCallback callback) {

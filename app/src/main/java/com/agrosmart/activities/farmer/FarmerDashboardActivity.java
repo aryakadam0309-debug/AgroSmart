@@ -39,8 +39,6 @@ public class FarmerDashboardActivity extends BaseActivity {
 
             if (itemId == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
-            } else if (itemId == R.id.nav_crop_planner) {
-                selectedFragment = new CropPlannerFragment();
             } else if (itemId == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
             }

@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Cultivation practices will be dynamically generated for your soil and region:"
+                    android:text="@string/crop_guide_intro"
                     android:textSize="11sp"
                     android:textColor="@color/text_muted" />
 
@@ -73,7 +73,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Target Region in Maharashtra:"
+                        android:text="@string/target_region"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_secondary" />
@@ -96,7 +96,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Soil Type in Your Field:"
+                        android:text="@string/soil_type_label"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_secondary" />
@@ -157,28 +157,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="All Seasons" />
+                    android:text="@string/all_seasons" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipKharif"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kharif" />
+                    android:text="@string/kharif" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipRabi"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rabi" />
+                    android:text="@string/rabi" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipAllSeason"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="All Season" />
+                    android:text="@string/all_season" />
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
 
@@ -205,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="No crop guide found.\nTry another search keyword."
+                    android:text="@string/no_crop_guide_found"
                     android:textColor="@color/text_muted"
                     android:textSize="15sp"
                     android:visibility="gone" />

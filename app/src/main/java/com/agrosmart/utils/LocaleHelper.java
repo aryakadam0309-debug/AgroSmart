@@ -35,6 +35,10 @@ public class LocaleHelper {
         LocaleList.setDefault(localeList);
         configuration.setLocales(localeList);
 
+        try {
+            context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+        } catch (Exception ignored) {}
+
         return context.createConfigurationContext(configuration);
     }
 

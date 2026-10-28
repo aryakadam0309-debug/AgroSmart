@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Only diseases prevalent in your region will be shown (irrelevant diseases hidden):"
+                    android:text="@string/region_disease_note"
                     android:textSize="11sp"
                     android:textColor="@color/text_muted" />
 
@@ -131,70 +131,70 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="All Crops" />
+                    android:text="@string/all_crops" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCottonD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cotton" />
+                    android:text="@string/crop_cotton" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipSoybeanD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Soybean" />
+                    android:text="@string/crop_soybean" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipSugarcaneD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sugarcane" />
+                    android:text="@string/crop_sugarcane" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipOnionD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Onion" />
+                    android:text="@string/crop_onion" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPomegranateD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pomegranate" />
+                    android:text="@string/crop_pomegranate" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipRiceD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rice" />
+                    android:text="@string/crop_rice" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipWheatD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wheat" />
+                    android:text="@string/crop_wheat" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipTurD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pigeonpea" />
+                    android:text="@string/crop_pigeonpea" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipTomatoD"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tomato" />
+                    android:text="@string/crop_tomato" />
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
 
@@ -221,7 +221,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="No disease entries matched your region/crop filter."
+                    android:text="@string/no_disease_matched"
                     android:textColor="@color/text_muted"
                     android:textSize="14sp"
                     android:visibility="gone" />

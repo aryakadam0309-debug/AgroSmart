@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="All States" />
+                    android:text="@string/all_states" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipMH"
@@ -137,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="No market prices found.\nTry changing search query or state."
+                    android:text="@string/no_market_prices_found"
                     android:textColor="@color/text_muted"
                     android:textSize="15sp"
                     android:visibility="gone" />

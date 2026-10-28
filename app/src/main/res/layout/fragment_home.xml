@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="Namaste, Kisan"
+                android:text="@string/greeting_namaste_kisan"
                 android:textColor="@color/forest_green_surface"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@+id/ivHeaderIcon"
@@ -130,7 +130,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Forecast ➔"
+                        android:text="@string/forecast_arrow"
                         android:textColor="@color/forest_green_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -182,158 +182,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-                <!-- "My Farm Today" Daily Agricultural Briefing Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardMyFarmToday"
-            style="@style/Widget.AgroSmart.Card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🌱"
-                        android:textSize="24sp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/my_farm_today"
-                            android:textColor="@color/forest_green_dark"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvFarmSeason"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Kharif Season • Vegetative Stage"
-                            android:textColor="@color/forest_green_primary"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvFarmDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_rounded_card"
-                        android:backgroundTint="@color/forest_green_surface"
-                        android:paddingStart="8dp"
-                        android:paddingTop="3dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="3dp"
-                        android:text="TODAY"
-                        android:textColor="@color/forest_green_dark"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@color/divider_line" />
-
-                <!-- Advisory bullet 1: Agronomic stage guidance -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🌾 "
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvDailyCropAdvisory"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Optimal soil temperature for sowing &amp; balanced NPK application."
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp" />
-                </LinearLayout>
-
-                <!-- Advisory bullet 2: Weather-related precaution -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="⚠️ "
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvWeatherAlertPrecaution"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Humidity moderate: Monitor for early leaf spot &amp; sucking pests."
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <!-- Advisory bullet 3: Mandi Pulse & Inventory -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📊 "
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvMandiPulse"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Soybean: ₹4,850/Qtl (Pune APMC) • Wheat: ₹2,420/Qtl"
-                        android:textColor="@color/deep_teal"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-<!-- Featured IoT Smart Farming Banner Card -->
+        <!-- Featured IoT Smart Farming Banner Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardIotSmartFarming"
             style="@style/Widget.AgroSmart.Card"
@@ -399,7 +248,7 @@
                         android:paddingTop="3dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="3dp"
-                        android:text="HARDWARE OFFLINE"
+                        android:text="@string/hardware_offline"
                         android:textColor="@color/forest_green_dark"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -450,7 +299,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"
-            android:text="Agricultural Services"
+            android:text="@string/agricultural_services"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />

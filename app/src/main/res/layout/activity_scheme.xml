@@ -93,35 +93,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="All" />
+                android:text="@string/all" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipFinancial"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Financial" />
+                android:text="@string/filter_financial" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipSubsidy"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Subsidy" />
+                android:text="@string/filter_subsidy" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipInsurance"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Insurance" />
+                android:text="@string/filter_insurance" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMachinery"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Machinery" />
+                android:text="@string/filter_machinery" />
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
