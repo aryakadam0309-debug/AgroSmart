@@ -87,6 +87,18 @@ public class CropClusterAdapter extends RecyclerView.Adapter<CropClusterAdapter.
                 binding.tvSampleSymptoms.setText("Reported symptoms logged across local farms.");
             }
 
+            if (item.isHasMatchedAdvisory() && item.getMatchedAdvisoryTitle() != null) {
+                binding.layoutMatchedAdvisory.setVisibility(android.view.View.VISIBLE);
+                binding.tvMatchedAdvisoryTitle.setText(item.getMatchedAdvisoryTitle());
+                String src = "Source: " + (item.getMatchedAdvisorySourceName() != null ? item.getMatchedAdvisorySourceName() : "Official Extension");
+                if (item.getMatchedAdvisoryPublicationDate() != null) {
+                    src += " (" + item.getMatchedAdvisoryPublicationDate() + ")";
+                }
+                binding.tvMatchedAdvisorySource.setText(src);
+            } else {
+                binding.layoutMatchedAdvisory.setVisibility(android.view.View.GONE);
+            }
+
             binding.btnPublishAlertFromCluster.setOnClickListener(v -> {
                 if (listener != null) listener.onPublishAlert(item);
             });

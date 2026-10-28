@@ -1,13 +1,13 @@
 package com.agrosmart.backend.services;
 
+import com.agrosmart.backend.entities.CropAdvisory;
 import com.agrosmart.backend.entities.DiseaseReport;
 import com.agrosmart.backend.payload.CropClusterDto;
+import com.agrosmart.backend.repositories.CropAdvisoryRepository;
 import com.agrosmart.backend.repositories.DiseaseReportRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +18,7 @@ public class CropClusterService {
     public static final int DEFAULT_TIME_WINDOW_DAYS = 14;
 
     private final DiseaseReportRepository diseaseReportRepository;
+    private final CropAdvisoryRepository cropAdvisoryRepository;
 
     @Value("${agrosmart.cropwatch.cluster.min-farmers:3}")
     private int minDistinctFarmers = DEFAULT_MIN_DISTINCT_FARMERS;
@@ -25,17 +26,21 @@ public class CropClusterService {
     @Value("${agrosmart.cropwatch.cluster.window-days:14}")
     private int clusterWindowDays = DEFAULT_TIME_WINDOW_DAYS;
 
-    public CropClusterService(DiseaseReportRepository diseaseReportRepository) {
+    public CropClusterService(DiseaseReportRepository diseaseReportRepository,
+                              CropAdvisoryRepository cropAdvisoryRepository) {
         this.diseaseReportRepository = diseaseReportRepository;
+        this.cropAdvisoryRepository = cropAdvisoryRepository;
     }
 
     public List<CropClusterDto> detectClusters() {
         List<DiseaseReport> allReports = diseaseReportRepository.findAllByOrderByReportedAtDesc();
 
-        // Filter out reports marked as DUPLICATE or NOT_VERIFIED
+        // Phase 3: Filter out duplicates, retracted reports, or reports explicitly marked NOT_VERIFIED
         List<DiseaseReport> validReports = allReports.stream()
                 .filter(r -> r.getStatus() == null ||
-                        (!"DUPLICATE".equalsIgnoreCase(r.getStatus()) && !"NOT_VERIFIED".equalsIgnoreCase(r.getStatus())))
+                        (!"DUPLICATE".equalsIgnoreCase(r.getStatus()) &&
+                         !"NOT_VERIFIED".equalsIgnoreCase(r.getStatus()) &&
+                         !Boolean.TRUE.equals(r.getIsDuplicate())))
                 .collect(Collectors.toList());
 
         // Group by cropName + district + problemCategory
@@ -75,6 +80,7 @@ public class CropClusterService {
                 dto.setClusterKey(entry.getKey());
                 dto.setCropName(sample.getCropName());
                 dto.setDistrict(sample.getDistrict());
+                dto.setTaluka(sample.getTaluka());
                 dto.setVillage(findMostCommonVillage(groupList));
                 dto.setProblemCategory(sample.getProblemCategory() != null ? sample.getProblemCategory() : "Observed Symptoms");
                 dto.setDistinctFarmerCount(distinctCount);
@@ -102,6 +108,9 @@ public class CropClusterService {
                         .collect(Collectors.toList());
                 dto.setSampleSymptoms(symptoms);
 
+                // Phase 4: Connect Reports to Verified Advisories from Catalogue (CROPSAP / PDKV)
+                connectAdvisoryToCluster(dto, sample.getCropName(), sample.getProblemCategory(), sample.getDistrict());
+
                 clusters.add(dto);
             }
         }
@@ -115,6 +124,45 @@ public class CropClusterService {
         });
 
         return clusters;
+    }
+
+    private void connectAdvisoryToCluster(CropClusterDto dto, String cropName, String category, String district) {
+        if (cropName == null) {
+            dto.setHasMatchedAdvisory(false);
+            dto.setAdvisoryMatchNote("No verified advisory matches this report. Issue referred for agricultural officer review.");
+            return;
+        }
+
+        List<CropAdvisory> verifiedAdvisories = cropAdvisoryRepository.findByCropNameAndVerificationStatus(cropName, "VERIFIED");
+        if (verifiedAdvisories.isEmpty()) {
+            dto.setHasMatchedAdvisory(false);
+            dto.setAdvisoryMatchNote("No verified agricultural advisory currently matches " + cropName + " in the catalogue. Issue referred for expert field triage.");
+            return;
+        }
+
+        // Search for matching problem category or symptoms
+        CropAdvisory bestMatch = null;
+        for (CropAdvisory adv : verifiedAdvisories) {
+            if (category != null && adv.getProblemCategory() != null &&
+                    adv.getProblemCategory().toLowerCase().contains(category.toLowerCase())) {
+                bestMatch = adv;
+                break;
+            }
+        }
+
+        // Fallback to first verified advisory for this crop if specific category is generic
+        if (bestMatch == null) {
+            bestMatch = verifiedAdvisories.get(0);
+        }
+
+        dto.setHasMatchedAdvisory(true);
+        dto.setMatchedAdvisoryTitle(bestMatch.getTitle());
+        dto.setMatchedAdvisoryText(bestMatch.getAdvisoryText());
+        dto.setMatchedAdvisoryTextMarathi(bestMatch.getAdvisoryTextMarathi());
+        dto.setMatchedAdvisorySourceName(bestMatch.getSourceName());
+        dto.setMatchedAdvisorySourceUrl(bestMatch.getSourceUrl());
+        dto.setMatchedAdvisoryPublicationDate(bestMatch.getPublicationDate());
+        dto.setAdvisoryMatchNote("Matched official advisory from: " + bestMatch.getSourceName() + " (" + bestMatch.getPublicationDate() + ")");
     }
 
     private String findMostCommonVillage(List<DiseaseReport> reports) {

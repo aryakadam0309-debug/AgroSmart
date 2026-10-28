@@ -227,6 +227,7 @@ public class AdminCropWatchActivity extends BaseActivity {
         TextView tvDetails = dialogView.findViewById(R.id.tvDialogReportDetails);
         Spinner spnStatus = dialogView.findViewById(R.id.spnDialogStatus);
         EditText etNote = dialogView.findViewById(R.id.etDialogReviewNote);
+        EditText etDuplicateOf = dialogView.findViewById(R.id.etDialogDuplicateOfId);
         Spinner spnGuidance = dialogView.findViewById(R.id.spnDialogGuidancePreset);
         EditText etCustomGuidance = dialogView.findViewById(R.id.etDialogCustomGuidance);
 
@@ -237,6 +238,9 @@ public class AdminCropWatchActivity extends BaseActivity {
                 "Problem Category: " + (report.getProblemCategory() != null ? report.getProblemCategory() : "General") + "\n" +
                 "Growth Stage: " + (report.getGrowthStage() != null ? report.getGrowthStage() : "N/A") + "\n" +
                 "Symptoms: " + (report.getSymptoms() != null ? report.getSymptoms() : "None");
+        if (report.getDuplicateOfReportId() != null) {
+            details += "\n⚠️ Marked Duplicate of: " + report.getDuplicateOfReportId();
+        }
         tvDetails.setText(details);
 
         // Status Spinner
@@ -265,6 +269,7 @@ public class AdminCropWatchActivity extends BaseActivity {
         spnGuidance.setAdapter(guideAdapter);
 
         if (report.getReviewNote() != null) etNote.setText(report.getReviewNote());
+        if (report.getDuplicateOfReportId() != null && etDuplicateOf != null) etDuplicateOf.setText(report.getDuplicateOfReportId());
         if (report.getAdminGuidance() != null) etCustomGuidance.setText(report.getAdminGuidance());
 
         new AlertDialog.Builder(this)
@@ -273,6 +278,7 @@ public class AdminCropWatchActivity extends BaseActivity {
                 .setPositiveButton("Save Review", (dialog, which) -> {
                     String selectedStatus = spnStatus.getSelectedItem().toString();
                     String reviewNote = etNote.getText().toString().trim();
+                    String duplicateOfId = etDuplicateOf != null ? etDuplicateOf.getText().toString().trim() : null;
                     String chosenPreset = spnGuidance.getSelectedItemPosition() > 0 ?
                             spnGuidance.getSelectedItem().toString() : "";
                     String customGuide = etCustomGuidance.getText().toString().trim();
@@ -281,7 +287,7 @@ public class AdminCropWatchActivity extends BaseActivity {
                     String source = chosenPreset.contains("[") ?
                             chosenPreset.substring(chosenPreset.indexOf("[") + 1, chosenPreset.indexOf("]")) : "KVK Baramati Advisory";
 
-                    repository.reviewReport(report.getId(), selectedStatus, reviewNote, finalGuidance, source, sessionManager.getUserPhone(),
+                    repository.reviewReport(report.getId(), selectedStatus, reviewNote, finalGuidance, source, sessionManager.getUserPhone(), duplicateOfId,
                             new DiseaseReportRepository.SingleReportCallback() {
                                 @Override
                                 public void onSuccess(DiseaseReport updated) {
@@ -333,7 +339,14 @@ public class AdminCropWatchActivity extends BaseActivity {
             etTitle.setText("Community Alert: " + cluster.getCropName() + " " + cluster.getProblemCategory());
             etSummary.setText("Multiple farmers (" + cluster.getDistinctFarmerCount() +
                     " verified reports) in " + cluster.getDistrict() + " reported similar symptoms. Agronomic advisory issued.");
-            etActions.setText("1. Inspect crops for early leaf chlorosis and pests.\n2. Apply recommended bio-formulations.\n3. Report severe spread to nearest agricultural extension centre.");
+
+            if (cluster.isHasMatchedAdvisory() && cluster.getMatchedAdvisoryText() != null) {
+                etActions.setText(cluster.getMatchedAdvisoryText() + "\n\nOfficial Source Reference:\n" +
+                        cluster.getMatchedAdvisorySourceName() + " (" + cluster.getMatchedAdvisorySourceUrl() + ")");
+                etAuthority.setText(cluster.getMatchedAdvisorySourceName());
+            } else {
+                etActions.setText("1. Inspect crops for early leaf chlorosis and pests.\n2. Apply recommended bio-formulations.\n3. Report severe spread to nearest agricultural extension centre.");
+            }
             spnSeverity.setSelection(cluster.isPotentialCluster() ? 2 : 1);
         }
 

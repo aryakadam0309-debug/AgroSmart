@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.AgroSmart.Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="14dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Badges: Source Type & Verification -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvAdvisorySourceBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_card"
+                android:backgroundTint="#EFF6FF"
+                android:paddingStart="8dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="3dp"
+                android:text="🏛️ State Advisory"
+                android:textColor="#1D4ED8"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAdvisoryCoverage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Vidarbha &amp; Western MH"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Advisory Title -->
+        <TextView
+            android:id="@+id/tvAdvisoryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Yellow Mosaic Virus Advisory"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Crop & Variety -->
+        <TextView
+            android:id="@+id/tvAdvisoryCropAndVariety"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="🌱 Soybean • Variety: JS-335, JS-9305"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <!-- Problem Category & Validity -->
+        <TextView
+            android:id="@+id/tvAdvisoryCategoryAndValidity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Category: Leaf Spots • Period: Kharif 2026"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+
+        <!-- Advisory Text Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_rounded_card"
+            android:backgroundTint="#F0FDF4"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💡 Official Guidance (मार्गदर्शन):"
+                android:textColor="#166534"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAdvisoryTextEnglish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Rogue out infected plants. Spray Thiamethoxam 25% WG @ 4g/10L water."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvAdvisoryTextMarathi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="बाधित झाडे उपटून नष्ट करा. थायामेथोक्साम २५% डब्ल्यूजी ४ ग्रॅम प्रति १० लिटर पाण्यात मिसळून फवारावे."
+                android:textColor="#15803D"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Official Provenance Citation -->
+        <TextView
+            android:id="@+id/tvAdvisoryCitation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Source: Dr. PDKV Akola E-Pest Surveillance (Published: Kharif 2026)"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+
+        <!-- Button to open official portal -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenOfficialPortal"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="4dp"
+            android:text="Open Official Portal ↗"
+            android:textColor="#1D4ED8"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

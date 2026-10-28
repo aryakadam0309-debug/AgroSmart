@@ -314,6 +314,17 @@ public interface AgroSmartApiService {
     @GET("crops/disease-reports/clusters")
     Call<List<CropCluster>> getCropClusters();
 
+    @GET("crops/disease-reports/advisories")
+    Call<List<com.agrosmart.models.CropAdvisory>> getCropAdvisories(
+            @Query("crop") String crop,
+            @Query("status") String status
+    );
+
+    @POST("crops/disease-reports/advisories")
+    Call<com.agrosmart.models.CropAdvisory> createCropAdvisory(
+            @Body com.agrosmart.models.CropAdvisory advisory
+    );
+
     @GET("crops/disease-reports/alerts")
     Call<List<CropAlert>> getCropAlerts(
             @Query("district") String district,

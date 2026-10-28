@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.models.CropAlert;
 import com.agrosmart.models.CropCluster;
+import com.agrosmart.models.CropAdvisory;
 import com.agrosmart.models.DiseaseReport;
 import com.agrosmart.network.ApiClient;
 import com.agrosmart.network.AgroSmartApiService;
@@ -54,6 +55,16 @@ public class DiseaseReportRepository {
 
     public interface ClustersCallback {
         void onLoaded(List<CropCluster> list);
+        void onError(String error);
+    }
+
+    public interface AdvisoriesCallback {
+        void onLoaded(List<CropAdvisory> list);
+        void onError(String error);
+    }
+
+    public interface SingleAdvisoryCallback {
+        void onSuccess(CropAdvisory advisory);
         void onError(String error);
     }
 
@@ -128,6 +139,10 @@ public class DiseaseReportRepository {
     }
 
     public void reviewReport(String id, String newStatus, String reviewNote, String guidance, String source, String adminPhone, SingleReportCallback callback) {
+        reviewReport(id, newStatus, reviewNote, guidance, source, adminPhone, null, callback);
+    }
+
+    public void reviewReport(String id, String newStatus, String reviewNote, String guidance, String source, String adminPhone, String duplicateOfReportId, SingleReportCallback callback) {
         executor.execute(() -> {
             Map<String, String> payload = new HashMap<>();
             payload.put("status", newStatus);
@@ -135,6 +150,10 @@ public class DiseaseReportRepository {
             if (guidance != null) payload.put("adminGuidance", guidance);
             if (source != null) payload.put("adminSource", source);
             if (adminPhone != null) payload.put("reviewedBy", adminPhone);
+            if (duplicateOfReportId != null && !duplicateOfReportId.trim().isEmpty()) {
+                payload.put("duplicateOfReportId", duplicateOfReportId.trim());
+                payload.put("isDuplicate", "true");
+            }
 
             try {
                 Call<DiseaseReport> call = apiService.reviewDiseaseReport(id, payload);
@@ -154,6 +173,10 @@ public class DiseaseReportRepository {
                     r.setReviewNote(reviewNote);
                     r.setAdminGuidance(guidance);
                     r.setAdminSource(source);
+                    if (duplicateOfReportId != null && !duplicateOfReportId.trim().isEmpty()) {
+                        r.setDuplicateOfReportId(duplicateOfReportId.trim());
+                        r.setIsDuplicate(true);
+                    }
                     dbHelper.insertDiseaseReport(r);
                     mainHandler.post(() -> callback.onSuccess(r));
                     return;
@@ -248,6 +271,44 @@ public class DiseaseReportRepository {
                 }
             }
             mainHandler.post(() -> callback.onError("Failed to update alert"));
+        });
+    }
+
+    // ==========================================
+    // CROP ADVISORIES (CROPSAP & PDKV)
+    // ==========================================
+
+    public void getCropAdvisories(String crop, String status, AdvisoriesCallback callback) {
+        executor.execute(() -> {
+            List<CropAdvisory> local = dbHelper.getCropAdvisories(crop, status);
+            mainHandler.post(() -> callback.onLoaded(local));
+
+            try {
+                Call<List<CropAdvisory>> call = apiService.getCropAdvisories(crop, status);
+                Response<List<CropAdvisory>> resp = call.execute();
+                if (resp.isSuccessful() && resp.body() != null) {
+                    for (CropAdvisory a : resp.body()) {
+                        dbHelper.insertCropAdvisory(a);
+                    }
+                    List<CropAdvisory> updated = dbHelper.getCropAdvisories(crop, status);
+                    mainHandler.post(() -> callback.onLoaded(updated));
+                }
+            } catch (Exception ignored) {}
+        });
+    }
+
+    public void createCropAdvisory(CropAdvisory advisory, SingleAdvisoryCallback callback) {
+        executor.execute(() -> {
+            dbHelper.insertCropAdvisory(advisory);
+            mainHandler.post(() -> callback.onSuccess(advisory));
+
+            try {
+                Call<CropAdvisory> call = apiService.createCropAdvisory(advisory);
+                Response<CropAdvisory> resp = call.execute();
+                if (resp.isSuccessful() && resp.body() != null) {
+                    dbHelper.insertCropAdvisory(resp.body());
+                }
+            } catch (Exception ignored) {}
         });
     }
 

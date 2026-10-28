@@ -58,12 +58,20 @@ public class MyCropReportAdapter extends RecyclerView.Adapter<MyCropReportAdapte
         }
 
         void bind(DiseaseReport item) {
-            binding.tvReportCrop.setText(item.getCropName() != null ? item.getCropName() : "Crop");
+            String cropTitle = item.getCropName() != null ? item.getCropName() : "Crop";
+            if (item.getVariety() != null && !item.getVariety().isEmpty()) {
+                cropTitle += " (" + item.getVariety() + ")";
+            }
+            binding.tvReportCrop.setText(cropTitle);
             binding.tvReportId.setText("Ref: " + (item.getId() != null ? item.getId() : "N/A"));
 
             // Status Badge
             String status = item.getStatus() != null ? item.getStatus() : "PENDING_REVIEW";
-            binding.tvReportStatus.setText(status.replace("_", " "));
+            if ("DUPLICATE".equalsIgnoreCase(status) && item.getDuplicateOfReportId() != null) {
+                binding.tvReportStatus.setText("DUPLICATE OF #" + item.getDuplicateOfReportId());
+            } else {
+                binding.tvReportStatus.setText(status.replace("_", " "));
+            }
 
             if ("VERIFIED".equalsIgnoreCase(status) || "VERIFIED_ALERT".equalsIgnoreCase(status)) {
                 binding.tvReportStatus.setTextColor(Color.parseColor("#15803D"));
@@ -83,8 +91,11 @@ public class MyCropReportAdapter extends RecyclerView.Adapter<MyCropReportAdapte
             binding.tvGrowthStage.setText(item.getGrowthStage() != null && !item.getGrowthStage().isEmpty() ?
                     item.getGrowthStage() : "Stage: N/A");
 
-            String loc = (item.getVillage() != null ? item.getVillage() + ", " : "") +
-                    (item.getDistrict() != null ? item.getDistrict() : "");
+            StringBuilder locBuilder = new StringBuilder();
+            if (item.getVillage() != null && !item.getVillage().isEmpty()) locBuilder.append(item.getVillage()).append(", ");
+            if (item.getTaluka() != null && !item.getTaluka().isEmpty() && !item.getTaluka().equalsIgnoreCase(item.getVillage())) locBuilder.append(item.getTaluka()).append(", ");
+            if (item.getDistrict() != null && !item.getDistrict().isEmpty()) locBuilder.append(item.getDistrict());
+            String loc = locBuilder.toString();
             binding.tvLocation.setText("📍 " + (loc.isEmpty() ? "Local Area" : loc));
 
             binding.tvSymptoms.setText(item.getSymptoms() != null ? item.getSymptoms() : "No extra symptoms recorded.");

@@ -22,6 +22,7 @@ import com.agrosmart.models.User;
 import com.agrosmart.models.SoilHealthRecord;
 import com.agrosmart.models.FarmExpense;
 import com.agrosmart.models.DiseaseReport;
+import com.agrosmart.models.CropAdvisory;
 import com.agrosmart.models.FarmerFeedback;
 import com.agrosmart.models.SavedCropPlanModel;
 
@@ -36,7 +37,7 @@ import java.util.List;
 public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "agrosmart_local.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     private static AgroSmartDbHelper instance;
 
@@ -252,11 +253,19 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "farmer_phone TEXT NOT NULL, " +
                 "farmer_name TEXT, " +
                 "crop_name TEXT NOT NULL, " +
+                "variety TEXT, " +
                 "affected_part TEXT, " +
                 "symptoms TEXT NOT NULL, " +
                 "severity TEXT, " +
                 "village TEXT, " +
+                "taluka TEXT, " +
                 "district TEXT, " +
+                "latitude REAL, " +
+                "longitude REAL, " +
+                "location_consent INTEGER DEFAULT 0, " +
+                "is_duplicate INTEGER DEFAULT 0, " +
+                "duplicate_of_report_id TEXT, " +
+                "matched_advisory_id TEXT, " +
                 "image_url TEXT, " +
                 "reported_at TEXT, " +
                 "status TEXT, " +
@@ -285,6 +294,27 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "published_by TEXT, " +
                 "published_at TEXT, " +
                 "resolved_at TEXT)");
+
+        // 15C. Official Agricultural Advisory Catalogue Table (Dr. PDKV Akola & CROPSAP)
+        db.execSQL("CREATE TABLE IF NOT EXISTS crop_advisories (" +
+                "id TEXT PRIMARY KEY, " +
+                "title TEXT NOT NULL, " +
+                "crop_name TEXT NOT NULL, " +
+                "variety TEXT, " +
+                "problem_category TEXT NOT NULL, " +
+                "location_coverage TEXT, " +
+                "advisory_text TEXT NOT NULL, " +
+                "advisory_text_marathi TEXT, " +
+                "language TEXT, " +
+                "source_name TEXT NOT NULL, " +
+                "source_url TEXT NOT NULL, " +
+                "publication_date TEXT, " +
+                "date_added TEXT, " +
+                "validity_period TEXT, " +
+                "verification_status TEXT, " +
+                "reviewing_admin TEXT, " +
+                "last_reviewed_at TEXT, " +
+                "ingestion_type TEXT)");
 
         // 16. Farmer Field Feedback Table
         db.execSQL("CREATE TABLE IF NOT EXISTS farmer_feedback (" +
@@ -345,6 +375,8 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS soil_health_records");
         db.execSQL("DROP TABLE IF EXISTS farm_expenses");
         db.execSQL("DROP TABLE IF EXISTS crop_disease_reports");
+        db.execSQL("DROP TABLE IF EXISTS crop_alerts");
+        db.execSQL("DROP TABLE IF EXISTS crop_advisories");
         db.execSQL("DROP TABLE IF EXISTS farmer_feedback");
         db.execSQL("DROP TABLE IF EXISTS saved_crop_plans");
         onCreate(db);
@@ -365,6 +397,14 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN admin_source TEXT"); } catch (Exception ignored) {}
         try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN reviewed_by TEXT"); } catch (Exception ignored) {}
         try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN reviewed_at TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN variety TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN taluka TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN latitude REAL"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN longitude REAL"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN location_consent INTEGER DEFAULT 0"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN is_duplicate INTEGER DEFAULT 0"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN duplicate_of_report_id TEXT"); } catch (Exception ignored) {}
+        try { db.execSQL("ALTER TABLE crop_disease_reports ADD COLUMN matched_advisory_id TEXT"); } catch (Exception ignored) {}
         try {
             db.execSQL("CREATE TABLE IF NOT EXISTS crop_alerts (" +
                     "id TEXT PRIMARY KEY, " +
@@ -382,6 +422,28 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                     "published_at TEXT, " +
                     "resolved_at TEXT)");
         } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS crop_advisories (" +
+                    "id TEXT PRIMARY KEY, " +
+                    "title TEXT NOT NULL, " +
+                    "crop_name TEXT NOT NULL, " +
+                    "variety TEXT, " +
+                    "problem_category TEXT NOT NULL, " +
+                    "location_coverage TEXT, " +
+                    "advisory_text TEXT NOT NULL, " +
+                    "advisory_text_marathi TEXT, " +
+                    "language TEXT, " +
+                    "source_name TEXT NOT NULL, " +
+                    "source_url TEXT NOT NULL, " +
+                    "publication_date TEXT, " +
+                    "date_added TEXT, " +
+                    "validity_period TEXT, " +
+                    "verification_status TEXT, " +
+                    "reviewing_admin TEXT, " +
+                    "last_reviewed_at TEXT, " +
+                    "ingestion_type TEXT)");
+        } catch (Exception ignored) {}
+        seedBaselineAdvisoriesIfEmpty(db);
     }
 
     private void seedInitialData(SQLiteDatabase db) {
@@ -1597,11 +1659,19 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         cv.put("farmer_phone", r.getFarmerPhone());
         cv.put("farmer_name", r.getFarmerName());
         cv.put("crop_name", r.getCropName());
+        cv.put("variety", r.getVariety());
         cv.put("affected_part", r.getAffectedPart());
         cv.put("symptoms", r.getSymptoms());
         cv.put("severity", r.getSeverity());
         cv.put("village", r.getVillage());
+        cv.put("taluka", r.getTaluka());
         cv.put("district", r.getDistrict());
+        cv.put("latitude", r.getLatitude());
+        cv.put("longitude", r.getLongitude());
+        cv.put("location_consent", (r.getLocationConsent() != null && r.getLocationConsent()) ? 1 : 0);
+        cv.put("is_duplicate", (r.getIsDuplicate() != null && r.getIsDuplicate()) ? 1 : 0);
+        cv.put("duplicate_of_report_id", r.getDuplicateOfReportId());
+        cv.put("matched_advisory_id", r.getMatchedAdvisoryId());
         cv.put("image_url", r.getImageUrl());
         cv.put("reported_at", r.getReportedAt());
         cv.put("status", r.getStatus());
@@ -1642,6 +1712,23 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                     r.setReportedAt(c.getString(c.getColumnIndexOrThrow("reported_at")));
                     r.setStatus(c.getString(c.getColumnIndexOrThrow("status")));
                     r.setAdminAdvisory(c.getString(c.getColumnIndexOrThrow("admin_advisory")));
+
+                    int idxVar = c.getColumnIndex("variety");
+                    if (idxVar != -1) r.setVariety(c.getString(idxVar));
+                    int idxTaluka = c.getColumnIndex("taluka");
+                    if (idxTaluka != -1) r.setTaluka(c.getString(idxTaluka));
+                    int idxLat = c.getColumnIndex("latitude");
+                    if (idxLat != -1 && !c.isNull(idxLat)) r.setLatitude(c.getDouble(idxLat));
+                    int idxLng = c.getColumnIndex("longitude");
+                    if (idxLng != -1 && !c.isNull(idxLng)) r.setLongitude(c.getDouble(idxLng));
+                    int idxConsent = c.getColumnIndex("location_consent");
+                    if (idxConsent != -1) r.setLocationConsent(c.getInt(idxConsent) == 1);
+                    int idxDup = c.getColumnIndex("is_duplicate");
+                    if (idxDup != -1) r.setIsDuplicate(c.getInt(idxDup) == 1);
+                    int idxDupOf = c.getColumnIndex("duplicate_of_report_id");
+                    if (idxDupOf != -1) r.setDuplicateOfReportId(c.getString(idxDupOf));
+                    int idxAdv = c.getColumnIndex("matched_advisory_id");
+                    if (idxAdv != -1) r.setMatchedAdvisoryId(c.getString(idxAdv));
 
                     int idxCat = c.getColumnIndex("problem_category");
                     if (idxCat != -1) r.setProblemCategory(c.getString(idxCat));
@@ -1740,6 +1827,208 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
             if (c != null) c.close();
         }
         return list;
+    }
+
+    // =========================================================================
+    // CROP ADVISORY CATALOGUE CRUD (Dr. PDKV Akola & CROPSAP)
+    // =========================================================================
+
+    public boolean insertCropAdvisory(CropAdvisory adv) {
+        if (adv == null) return false;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id", adv.getId());
+        cv.put("title", adv.getTitle());
+        cv.put("crop_name", adv.getCropName());
+        cv.put("variety", adv.getVariety());
+        cv.put("problem_category", adv.getProblemCategory());
+        cv.put("location_coverage", adv.getLocationCoverage());
+        cv.put("advisory_text", adv.getAdvisoryText());
+        cv.put("advisory_text_marathi", adv.getAdvisoryTextMarathi());
+        cv.put("language", adv.getLanguage());
+        cv.put("source_name", adv.getSourceName());
+        cv.put("source_url", adv.getSourceUrl());
+        cv.put("publication_date", adv.getPublicationDate());
+        cv.put("date_added", adv.getDateAdded());
+        cv.put("validity_period", adv.getValidityPeriod());
+        cv.put("verification_status", adv.getVerificationStatus());
+        cv.put("reviewing_admin", adv.getReviewingAdmin());
+        cv.put("last_reviewed_at", adv.getLastReviewedAt());
+        cv.put("ingestion_type", adv.getIngestionType());
+        return db.insertWithOnConflict("crop_advisories", null, cv, SQLiteDatabase.CONFLICT_REPLACE) != -1;
+    }
+
+    public List<CropAdvisory> getCropAdvisories(String crop, String status) {
+        List<CropAdvisory> list = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            String selection = null;
+            List<String> argsList = new ArrayList<>();
+
+            if (crop != null && !crop.trim().isEmpty() && !"All".equalsIgnoreCase(crop)) {
+                selection = "crop_name = ?";
+                argsList.add(crop.trim());
+            }
+            if (status != null && !status.trim().isEmpty() && !"ALL".equalsIgnoreCase(status)) {
+                if (selection == null) {
+                    selection = "verification_status = ?";
+                } else {
+                    selection += " AND verification_status = ?";
+                }
+                argsList.add(status.trim().toUpperCase());
+            }
+
+            String[] args = argsList.isEmpty() ? null : argsList.toArray(new String[0]);
+            c = db.query("crop_advisories", null, selection, args, null, null, "publication_date DESC");
+
+            if (c != null && c.moveToFirst()) {
+                do {
+                    CropAdvisory adv = new CropAdvisory();
+                    adv.setId(c.getString(c.getColumnIndexOrThrow("id")));
+                    adv.setTitle(c.getString(c.getColumnIndexOrThrow("title")));
+                    adv.setCropName(c.getString(c.getColumnIndexOrThrow("crop_name")));
+                    adv.setVariety(c.getString(c.getColumnIndexOrThrow("variety")));
+                    adv.setProblemCategory(c.getString(c.getColumnIndexOrThrow("problem_category")));
+                    adv.setLocationCoverage(c.getString(c.getColumnIndexOrThrow("location_coverage")));
+                    adv.setAdvisoryText(c.getString(c.getColumnIndexOrThrow("advisory_text")));
+                    adv.setAdvisoryTextMarathi(c.getString(c.getColumnIndexOrThrow("advisory_text_marathi")));
+                    adv.setLanguage(c.getString(c.getColumnIndexOrThrow("language")));
+                    adv.setSourceName(c.getString(c.getColumnIndexOrThrow("source_name")));
+                    adv.setSourceUrl(c.getString(c.getColumnIndexOrThrow("source_url")));
+                    adv.setPublicationDate(c.getString(c.getColumnIndexOrThrow("publication_date")));
+                    adv.setDateAdded(c.getString(c.getColumnIndexOrThrow("date_added")));
+                    adv.setValidityPeriod(c.getString(c.getColumnIndexOrThrow("validity_period")));
+                    adv.setVerificationStatus(c.getString(c.getColumnIndexOrThrow("verification_status")));
+                    adv.setReviewingAdmin(c.getString(c.getColumnIndexOrThrow("reviewing_admin")));
+                    adv.setLastReviewedAt(c.getString(c.getColumnIndexOrThrow("last_reviewed_at")));
+                    adv.setIngestionType(c.getString(c.getColumnIndexOrThrow("ingestion_type")));
+                    list.add(adv);
+                } while (c.moveToNext());
+            }
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    private void seedBaselineAdvisoriesIfEmpty(SQLiteDatabase db) {
+        try {
+            Cursor c = db.rawQuery("SELECT COUNT(*) FROM crop_advisories", null);
+            if (c != null && c.moveToFirst()) {
+                int count = c.getInt(0);
+                c.close();
+                if (count > 0) return;
+            }
+        } catch (Exception ignored) {
+            return;
+        }
+
+        ContentValues[] items = new ContentValues[5];
+
+        items[0] = new ContentValues();
+        items[0].put("id", "adv-pdkv-001");
+        items[0].put("title", "Yellow Mosaic Virus & Whitefly Management in Soybean");
+        items[0].put("crop_name", "Soybean");
+        items[0].put("variety", "JS-335, JS-9305, NRC-37");
+        items[0].put("problem_category", "Unusual Leaf Spots & Blights");
+        items[0].put("location_coverage", "Vidarbha (Akola, Amravati, Yavatmal, Nagpur)");
+        items[0].put("advisory_text", "Soybean yellow mosaic virus is transmitted by whiteflies (Bemisia tabaci). Observe leaves for yellow mottling and vein clearing. Action: Rogue out severely infected plants. Spray Thiamethoxam 25% WG @ 4 g/10 L water or Acetamiprid 20% SP @ 2 g/10 L water. Maintain weed-free bunds.");
+        items[0].put("advisory_text_marathi", "सोयाबीनवरील पिवळा मोझॅक विषाणू पांढऱ्या माशीद्वारे पसरतो. पानांवर पिवळे चट्टे दिसल्यास बाधित झाडे उपटून नष्ट करा. थायामेथोक्साम २५% डब्ल्यूजी ४ ग्रॅम किंवा ॲसिटामिप्रिड २०% एसपी २ ग्रॅम प्रति १० लिटर पाण्यात मिसळून फवारणी करावी.");
+        items[0].put("language", "BILINGUAL");
+        items[0].put("source_name", "Dr. PDKV Akola E-Pest Surveillance Advisory");
+        items[0].put("source_url", "https://www.pdkv.ac.in/?page_id=203");
+        items[0].put("publication_date", "Kharif 2026");
+        items[0].put("date_added", "2026-10-28");
+        items[0].put("validity_period", "Valid throughout Kharif 2026");
+        items[0].put("verification_status", "VERIFIED");
+        items[0].put("reviewing_admin", "AgroSmart State Agronomy Cell");
+        items[0].put("last_reviewed_at", "2026-10-28");
+        items[0].put("ingestion_type", "MANUAL_ENTRY");
+
+        items[1] = new ContentValues();
+        items[1].put("id", "adv-cropsap-002");
+        items[1].put("title", "Pink Bollworm & Sucking Pest Advisory for Bt Cotton");
+        items[1].put("crop_name", "Cotton");
+        items[1].put("variety", "Bt Cotton Hybrids");
+        items[1].put("problem_category", "Pest & Insect Infestations");
+        items[1].put("location_coverage", "Marathwada & Western Maharashtra");
+        items[1].put("advisory_text", "Monitor cotton squares and flowers for rosette flowers caused by Pink Bollworm (Pectinophora gossypiella). Install 5 pheromone traps per ha. If ETL reaches 8 moths/trap/night for 3 consecutive days, spray Profenofos 50% EC @ 30 ml or Emamectin Benzoate 5% SG @ 5 g per 10 L water.");
+        items[1].put("advisory_text_marathi", "गुलाबी बोंडअळीच्या व्यवस्थापनासाठी हेक्टरी ५ कामगंध सापळे लावावेत. आर्थिक नुकसान पातळी ओलांडल्यास प्रोफेनोफॉस ५०% ईसी ३० मिली किंवा इमामेक्टिन बेन्झोएट ५% एसजी ५ ग्रॅम प्रति १० लिटर पाण्यात मिसळून फवारावे.");
+        items[1].put("language", "BILINGUAL");
+        items[1].put("source_name", "Maharashtra Department of Agriculture - CROPSAP Pest Bulletin");
+        items[1].put("source_url", "https://krishi.maharashtra.gov.in/");
+        items[1].put("publication_date", "October 2026");
+        items[1].put("date_added", "2026-10-28");
+        items[1].put("validity_period", "Valid through Harvest 2026");
+        items[1].put("verification_status", "VERIFIED");
+        items[1].put("reviewing_admin", "State Plant Protection Officer");
+        items[1].put("last_reviewed_at", "2026-10-28");
+        items[1].put("ingestion_type", "MANUAL_ENTRY");
+
+        items[2] = new ContentValues();
+        items[2].put("id", "adv-pdkv-003");
+        items[2].put("title", "Early Shoot Borer & Pokkah Boeng Advisory in Sugarcane");
+        items[2].put("crop_name", "Sugarcane");
+        items[2].put("variety", "Co-86032, Co-0265");
+        items[2].put("problem_category", "Stem & Root Damage");
+        items[2].put("location_coverage", "Western Maharashtra (Kolhapur, Pune, Sangli)");
+        items[2].put("advisory_text", "Dead hearts observed in young shoots during early tillering. Ensure proper light earthing-up and trash mulching. For Pokkah Boeng leaf twisting, drench/spray Copper Oxychloride 50% WP @ 2.5 g/L or Carbendazim 50% WP @ 1 g/L.");
+        items[2].put("advisory_text_marathi", "उसामधील खोडकिडीच्या नियंत्रणासाठी हलकी खांदणी करा व पाचटाचे आच्छादन ठेवा. पोक्का बोईंगच्या नियंत्रणासाठी कॉपर ऑक्सिक्लोराईड २.५ ग्रॅम किंवा कार्बेन्डाझिम १ ग्रॅम प्रति लिटर पाण्यात मिसळून फवारावे.");
+        items[2].put("language", "BILINGUAL");
+        items[2].put("source_name", "Dr. PDKV Akola Regional Sugarcane Research Advisory");
+        items[2].put("source_url", "https://www.pdkv.ac.in/?page_id=203");
+        items[2].put("publication_date", "Pre-Seasonal & Suru 2026");
+        items[2].put("date_added", "2026-10-28");
+        items[2].put("validity_period", "Valid through 2026");
+        items[2].put("verification_status", "VERIFIED");
+        items[2].put("reviewing_admin", "AgroSmart State Agronomy Cell");
+        items[2].put("last_reviewed_at", "2026-10-28");
+        items[2].put("ingestion_type", "MANUAL_ENTRY");
+
+        items[3] = new ContentValues();
+        items[3].put("id", "adv-cropsap-004");
+        items[3].put("title", "Early & Late Blight Management in Tomato");
+        items[3].put("crop_name", "Tomato");
+        items[3].put("variety", "Abhinav, US-440, Local Hybrids");
+        items[3].put("problem_category", "Unusual Leaf Spots & Blights");
+        items[3].put("location_coverage", "Nashik, Ahmednagar, Pune");
+        items[3].put("advisory_text", "Concentric target-board rings on leaves indicate Early Blight (Alternaria solani). Avoid overhead sprinkling and ensure proper plant staking. Apply prophylactic spray of Mancozeb 75% WP @ 2.5 g/L or Chlorothalonil 75% WP @ 2 g/L.");
+        items[3].put("advisory_text_marathi", "टोमॅटोवरील करपा रोगाच्या नियंत्रणासाठी झाडांना आधार द्या व जास्त आर्द्रता टाळा. मॅन्कोझेब ७५% डब्ल्यूपी २.५ ग्रॅम किंवा क्लोरोथॅलोनिल २ ग्रॅम प्रति लिटर पाण्यात मिसळून फवारावे.");
+        items[3].put("language", "BILINGUAL");
+        items[3].put("source_name", "Maharashtra Department of Agriculture - CROPSAP Horticultural Advisory");
+        items[3].put("source_url", "https://krishi.maharashtra.gov.in/");
+        items[3].put("publication_date", "September-October 2026");
+        items[3].put("date_added", "2026-10-28");
+        items[3].put("validity_period", "Valid through Rabi 2026");
+        items[3].put("verification_status", "VERIFIED");
+        items[3].put("reviewing_admin", "State Plant Protection Officer");
+        items[3].put("last_reviewed_at", "2026-10-28");
+        items[3].put("ingestion_type", "MANUAL_ENTRY");
+
+        items[4] = new ContentValues();
+        items[4].put("id", "adv-pdkv-005");
+        items[4].put("title", "Fusarium Wilt & Root Rot Alert in Chickpea (Gram)");
+        items[4].put("crop_name", "Chickpea (Gram)");
+        items[4].put("variety", "Vijay, Digvijay, BDNG-797");
+        items[4].put("problem_category", "Wilting & Drying of Plants");
+        items[4].put("location_coverage", "Central & Western Maharashtra");
+        items[4].put("advisory_text", "Wilting and yellowing in seedling to early vegetative stage caused by Fusarium oxysporum f. sp. ciceris. Avoid water stagnation. Seed treatment with Trichoderma viride @ 5 g/kg seed or Carbendazim @ 2 g/kg seed before sowing is essential.");
+        items[4].put("advisory_text_marathi", "हरभऱ्यावरील मर रोगाच्या नियंत्रणासाठी ट्रायकोडर्मा व्हिरिडी ५ ग्रॅम किंवा कार्बेन्डाझिम २ ग्रॅम प्रति किलो बियाण्यास चोळून बीजप्रक्रिया करावी. शेतात पाणी साचू देऊ नये.");
+        items[4].put("language", "BILINGUAL");
+        items[4].put("source_name", "Dr. PDKV Akola Pulses Research Advisory");
+        items[4].put("source_url", "https://www.pdkv.ac.in/?page_id=203");
+        items[4].put("publication_date", "Rabi 2026");
+        items[4].put("date_added", "2026-10-28");
+        items[4].put("validity_period", "Valid throughout Rabi 2026-27");
+        items[4].put("verification_status", "VERIFIED");
+        items[4].put("reviewing_admin", "AgroSmart State Agronomy Cell");
+        items[4].put("last_reviewed_at", "2026-10-28");
+        items[4].put("ingestion_type", "MANUAL_ENTRY");
+
+        for (ContentValues cv : items) {
+            db.insertWithOnConflict("crop_advisories", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
     }
 
     // =========================================================================

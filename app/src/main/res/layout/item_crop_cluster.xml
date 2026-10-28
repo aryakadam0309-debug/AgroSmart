@@ -95,6 +95,46 @@
             android:textColor="@color/text_primary"
             android:textSize="12sp" />
 
+        <!-- Matched Verified Agricultural Advisory Section -->
+        <LinearLayout
+            android:id="@+id/layoutMatchedAdvisory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_rounded_card"
+            android:backgroundTint="#F0FDF4"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📜 Matched Official Advisory Available"
+                android:textColor="#166534"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMatchedAdvisoryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Yellow Mosaic Virus Advisory"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMatchedAdvisorySource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Source: Dr. PDKV Akola E-Pest Surveillance"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
         <!-- Action Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPublishAlertFromCluster"

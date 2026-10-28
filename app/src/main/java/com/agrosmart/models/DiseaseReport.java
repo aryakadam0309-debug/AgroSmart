@@ -7,11 +7,19 @@ public class DiseaseReport implements Serializable {
     private String farmerPhone;
     private String farmerName;
     private String cropName;
+    private String variety;
     private String affectedPart;
     private String symptoms;
     private String severity;
     private String village;
+    private String taluka;
     private String district;
+    private Double latitude;
+    private Double longitude;
+    private Boolean locationConsent = false;
+    private Boolean isDuplicate = false;
+    private String duplicateOfReportId;
+    private String matchedAdvisoryId;
     private String imageUrl;
     private String reportedAt;
     private String status; // PENDING_REVIEW, UNDER_REVIEW, VERIFIED, NOT_VERIFIED, DUPLICATE, RESOLVED
@@ -38,6 +46,9 @@ public class DiseaseReport implements Serializable {
     public String getCropName() { return cropName; }
     public void setCropName(String cropName) { this.cropName = cropName; }
 
+    public String getVariety() { return variety; }
+    public void setVariety(String variety) { this.variety = variety; }
+
     public String getAffectedPart() { return affectedPart; }
     public void setAffectedPart(String affectedPart) { this.affectedPart = affectedPart; }
 
@@ -50,8 +61,29 @@ public class DiseaseReport implements Serializable {
     public String getVillage() { return village; }
     public void setVillage(String village) { this.village = village; }
 
+    public String getTaluka() { return taluka; }
+    public void setTaluka(String taluka) { this.taluka = taluka; }
+
     public String getDistrict() { return district; }
     public void setDistrict(String district) { this.district = district; }
+
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public Boolean getLocationConsent() { return locationConsent; }
+    public void setLocationConsent(Boolean locationConsent) { this.locationConsent = locationConsent; }
+
+    public Boolean getIsDuplicate() { return isDuplicate; }
+    public void setIsDuplicate(Boolean isDuplicate) { this.isDuplicate = isDuplicate; }
+
+    public String getDuplicateOfReportId() { return duplicateOfReportId; }
+    public void setDuplicateOfReportId(String duplicateOfReportId) { this.duplicateOfReportId = duplicateOfReportId; }
+
+    public String getMatchedAdvisoryId() { return matchedAdvisoryId; }
+    public void setMatchedAdvisoryId(String matchedAdvisoryId) { this.matchedAdvisoryId = matchedAdvisoryId; }
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }

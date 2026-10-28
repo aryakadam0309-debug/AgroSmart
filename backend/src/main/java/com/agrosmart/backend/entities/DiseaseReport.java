@@ -19,6 +19,9 @@ public class DiseaseReport {
     @Column(name = "crop_name", length = 100, nullable = false)
     private String cropName;
 
+    @Column(name = "variety", length = 100)
+    private String variety;
+
     @Column(name = "affected_part", length = 50)
     private String affectedPart;
 
@@ -31,8 +34,29 @@ public class DiseaseReport {
     @Column(name = "village", length = 100)
     private String village;
 
+    @Column(name = "taluka", length = 100)
+    private String taluka;
+
     @Column(name = "district", length = 100)
     private String district;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "location_consent")
+    private Boolean locationConsent = false;
+
+    @Column(name = "is_duplicate")
+    private Boolean isDuplicate = false;
+
+    @Column(name = "duplicate_of_report_id", length = 50)
+    private String duplicateOfReportId;
+
+    @Column(name = "matched_advisory_id", length = 50)
+    private String matchedAdvisoryId;
 
     @Column(name = "image_url", length = 255)
     private String imageUrl;
@@ -128,4 +152,28 @@ public class DiseaseReport {
 
     public String getReviewedAt() { return reviewedAt; }
     public void setReviewedAt(String reviewedAt) { this.reviewedAt = reviewedAt; }
+
+    public String getVariety() { return variety; }
+    public void setVariety(String variety) { this.variety = variety; }
+
+    public String getTaluka() { return taluka; }
+    public void setTaluka(String taluka) { this.taluka = taluka; }
+
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public Boolean getLocationConsent() { return locationConsent; }
+    public void setLocationConsent(Boolean locationConsent) { this.locationConsent = locationConsent; }
+
+    public Boolean getIsDuplicate() { return isDuplicate; }
+    public void setIsDuplicate(Boolean duplicate) { isDuplicate = duplicate; }
+
+    public String getDuplicateOfReportId() { return duplicateOfReportId; }
+    public void setDuplicateOfReportId(String duplicateOfReportId) { this.duplicateOfReportId = duplicateOfReportId; }
+
+    public String getMatchedAdvisoryId() { return matchedAdvisoryId; }
+    public void setMatchedAdvisoryId(String matchedAdvisoryId) { this.matchedAdvisoryId = matchedAdvisoryId; }
 }

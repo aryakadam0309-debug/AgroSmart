@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.R;
 import com.agrosmart.activities.BaseActivity;
+import com.agrosmart.adapters.CropAdvisoryAdapter;
 import com.agrosmart.adapters.CropAlertAdapter;
 import com.agrosmart.adapters.MyCropReportAdapter;
 import com.agrosmart.databinding.ActivityCropWatchBinding;
+import com.agrosmart.models.CropAdvisory;
 import com.agrosmart.models.CropAlert;
 import com.agrosmart.models.DiseaseReport;
 import com.agrosmart.repository.DiseaseReportRepository;
@@ -30,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CropWatchActivity extends BaseActivity {
@@ -39,6 +42,10 @@ public class CropWatchActivity extends BaseActivity {
     private SessionManager sessionManager;
     private MyCropReportAdapter myReportAdapter;
     private CropAlertAdapter alertAdapter;
+    private CropAdvisoryAdapter advisoryAdapter;
+
+    private List<CropAdvisory> loadedAdvisories = new ArrayList<>();
+    private List<CropAlert> loadedAlerts = new ArrayList<>();
 
     private Uri selectedPhotoUri = null;
     private File selectedPhotoFile = null;
@@ -149,15 +156,19 @@ public class CropWatchActivity extends BaseActivity {
     private void setupLocationDefaults() {
         String savedLocation = sessionManager.getUserLocation();
         String village = "Baramati";
+        String taluka = "Baramati";
         String district = "Pune";
 
         if (savedLocation != null && !savedLocation.trim().isEmpty()) {
             String[] parts = savedLocation.split(",");
             if (parts.length > 0) village = parts[0].trim();
             if (parts.length > 1) district = parts[1].trim();
+            if (parts.length > 2) taluka = parts[2].trim();
+            else taluka = village;
         }
 
         binding.etDistrict.setText(district);
+        binding.etTaluka.setText(taluka);
         binding.etVillage.setText(village);
     }
 
@@ -168,7 +179,6 @@ public class CropWatchActivity extends BaseActivity {
                     if (uri != null) {
                         selectedPhotoUri = uri;
                         try {
-                            // Copy to cache file for upload
                             InputStream is = getContentResolver().openInputStream(uri);
                             File tempFile = new File(getCacheDir(), "crop_report_" + System.currentTimeMillis() + ".jpg");
                             FileOutputStream fos = new FileOutputStream(tempFile);
@@ -223,6 +233,11 @@ public class CropWatchActivity extends BaseActivity {
         binding.rvMyReports.setLayoutManager(new LinearLayoutManager(this));
         binding.rvMyReports.setAdapter(myReportAdapter);
 
+        // Official University & State Advisories
+        advisoryAdapter = new CropAdvisoryAdapter();
+        binding.rvCropAdvisories.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvCropAdvisories.setAdapter(advisoryAdapter);
+
         // Community Alerts
         alertAdapter = new CropAlertAdapter(alert -> {
             new AlertDialog.Builder(this)
@@ -235,13 +250,36 @@ public class CropWatchActivity extends BaseActivity {
         });
         binding.rvLocalAlerts.setLayoutManager(new LinearLayoutManager(this));
         binding.rvLocalAlerts.setAdapter(alertAdapter);
+
+        // Filter chips
+        binding.chipGroupAlerts.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.isEmpty()) return;
+            int checkedId = checkedIds.get(0);
+            if (checkedId == R.id.chipFilterAdvisories) {
+                binding.tvHeaderAdvisories.setVisibility(View.VISIBLE);
+                binding.rvCropAdvisories.setVisibility(View.VISIBLE);
+                binding.tvHeaderCommunityAlerts.setVisibility(View.GONE);
+                binding.rvLocalAlerts.setVisibility(View.GONE);
+            } else if (checkedId == R.id.chipFilterCommunityAlerts) {
+                binding.tvHeaderAdvisories.setVisibility(View.GONE);
+                binding.rvCropAdvisories.setVisibility(View.GONE);
+                binding.tvHeaderCommunityAlerts.setVisibility(View.VISIBLE);
+                binding.rvLocalAlerts.setVisibility(View.VISIBLE);
+            } else {
+                binding.tvHeaderAdvisories.setVisibility(View.VISIBLE);
+                binding.rvCropAdvisories.setVisibility(View.VISIBLE);
+                binding.tvHeaderCommunityAlerts.setVisibility(View.VISIBLE);
+                binding.rvLocalAlerts.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void submitProblemReport() {
         String cropRaw = binding.spnCrops.getSelectedItem() != null ?
                 binding.spnCrops.getSelectedItem().toString() : "Soybean";
-        // Clean crop name (extract english title before parenthesis)
         String cropName = cropRaw.contains("(") ? cropRaw.substring(0, cropRaw.indexOf("(")).trim() : cropRaw.trim();
+
+        String variety = binding.etCropVariety.getText() != null ? binding.etCropVariety.getText().toString().trim() : "";
 
         String categoryRaw = binding.spnProblemCategory.getSelectedItem() != null ?
                 binding.spnProblemCategory.getSelectedItem().toString() : "Unusual Leaf Spots";
@@ -252,8 +290,10 @@ public class CropWatchActivity extends BaseActivity {
         String growthStage = stageRaw.contains("(") ? stageRaw.substring(0, stageRaw.indexOf("(")).trim() : stageRaw.trim();
 
         String district = binding.etDistrict.getText() != null ? binding.etDistrict.getText().toString().trim() : "";
+        String taluka = binding.etTaluka.getText() != null ? binding.etTaluka.getText().toString().trim() : "";
         String village = binding.etVillage.getText() != null ? binding.etVillage.getText().toString().trim() : "";
         String description = binding.etDescription.getText() != null ? binding.etDescription.getText().toString().trim() : "";
+        boolean locationConsent = binding.cbLocationConsent.isChecked();
 
         if (district.isEmpty()) {
             binding.etDistrict.setError(getString(R.string.error_district_required));
@@ -261,31 +301,30 @@ public class CropWatchActivity extends BaseActivity {
             return;
         }
 
-        // Prevent accidental duplicate submission
         binding.btnSubmitProblemReport.setEnabled(false);
         binding.progressSubmit.setVisibility(View.VISIBLE);
 
-        // If photo attached, attempt upload; otherwise submit directly
         if (selectedPhotoFile != null) {
             repository.uploadCropImage(selectedPhotoFile, new DiseaseReportRepository.UploadCallback() {
                 @Override
                 public void onSuccess(String imageUrl) {
                     uploadedImageUrl = imageUrl;
-                    completeReportSubmission(cropName, problemCategory, growthStage, district, village, description, uploadedImageUrl);
+                    completeReportSubmission(cropName, variety, problemCategory, growthStage, district, taluka, village, description, locationConsent, uploadedImageUrl);
                 }
 
                 @Override
                 public void onError(String error) {
-                    // Proceed even if photo upload fails to avoid blocking the report
-                    completeReportSubmission(cropName, problemCategory, growthStage, district, village, description, null);
+                    completeReportSubmission(cropName, variety, problemCategory, growthStage, district, taluka, village, description, locationConsent, null);
                 }
             });
         } else {
-            completeReportSubmission(cropName, problemCategory, growthStage, district, village, description, null);
+            completeReportSubmission(cropName, variety, problemCategory, growthStage, district, taluka, village, description, locationConsent, null);
         }
     }
 
-    private void completeReportSubmission(String cropName, String category, String stage, String district, String village, String desc, String photoUrl) {
+    private void completeReportSubmission(String cropName, String variety, String category, String stage,
+                                         String district, String taluka, String village, String desc,
+                                         boolean consent, String photoUrl) {
         String reportId = "CW-REP-" + System.currentTimeMillis();
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"));
 
@@ -294,10 +333,13 @@ public class CropWatchActivity extends BaseActivity {
         report.setFarmerPhone(sessionManager.getUserPhone());
         report.setFarmerName(sessionManager.getUserName() != null ? sessionManager.getUserName() : "Farmer");
         report.setCropName(cropName);
+        if (!variety.isEmpty()) report.setVariety(variety);
         report.setProblemCategory(category);
         report.setGrowthStage(stage);
         report.setDistrict(district);
+        report.setTaluka(!taluka.isEmpty() ? taluka : district);
         report.setVillage(village.isEmpty() ? "Local Farm" : village);
+        report.setLocationConsent(consent);
         report.setSymptoms(!desc.isEmpty() ? desc : category + " observed in " + cropName);
         report.setImageUrl(photoUrl);
         report.setReportedAt(timestamp);
@@ -309,7 +351,6 @@ public class CropWatchActivity extends BaseActivity {
                 binding.progressSubmit.setVisibility(View.GONE);
                 binding.btnSubmitProblemReport.setEnabled(true);
 
-                // Show confirmation dialog with report ID
                 new AlertDialog.Builder(CropWatchActivity.this)
                         .setTitle("✅ " + getString(R.string.crop_report_submitted_title))
                         .setMessage(getString(R.string.crop_report_submitted_msg) + "\n\n" +
@@ -318,7 +359,6 @@ public class CropWatchActivity extends BaseActivity {
                                 getString(R.string.label_status) + ": Pending Review\n\n" +
                                 getString(R.string.crop_report_clustering_notice))
                         .setPositiveButton(getString(R.string.btn_view_my_reports), (dialog, which) -> {
-                            // Switch to My Reports tab
                             TabLayout.Tab tab = binding.tabLayout.getTabAt(1);
                             if (tab != null) tab.select();
                         })
@@ -326,8 +366,8 @@ public class CropWatchActivity extends BaseActivity {
                         .setCancelable(false)
                         .show();
 
-                // Clear input form
                 binding.etDescription.setText("");
+                binding.etCropVariety.setText("");
                 binding.btnRemovePhoto.performClick();
             }
 
@@ -367,23 +407,46 @@ public class CropWatchActivity extends BaseActivity {
 
     private void loadLocalAlerts() {
         String district = binding.etDistrict.getText() != null ? binding.etDistrict.getText().toString().trim() : null;
-        repository.getCropAlerts(district, "ACTIVE", new DiseaseReportRepository.AlertsCallback() {
+
+        // 1. Fetch Official Advisories (CROPSAP & Dr. PDKV Akola)
+        repository.getCropAdvisories(null, "VERIFIED", new DiseaseReportRepository.AdvisoriesCallback() {
             @Override
-            public void onLoaded(List<CropAlert> list) {
-                alertAdapter.setItems(list);
-                if (list == null || list.isEmpty()) {
-                    binding.layoutEmptyAlerts.setVisibility(View.VISIBLE);
-                    binding.rvLocalAlerts.setVisibility(View.GONE);
-                } else {
-                    binding.layoutEmptyAlerts.setVisibility(View.GONE);
-                    binding.rvLocalAlerts.setVisibility(View.VISIBLE);
-                }
+            public void onLoaded(List<CropAdvisory> list) {
+                loadedAdvisories = list != null ? list : new ArrayList<>();
+                advisoryAdapter.setItems(loadedAdvisories);
+                updateAlertsVisibility();
             }
 
             @Override
             public void onError(String error) {
-                binding.layoutEmptyAlerts.setVisibility(View.VISIBLE);
+                updateAlertsVisibility();
             }
         });
+
+        // 2. Fetch Community Alerts
+        repository.getCropAlerts(district, "ACTIVE", new DiseaseReportRepository.AlertsCallback() {
+            @Override
+            public void onLoaded(List<CropAlert> list) {
+                loadedAlerts = list != null ? list : new ArrayList<>();
+                alertAdapter.setItems(loadedAlerts);
+                updateAlertsVisibility();
+            }
+
+            @Override
+            public void onError(String error) {
+                updateAlertsVisibility();
+            }
+        });
+    }
+
+    private void updateAlertsVisibility() {
+        boolean hasContent = !loadedAdvisories.isEmpty() || !loadedAlerts.isEmpty();
+        if (hasContent) {
+            binding.layoutEmptyAlerts.setVisibility(View.GONE);
+            binding.scrollAlertsContent.setVisibility(View.VISIBLE);
+        } else {
+            binding.layoutEmptyAlerts.setVisibility(View.VISIBLE);
+            binding.scrollAlertsContent.setVisibility(View.GONE);
+        }
     }
 }

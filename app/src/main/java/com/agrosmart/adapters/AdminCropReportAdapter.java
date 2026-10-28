@@ -58,14 +58,22 @@ public class AdminCropReportAdapter extends RecyclerView.Adapter<AdminCropReport
         }
 
         void bind(DiseaseReport item) {
-            binding.tvAdminCropName.setText(item.getCropName() != null ? item.getCropName() : "Crop");
+            String cropTitle = item.getCropName() != null ? item.getCropName() : "Crop";
+            if (item.getVariety() != null && !item.getVariety().isEmpty()) {
+                cropTitle += " (" + item.getVariety() + ")";
+            }
+            binding.tvAdminCropName.setText(cropTitle);
 
             String farmerInfo = "Farmer: " + (item.getFarmerName() != null ? item.getFarmerName() : "Local Farmer") +
                     " • " + (item.getFarmerPhone() != null ? item.getFarmerPhone() : "No Contact");
             binding.tvAdminFarmerDetails.setText(farmerInfo);
 
             String status = item.getStatus() != null ? item.getStatus() : "PENDING_REVIEW";
-            binding.tvAdminStatusBadge.setText(status.replace("_", " "));
+            if ("DUPLICATE".equalsIgnoreCase(status) && item.getDuplicateOfReportId() != null) {
+                binding.tvAdminStatusBadge.setText("DUPLICATE OF #" + item.getDuplicateOfReportId());
+            } else {
+                binding.tvAdminStatusBadge.setText(status.replace("_", " "));
+            }
 
             if ("VERIFIED".equalsIgnoreCase(status) || "VERIFIED_ALERT".equalsIgnoreCase(status)) {
                 binding.tvAdminStatusBadge.setTextColor(Color.parseColor("#15803D"));
@@ -82,8 +90,11 @@ public class AdminCropReportAdapter extends RecyclerView.Adapter<AdminCropReport
             binding.tvAdminCategoryBadge.setText(item.getProblemCategory() != null ? item.getProblemCategory() : "Reported Problem");
             binding.tvAdminGrowthStage.setText(item.getGrowthStage() != null ? item.getGrowthStage() : "Stage: N/A");
 
-            String loc = (item.getVillage() != null ? item.getVillage() + ", " : "") +
-                    (item.getDistrict() != null ? item.getDistrict() : "");
+            StringBuilder locBuilder = new StringBuilder();
+            if (item.getVillage() != null && !item.getVillage().isEmpty()) locBuilder.append(item.getVillage()).append(", ");
+            if (item.getTaluka() != null && !item.getTaluka().isEmpty() && !item.getTaluka().equalsIgnoreCase(item.getVillage())) locBuilder.append(item.getTaluka()).append(", ");
+            if (item.getDistrict() != null && !item.getDistrict().isEmpty()) locBuilder.append(item.getDistrict());
+            String loc = locBuilder.toString();
             binding.tvAdminLocation.setText("📍 " + (loc.isEmpty() ? "Local Area" : loc));
 
             binding.tvAdminSymptoms.setText(item.getSymptoms() != null ? item.getSymptoms() : "No details.");
