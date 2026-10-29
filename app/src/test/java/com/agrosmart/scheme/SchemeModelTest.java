@@ -1,6 +1,7 @@
 package com.agrosmart.scheme;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -8,6 +9,8 @@ import com.agrosmart.models.CriterionCheck;
 import com.agrosmart.models.FarmerProfile;
 import com.agrosmart.models.GovernmentScheme;
 import com.agrosmart.models.SchemeEligibilityResult;
+import com.agrosmart.repository.SchemeRepository;
+import com.agrosmart.utils.SchemeEligibilityHelper;
 
 import org.junit.Test;
 
@@ -82,5 +85,110 @@ public class SchemeModelTest {
         assertEquals("Soybean, Cotton", profile.getPrimaryCrops());
         assertEquals("OWNER", profile.getOwnershipStatus());
         assertTrue(profile.getHasIrrigation());
+    }
+
+    @Test
+    public void testFiftyAcresFarmer_SMAM_IsNotEligible() {
+        // SMAM Mechanization with 5.0 acres max ceiling
+        GovernmentScheme smam = new GovernmentScheme();
+        smam.setSchemeId("SCH03");
+        smam.setSchemeName("Sub-Mission on Agricultural Mechanization");
+        smam.setApplicableState("ALL_INDIA");
+        smam.setApplicationStatus("OPEN");
+        smam.setMinLandAcres(0.1);
+        smam.setMaxLandAcres(5.0);
+        smam.setAllowedFarmerCategories("SMALL_MARGINAL,SC_ST,WOMEN");
+        smam.setRequiresLandOwnership(true);
+
+        // Farmer with 50 acres
+        FarmerProfile largeFarmer = new FarmerProfile(
+                "9876543210", "Large Farmer", "Maharashtra", "Baramati",
+                50.0, "LARGE", "Soybean, Cotton", 500000.0, true, "OWNER"
+        );
+
+        SchemeEligibilityResult result = SchemeEligibilityHelper.evaluate(smam, largeFarmer);
+
+        assertNotNull(result);
+        assertEquals("Not Eligible", result.getEligibilityStatus());
+        assertEquals("#D32F2F", result.getStatusColor());
+
+        // Ensure maximum land ceiling failure is recorded in criteria checklist
+        boolean foundLandFailure = false;
+        for (CriterionCheck c : result.getCriteriaChecks()) {
+            if ("Maximum Land Limit".equals(c.getCriterionName()) && Boolean.FALSE.equals(c.getIsSatisfied())) {
+                foundLandFailure = true;
+                assertTrue(c.getExplanation().contains("exceeds designated threshold"));
+                break;
+            }
+        }
+        assertTrue("Must fail on Maximum Land Limit when farmer enters 50 acres", foundLandFailure);
+    }
+
+    @Test
+    public void testTwoAndHalfAcresFarmer_SMAM_IsLikelyEligible() {
+        GovernmentScheme smam = new GovernmentScheme();
+        smam.setSchemeId("SCH03");
+        smam.setSchemeName("Sub-Mission on Agricultural Mechanization");
+        smam.setApplicableState("ALL_INDIA");
+        smam.setApplicationStatus("OPEN");
+        smam.setMinLandAcres(0.1);
+        smam.setMaxLandAcres(5.0);
+        smam.setAllowedFarmerCategories("SMALL_MARGINAL,SC_ST,WOMEN");
+        smam.setRequiresLandOwnership(true);
+
+        FarmerProfile smallFarmer = new FarmerProfile(
+                "9876543210", "Small Farmer", "Maharashtra", "Baramati",
+                2.5, "SMALL_MARGINAL", "Soybean, Cotton", 120000.0, true, "OWNER"
+        );
+
+        SchemeEligibilityResult result = SchemeEligibilityHelper.evaluate(smam, smallFarmer);
+
+        assertNotNull(result);
+        assertEquals("Likely Eligible", result.getEligibilityStatus());
+        assertEquals("#2E7D32", result.getStatusColor());
+    }
+
+    @Test
+    public void testClosedScheme_ReturnsApplicationClosed() {
+        GovernmentScheme closedScheme = new GovernmentScheme();
+        closedScheme.setSchemeId("SCH08");
+        closedScheme.setSchemeName("Kharif Emergency Flood & Drought Relief");
+        closedScheme.setApplicationStatus("CLOSED");
+        closedScheme.setDeadline("Closed on 15 Sep 2025");
+
+        FarmerProfile farmer = new FarmerProfile();
+        farmer.setLandAreaAcres(50.0);
+
+        SchemeEligibilityResult result = SchemeEligibilityHelper.evaluate(closedScheme, farmer);
+
+        assertNotNull(result);
+        assertEquals("Application Closed", result.getEligibilityStatus());
+        assertEquals("#455A64", result.getStatusColor());
+    }
+
+    @Test
+    public void testSchemeRepositoryPopulatesAllEightSchemesWithConstraints() {
+        List<GovernmentScheme> all = SchemeRepository.getInstance().getAllSchemes();
+        assertEquals(8, all.size());
+
+        // Check SMAM has maxLandAcres = 5.0
+        GovernmentScheme smam = all.stream().filter(s -> "SCH03".equals(s.getSchemeId())).findFirst().orElse(null);
+        assertNotNull(smam);
+        assertEquals(5.0, smam.getMaxLandAcres(), 0.01);
+
+        // Check PMKSY has maxLandAcres = 12.5
+        GovernmentScheme pmksy = all.stream().filter(s -> "SCH05".equals(s.getSchemeId())).findFirst().orElse(null);
+        assertNotNull(pmksy);
+        assertEquals(12.5, pmksy.getMaxLandAcres(), 0.01);
+
+        // Check Dr. Ambedkar has maxLandAcres = 15.0
+        GovernmentScheme ambedkar = all.stream().filter(s -> "SCH07".equals(s.getSchemeId())).findFirst().orElse(null);
+        assertNotNull(ambedkar);
+        assertEquals(15.0, ambedkar.getMaxLandAcres(), 0.01);
+
+        // Check SCH08 is CLOSED
+        GovernmentScheme relief = all.stream().filter(s -> "SCH08".equals(s.getSchemeId())).findFirst().orElse(null);
+        assertNotNull(relief);
+        assertEquals("CLOSED", relief.getApplicationStatus());
     }
 }

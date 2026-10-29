@@ -3,6 +3,8 @@ package com.agrosmart.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.agrosmart.models.FarmerProfile;
+
 public class SessionManager {
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
@@ -117,7 +119,7 @@ public class SessionManager {
     }
 
     public double getUserFarmSize() {
-        return pref.getFloat("user_farm_size", 5.5f);
+        return pref.getFloat("user_farm_size", 2.5f);
     }
 
     public void setProfileImage(String path) {
@@ -127,5 +129,35 @@ public class SessionManager {
 
     public String getProfileImage() {
         return pref.getString("user_profile_image", null);
+    }
+
+    public void saveFarmerProfile(FarmerProfile profile) {
+        if (profile == null) return;
+        editor.putString("profile_state", profile.getState());
+        editor.putString("profile_district", profile.getDistrict());
+        if (profile.getLandAreaAcres() != null) {
+            editor.putFloat("user_farm_size", profile.getLandAreaAcres().floatValue());
+        }
+        editor.putString("profile_category", profile.getFarmerCategory());
+        editor.putString("profile_crops", profile.getPrimaryCrops());
+        editor.putString("profile_ownership", profile.getOwnershipStatus());
+        if (profile.getAnnualIncome() != null) {
+            editor.putFloat("profile_income", profile.getAnnualIncome().floatValue());
+        }
+        editor.apply();
+    }
+
+    public FarmerProfile getFarmerProfile() {
+        FarmerProfile p = new FarmerProfile();
+        p.setFarmerPhone(getUserPhone());
+        p.setFullName(getUserName());
+        p.setState(pref.getString("profile_state", "Maharashtra"));
+        p.setDistrict(pref.getString("profile_district", "Baramati"));
+        p.setLandAreaAcres((double) pref.getFloat("user_farm_size", 2.5f));
+        p.setFarmerCategory(pref.getString("profile_category", "SMALL_MARGINAL"));
+        p.setPrimaryCrops(pref.getString("profile_crops", "Soybean, Cotton"));
+        p.setOwnershipStatus(pref.getString("profile_ownership", "OWNER"));
+        p.setAnnualIncome((double) pref.getFloat("profile_income", 120000.0f));
+        return p;
     }
 }

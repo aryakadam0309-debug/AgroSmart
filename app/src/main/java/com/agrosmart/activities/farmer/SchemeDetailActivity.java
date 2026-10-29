@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.agrosmart.models.FarmerProfile;
 import com.agrosmart.models.GovernmentScheme;
 import com.agrosmart.models.SchemeEligibilityResult;
 import com.agrosmart.network.ApiClient;
+import com.agrosmart.utils.SchemeEligibilityHelper;
 import com.agrosmart.utils.SessionManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -59,7 +61,7 @@ public class SchemeDetailActivity extends BaseActivity {
         if (scheme != null) {
             renderSchemeDetails();
             checkSavedBookmarkStatus();
-            if (eligibilityResult != null) {
+            if (eligibilityResult != null && eligibilityResult.getCriteriaChecks() != null && !eligibilityResult.getCriteriaChecks().isEmpty()) {
                 renderEligibilityReport(eligibilityResult);
             } else {
                 fetchOnlineEligibility();
@@ -71,16 +73,11 @@ public class SchemeDetailActivity extends BaseActivity {
     }
 
     private void loadLocalProfile() {
-        farmerProfile = new FarmerProfile();
-        farmerProfile.setFarmerPhone(sessionManager.getUserPhone());
-        farmerProfile.setFullName(sessionManager.getUserName());
-        farmerProfile.setState("Maharashtra");
-        farmerProfile.setDistrict("Baramati");
-        farmerProfile.setLandAreaAcres(2.5);
-        farmerProfile.setFarmerCategory("SMALL_MARGINAL");
-        farmerProfile.setPrimaryCrops("Soybean, Cotton");
-        farmerProfile.setAnnualIncome(120000.0);
-        farmerProfile.setOwnershipStatus("OWNER");
+        if (getIntent().hasExtra("extra_farmer_profile")) {
+            farmerProfile = (FarmerProfile) getIntent().getSerializableExtra("extra_farmer_profile");
+        } else {
+            farmerProfile = sessionManager.getFarmerProfile();
+        }
     }
 
     private void renderSchemeDetails() {
@@ -172,35 +169,24 @@ public class SchemeDetailActivity extends BaseActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             eligibilityResult = response.body();
                             renderEligibilityReport(eligibilityResult);
+                        } else {
+                            renderOfflineEligibility();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<SchemeEligibilityResult> call, Throwable t) {
-                        // Offline or backend unreachable: render basic offline check
                         renderOfflineEligibility();
                     }
                 });
     }
 
     private void renderOfflineEligibility() {
-        // Simple offline fallback evaluation
-        boolean isClosed = "CLOSED".equalsIgnoreCase(scheme.getApplicationStatus());
-        boolean landOk = scheme.getMaxLandAcres() == null || (farmerProfile.getLandAreaAcres() <= scheme.getMaxLandAcres());
-
-        SchemeEligibilityResult offlineRes = new SchemeEligibilityResult();
-        offlineRes.setSchemeId(scheme.getSchemeId());
-        if (isClosed) {
-            offlineRes.setEligibilityStatus("Application Closed");
-            offlineRes.setSummaryExplanation("Official application window is closed according to published timeline.");
-        } else if (!landOk) {
-            offlineRes.setEligibilityStatus("Not Eligible");
-            offlineRes.setSummaryExplanation("Your landholding (" + farmerProfile.getLandAreaAcres() + " acres) exceeds the designated threshold (" + scheme.getMaxLandAcres() + " acres).");
-        } else {
-            offlineRes.setEligibilityStatus("Likely Eligible");
-            offlineRes.setSummaryExplanation("Your registered farm profile satisfies known eligibility conditions.");
+        SchemeEligibilityResult offlineRes = SchemeEligibilityHelper.evaluate(scheme, farmerProfile);
+        if (offlineRes != null) {
+            offlineRes.setSaved(isSaved);
+            renderEligibilityReport(offlineRes);
         }
-        renderEligibilityReport(offlineRes);
     }
 
     private void renderEligibilityReport(SchemeEligibilityResult res) {
@@ -280,17 +266,67 @@ public class SchemeDetailActivity extends BaseActivity {
         etLand.setText(String.valueOf(farmerProfile.getLandAreaAcres()));
         etCrops.setText(farmerProfile.getPrimaryCrops());
 
+        for (int i = 0; i < states.length; i++) {
+            if (states[i].equalsIgnoreCase(farmerProfile.getState())) {
+                spState.setSelection(i);
+                break;
+            }
+        }
+        for (int i = 0; i < categories.length; i++) {
+            if (categories[i].equalsIgnoreCase(farmerProfile.getFarmerCategory())) {
+                spCategory.setSelection(i);
+                break;
+            }
+        }
+        for (int i = 0; i < ownerships.length; i++) {
+            if (ownerships[i].equalsIgnoreCase(farmerProfile.getOwnershipStatus())) {
+                spOwnership.setSelection(i);
+                break;
+            }
+        }
+
+        etLand.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    String str = s != null ? s.toString().trim() : "";
+                    if (!str.isEmpty()) {
+                        double acres = Double.parseDouble(str);
+                        if (acres > 5.0 && spCategory.getSelectedItemPosition() == 0) {
+                            for (int i = 0; i < categories.length; i++) {
+                                if ("LARGE".equalsIgnoreCase(categories[i])) {
+                                    spCategory.setSelection(i);
+                                    break;
+                                }
+                            }
+                        } else if (acres <= 5.0 && "LARGE".equalsIgnoreCase(spCategory.getSelectedItem().toString())) {
+                            spCategory.setSelection(0);
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnSave.setOnClickListener(v -> {
             try {
                 String landStr = etLand.getText().toString().trim();
                 double land = landStr.isEmpty() ? 2.5 : Double.parseDouble(landStr);
+                String selectedCat = spCategory.getSelectedItem().toString();
+
+                if (land > 5.0 && "SMALL_MARGINAL".equalsIgnoreCase(selectedCat)) {
+                    selectedCat = "LARGE";
+                }
+
                 farmerProfile.setLandAreaAcres(land);
                 farmerProfile.setState(spState.getSelectedItem().toString());
-                farmerProfile.setFarmerCategory(spCategory.getSelectedItem().toString());
+                farmerProfile.setFarmerCategory(selectedCat);
                 farmerProfile.setOwnershipStatus(spOwnership.getSelectedItem().toString());
                 farmerProfile.setPrimaryCrops(etCrops.getText().toString().trim());
 
+                sessionManager.saveFarmerProfile(farmerProfile);
                 dialog.dismiss();
                 Toast.makeText(this, "Profile updated. Re-evaluating eligibility...", Toast.LENGTH_SHORT).show();
                 fetchOnlineEligibility();

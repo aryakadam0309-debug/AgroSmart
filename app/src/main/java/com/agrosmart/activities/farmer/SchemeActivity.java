@@ -22,6 +22,7 @@ import com.agrosmart.models.GovernmentScheme;
 import com.agrosmart.models.SchemeEligibilityResult;
 import com.agrosmart.network.ApiClient;
 import com.agrosmart.repository.SchemeRepository;
+import com.agrosmart.utils.SchemeEligibilityHelper;
 import com.agrosmart.utils.SessionManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -66,25 +67,18 @@ public class SchemeActivity extends BaseActivity {
     }
 
     private void initFarmerProfile() {
-        farmerProfile = new FarmerProfile();
-        farmerProfile.setFarmerPhone(sessionManager.getUserPhone());
-        farmerProfile.setFullName(sessionManager.getUserName());
-        farmerProfile.setState("Maharashtra");
-        farmerProfile.setDistrict("Baramati");
-        farmerProfile.setLandAreaAcres(2.5);
-        farmerProfile.setFarmerCategory("SMALL_MARGINAL");
-        farmerProfile.setPrimaryCrops("Soybean, Cotton");
-        farmerProfile.setAnnualIncome(120000.0);
-        farmerProfile.setOwnershipStatus("OWNER");
-
+        farmerProfile = sessionManager.getFarmerProfile();
         updateProfileBannerText();
     }
 
     private void updateProfileBannerText() {
+        String catLabel = "SMALL_MARGINAL".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? "Small/Marginal"
+                : ("LARGE".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? "Large" : farmerProfile.getFarmerCategory());
+
         binding.tvProfileSummary.setText(String.format("Profile: %s • %.1f Acres (%s) • %s",
                 farmerProfile.getState(),
                 farmerProfile.getLandAreaAcres(),
-                "SMALL_MARGINAL".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? "Small/Marginal" : "Large",
+                catLabel,
                 farmerProfile.getOwnershipStatus()));
     }
 
@@ -226,7 +220,7 @@ public class SchemeActivity extends BaseActivity {
                     (s.getCategory() != null && s.getCategory().toLowerCase().contains(selectedCategory.toLowerCase()));
             boolean queryMatch = searchQuery.isEmpty() ||
                     s.getSchemeName().toLowerCase().contains(searchQuery.toLowerCase()) ||
-                    s.getDescription().toLowerCase().contains(searchQuery.toLowerCase());
+                    (s.getDescription() != null && s.getDescription().toLowerCase().contains(searchQuery.toLowerCase()));
 
             if (catMatch && queryMatch) {
                 filtered.add(r);
@@ -243,26 +237,16 @@ public class SchemeActivity extends BaseActivity {
             public void onSuccess(List<GovernmentScheme> schemes) {
                 List<SchemeEligibilityResult> results = new ArrayList<>();
                 for (GovernmentScheme s : schemes) {
-                    SchemeEligibilityResult r = new SchemeEligibilityResult();
-                    r.setScheme(s);
-                    r.setSchemeId(s.getSchemeId());
-                    r.setSchemeTitle(s.getSchemeName());
-
-                    boolean isClosed = "CLOSED".equalsIgnoreCase(s.getApplicationStatus());
-                    boolean landOk = s.getMaxLandAcres() == null || (farmerProfile.getLandAreaAcres() <= s.getMaxLandAcres());
-
-                    if (isClosed) {
-                        r.setEligibilityStatus("Application Closed");
-                        r.setStatusColor("#455A64");
-                    } else if (!landOk) {
-                        r.setEligibilityStatus("Not Eligible");
-                        r.setStatusColor("#D32F2F");
-                    } else {
-                        r.setEligibilityStatus("Likely Eligible");
-                        r.setStatusColor("#2E7D32");
+                    SchemeEligibilityResult r = SchemeEligibilityHelper.evaluate(s, farmerProfile);
+                    if (r != null) {
+                        r.setSaved(dbHelper.isSchemeSaved(s.getSchemeId(), sessionManager.getUserPhone()));
+                        results.add(r);
                     }
-                    results.add(r);
                 }
+
+                // Rank order: Likely Eligible (1) -> Possibly Eligible (2) -> Not Eligible (3) -> Application Closed (4) -> Status Unverified (5)
+                results.sort((a, b) -> Integer.compare(getRankScore(a.getEligibilityStatus()), getRankScore(b.getEligibilityStatus())));
+
                 binding.layoutEmptyState.setVisibility(results.isEmpty() ? View.VISIBLE : View.GONE);
                 schemeAdapter.setEligibilityResults(results);
             }
@@ -274,6 +258,14 @@ public class SchemeActivity extends BaseActivity {
         });
     }
 
+    private int getRankScore(String status) {
+        if ("Likely Eligible".equalsIgnoreCase(status)) return 1;
+        if ("Possibly Eligible – More Information Required".equalsIgnoreCase(status)) return 2;
+        if ("Not Eligible".equalsIgnoreCase(status)) return 3;
+        if ("Application Closed".equalsIgnoreCase(status)) return 4;
+        return 5;
+    }
+
     private void loadAllSchemes() {
         ApiClient.getInstance().getApi().filterSchemes(selectedCategory, "All", "ALL_INDIA", "All", searchQuery)
                 .enqueue(new Callback<List<GovernmentScheme>>() {
@@ -281,8 +273,7 @@ public class SchemeActivity extends BaseActivity {
                     public void onResponse(Call<List<GovernmentScheme>> call, Response<List<GovernmentScheme>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             List<GovernmentScheme> list = response.body();
-                            binding.layoutEmptyState.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-                            schemeAdapter.setSchemes(list);
+                            displayAllSchemesWithEligibility(list);
                         } else {
                             loadOfflineAllSchemes();
                         }
@@ -295,12 +286,24 @@ public class SchemeActivity extends BaseActivity {
                 });
     }
 
+    private void displayAllSchemesWithEligibility(List<GovernmentScheme> list) {
+        List<SchemeEligibilityResult> results = new ArrayList<>();
+        for (GovernmentScheme s : list) {
+            SchemeEligibilityResult r = SchemeEligibilityHelper.evaluate(s, farmerProfile);
+            if (r != null) {
+                r.setSaved(dbHelper.isSchemeSaved(s.getSchemeId(), sessionManager.getUserPhone()));
+                results.add(r);
+            }
+        }
+        binding.layoutEmptyState.setVisibility(results.isEmpty() ? View.VISIBLE : View.GONE);
+        schemeAdapter.setEligibilityResults(results);
+    }
+
     private void loadOfflineAllSchemes() {
         SchemeRepository.getInstance().getSchemes(selectedCategory, searchQuery, new SchemeRepository.SchemeCallback() {
             @Override
             public void onSuccess(List<GovernmentScheme> schemes) {
-                binding.layoutEmptyState.setVisibility(schemes.isEmpty() ? View.VISIBLE : View.GONE);
-                schemeAdapter.setSchemes(schemes);
+                displayAllSchemesWithEligibility(schemes);
             }
 
             @Override
@@ -314,8 +317,7 @@ public class SchemeActivity extends BaseActivity {
         // Load from local SQLite cache first (offline instant render)
         List<GovernmentScheme> localSaved = dbHelper.getLocalSavedSchemes(sessionManager.getUserPhone());
         if (!localSaved.isEmpty()) {
-            binding.layoutEmptyState.setVisibility(View.GONE);
-            schemeAdapter.setSchemes(localSaved);
+            displayAllSchemesWithEligibility(localSaved);
         }
 
         // Sync with backend
@@ -325,8 +327,7 @@ public class SchemeActivity extends BaseActivity {
                     public void onResponse(Call<List<GovernmentScheme>> call, Response<List<GovernmentScheme>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             List<GovernmentScheme> list = response.body();
-                            binding.layoutEmptyState.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-                            schemeAdapter.setSchemes(list);
+                            displayAllSchemesWithEligibility(list);
                         }
                     }
 
@@ -353,7 +354,18 @@ public class SchemeActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(Call<GovernmentScheme> call, Throwable t) {
-                        Toast.makeText(SchemeActivity.this, "Status toggle simulated locally", Toast.LENGTH_SHORT).show();
+                        // Offline local toggle demo
+                        for (GovernmentScheme s : SchemeRepository.getInstance().getAllSchemes()) {
+                            if (targetScheme.equalsIgnoreCase(s.getSchemeId())) {
+                                s.setApplicationStatus(newStatus);
+                                s.setDeadline(deadline);
+                                break;
+                            }
+                        }
+                        String msg = closedTestToggle ? "⚡ Demo: SMAM Mechanization is now CLOSED (Application disabled)"
+                                : "⚡ Demo: SMAM Mechanization is now OPEN";
+                        Toast.makeText(SchemeActivity.this, msg, Toast.LENGTH_LONG).show();
+                        switchTab(activeTab);
                     }
                 });
     }
@@ -387,17 +399,70 @@ public class SchemeActivity extends BaseActivity {
         etLand.setText(String.valueOf(farmerProfile.getLandAreaAcres()));
         etCrops.setText(farmerProfile.getPrimaryCrops());
 
+        for (int i = 0; i < states.length; i++) {
+            if (states[i].equalsIgnoreCase(farmerProfile.getState())) {
+                spState.setSelection(i);
+                break;
+            }
+        }
+        for (int i = 0; i < categories.length; i++) {
+            if (categories[i].equalsIgnoreCase(farmerProfile.getFarmerCategory())) {
+                spCategory.setSelection(i);
+                break;
+            }
+        }
+        for (int i = 0; i < ownerships.length; i++) {
+            if (ownerships[i].equalsIgnoreCase(farmerProfile.getOwnershipStatus())) {
+                spOwnership.setSelection(i);
+                break;
+            }
+        }
+
+        // Automatic category switching based on agricultural acreage rules:
+        // Land > 5.0 acres automatically categorizes as LARGE (Small/Marginal ceiling is 5.0 acres / 2 ha)
+        etLand.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    String str = s != null ? s.toString().trim() : "";
+                    if (!str.isEmpty()) {
+                        double acres = Double.parseDouble(str);
+                        if (acres > 5.0 && spCategory.getSelectedItemPosition() == 0) {
+                            for (int i = 0; i < categories.length; i++) {
+                                if ("LARGE".equalsIgnoreCase(categories[i])) {
+                                    spCategory.setSelection(i);
+                                    break;
+                                }
+                            }
+                        } else if (acres <= 5.0 && "LARGE".equalsIgnoreCase(spCategory.getSelectedItem().toString())) {
+                            spCategory.setSelection(0); // SMALL_MARGINAL
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnSave.setOnClickListener(v -> {
             try {
                 String landStr = etLand.getText().toString().trim();
                 double land = landStr.isEmpty() ? 2.5 : Double.parseDouble(landStr);
+                String selectedCat = spCategory.getSelectedItem().toString();
+
+                // Enforce agricultural categorization consistency
+                if (land > 5.0 && "SMALL_MARGINAL".equalsIgnoreCase(selectedCat)) {
+                    selectedCat = "LARGE";
+                }
+
                 farmerProfile.setLandAreaAcres(land);
                 farmerProfile.setState(spState.getSelectedItem().toString());
-                farmerProfile.setFarmerCategory(spCategory.getSelectedItem().toString());
+                farmerProfile.setFarmerCategory(selectedCat);
                 farmerProfile.setOwnershipStatus(spOwnership.getSelectedItem().toString());
                 farmerProfile.setPrimaryCrops(etCrops.getText().toString().trim());
 
+                sessionManager.saveFarmerProfile(farmerProfile);
                 updateProfileBannerText();
                 dialog.dismiss();
                 Toast.makeText(this, "Profile updated. Refreshing eligibility ranking...", Toast.LENGTH_SHORT).show();

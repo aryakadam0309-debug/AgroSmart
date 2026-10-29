@@ -60,14 +60,7 @@ ON DUPLICATE KEY UPDATE `price` = VALUES(`price`);
 
 -- 7. Seed Government Schemes (PS 5.3 Verified Data)
 DELETE FROM government_schemes;
-INSERT INTO government_schemes (
-    id, 	itle, ministry, subsidy_amount, eligibility, description, enefits, 
-equired_documents,
-    pplication_process, official_url, source_url, helpline, category, level, pplicable_state,
-    deadline, pplication_status, last_verified_date, min_land_acres, max_land_acres,
-    llowed_farmer_categories, llowed_crops, max_annual_income, 
-equires_land_ownership
-) VALUES
+INSERT INTO `government_schemes` (`id`, `title`, `ministry`, `subsidy_amount`, `eligibility`, `description`, `benefits`, `required_documents`, `application_process`, `official_url`, `source_url`, `helpline`, `category`, `level`, `applicable_state`, `deadline`, `application_status`, `last_verified_date`, `min_land_acres`, `max_land_acres`, `allowed_farmer_categories`, `allowed_crops`, `max_annual_income`, `requires_land_ownership`) VALUES
 ('SCH01', 'PM-KISAN Samman Nidhi', 'Ministry of Agriculture & Farmers Welfare', '₹6,000 / Year', 
  'All landholding farmer families with cultivable land in their names across India',
  'Direct income support of ₹6,000 per year paid in three equal installments of ₹2,000 directly into bank accounts via DBT.',
