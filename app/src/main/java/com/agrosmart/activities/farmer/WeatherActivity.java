@@ -2,9 +2,12 @@ package com.agrosmart.activities.farmer;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,38 +18,58 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.agrosmart.activities.BaseActivity;
+import com.agrosmart.adapters.FarmingAdvisoryAdapter;
 import com.agrosmart.adapters.ForecastAdapter;
+import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.ActivityWeatherBinding;
+import com.agrosmart.models.FarmingAdvisory;
+import com.agrosmart.models.ForecastItem;
+import com.agrosmart.models.WeatherAdvisoryChange;
 import com.agrosmart.models.WeatherResponse;
+import com.agrosmart.network.ApiClient;
+import com.agrosmart.utils.AgroSmartNotificationHelper;
 import com.agrosmart.utils.SessionManager;
 import com.agrosmart.viewmodels.WeatherViewModel;
-import com.agrosmart.weather.strategy.MockWeatherProvider;
 import com.agrosmart.weather.strategy.WeatherProvider;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
- * WeatherActivity — Main User Interface for the Weather Forecast Module.
- * Demonstrates the Strategy Design Pattern by allowing runtime switching
- * between real-time satellite telemetry (LiveApiWeatherProvider) and
- * offline farm simulation (MockWeatherProvider).
+ * WeatherActivity — Main User Interface for Weather Monitoring, Rain Alerts,
+ * and Smart Farming Advisory (PS 5.4).
+ *
+ * Implements:
+ * 1. 5-day weather forecast with rainfall mm, probability %, humidity, and wind speed.
+ * 2. Smart Farming Advisories for Sowing, Pesticide Spraying, and Harvesting.
+ * 3. 5-Day summary banner with special emphasis on heavy rain warnings.
+ * 4. Advisory Alert & Forecast Change card showing previous vs. updated recommendations.
+ * 5. Repeatable live hackathon demonstration scenario trigger.
+ * 6. Dual-tier offline SQLite caching.
  */
 public class WeatherActivity extends BaseActivity {
+
+    private static final String TAG = "WeatherActivity";
 
     private ActivityWeatherBinding binding;
     private WeatherViewModel weatherViewModel;
     private ForecastAdapter forecastAdapter;
+    private FarmingAdvisoryAdapter advisoryAdapter;
     private FusedLocationProviderClient fusedLocationClient;
     private SessionManager sessionManager;
+    private AgroSmartDbHelper dbHelper;
 
-    private double currentLatitude = 19.0760;
-    private double currentLongitude = 72.8777;
-    private String currentLocationName = "Mumbai, Maharashtra";
+    private double currentLatitude = 18.5204;
+    private double currentLongitude = 73.8567;
+    private String currentLocationName = "Pune, Maharashtra";
+    private String currentCrop = "Cotton";
 
     private final ActivityResultLauncher<String[]> locationPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -59,6 +82,13 @@ public class WeatherActivity extends BaseActivity {
                 }
             });
 
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Log.i(TAG, "Notification permission granted");
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,61 +96,121 @@ public class WeatherActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         sessionManager = new SessionManager(this);
+        dbHelper = AgroSmartDbHelper.getInstance(this);
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         setupRecyclerView();
         setupObservers();
         setupListeners();
+        requestNotificationPermissionIfNeeded();
 
-        // Default immediately to saved city or Mumbai so UI renders immediately
+        // Check if launched from a rain alert notification deep-link
+        boolean fromAlert = getIntent().getBooleanExtra(AgroSmartNotificationHelper.EXTRA_OPEN_ADVISORY_ALERT, false);
+        if (fromAlert) {
+            Toast.makeText(this, "⚠️ Opened from Rain Alert: Reviewing updated farming advice", Toast.LENGTH_LONG).show();
+        }
+
+        // Default immediately to saved city or Pune so UI renders immediately
         loadSelectedCityWeather();
 
         // Check for live GPS access
         checkLocationPermission();
     }
 
+    private void requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+        AgroSmartNotificationHelper.createNotificationChannel(this);
+    }
+
     private void setupRecyclerView() {
         forecastAdapter = new ForecastAdapter();
         binding.rvForecast.setLayoutManager(new LinearLayoutManager(this));
         binding.rvForecast.setAdapter(forecastAdapter);
+
+        advisoryAdapter = new FarmingAdvisoryAdapter();
+        binding.rvAdvisories.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvAdvisories.setAdapter(advisoryAdapter);
     }
 
     private void setupObservers() {
-        // Observe loading state
         weatherViewModel.getIsLoading().observe(this, loading -> {
             if (binding != null) {
                 binding.swipeRefresh.setRefreshing(loading != null && loading);
             }
         });
 
-        // Observe active strategy to update badges and demo indicators
-        weatherViewModel.getActiveStrategy().observe(this, strategy -> {
-            if (strategy != null && binding != null) {
-                if (strategy.isDemoMode()) {
-                    binding.tvActiveStrategyLabel.setText("🧪 Demo Mode");
-                    binding.bannerDemoMode.setVisibility(View.VISIBLE);
-                    binding.tvDemoBannerText.setText("DEMO STRATEGY ACTIVE: Displaying simulated offline farm forecast for Software Engineering evaluation.");
-                } else {
-                    binding.tvActiveStrategyLabel.setText("🌐 Live API");
-                    binding.bannerDemoMode.setVisibility(View.GONE);
-                }
-            }
-        });
 
-        // Observe errors with actionable dialog
         weatherViewModel.getErrorMessage().observe(this, error -> {
             if (error != null && !error.trim().isEmpty()) {
                 showErrorDialog(error);
             }
         });
 
-        // Observe and render weather telemetry
         weatherViewModel.getWeatherData().observe(this, weather -> {
             if (weather != null && binding != null) {
                 renderWeatherData(weather);
             }
         });
+    }
+
+    private void setupListeners() {
+        binding.btnBack.setOnClickListener(v -> finish());
+        binding.swipeRefresh.setOnRefreshListener(this::refreshCurrentWeather);
+        binding.btnChangeCity.setOnClickListener(v -> showCitySelectionDialog());
+        binding.btnSimulateAlert.setOnClickListener(v -> triggerHackathonDemonstration());
+    }
+
+    /**
+     * Main Weather & Advisory Fetch Flow.
+     * Queries Spring Boot backend first.
+     * On network failure, falls back seamlessly to offline SQLite cache.
+     */
+    private void refreshCurrentWeather() {
+        binding.swipeRefresh.setRefreshing(true);
+        String phone = sessionManager.getUserPhone();
+
+        ApiClient.getInstance().getApi().getWeatherForecast(
+                currentLatitude, currentLongitude, currentLocationName, currentCrop, phone
+        ).enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                binding.swipeRefresh.setRefreshing(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    WeatherResponse weather = response.body();
+                    renderWeatherData(weather);
+                    // Cache to SQLite for offline resilience
+                    dbHelper.saveWeatherForecastCache(weather);
+                    if (weather.getLatestAdvisoryChange() != null) {
+                        dbHelper.saveAdvisoryChange(weather.getLatestAdvisoryChange());
+                    }
+                } else {
+                    loadFromOfflineCacheOrStrategy();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                binding.swipeRefresh.setRefreshing(false);
+                Log.w(TAG, "Backend unreachable for forecast: " + t.getMessage());
+                loadFromOfflineCacheOrStrategy();
+            }
+        });
+    }
+
+    private void loadFromOfflineCacheOrStrategy() {
+        WeatherResponse cached = dbHelper.getCachedWeatherForecast(currentLocationName);
+        if (cached != null) {
+            renderWeatherData(cached);
+            Toast.makeText(this, "📱 Displaying offline cached weather telemetry", Toast.LENGTH_SHORT).show();
+        } else {
+            // Strategy Pattern fallback
+            weatherViewModel.fetchWeather(currentLatitude, currentLongitude, currentLocationName);
+        }
     }
 
     private void renderWeatherData(WeatherResponse weather) {
@@ -132,75 +222,195 @@ public class WeatherActivity extends BaseActivity {
         binding.tvRainValue.setText(weather.getRainChance() + "%");
         binding.tvPressureValue.setText(weather.getPressure() + " hPa");
 
-        if (weather.getForecast() != null) {
-            forecastAdapter.setItems(weather.getForecast());
-        }
-    }
-
-    private void setupListeners() {
-        binding.btnBack.setOnClickListener(v -> finish());
-        binding.swipeRefresh.setOnRefreshListener(this::refreshCurrentWeather);
-        binding.btnChangeCity.setOnClickListener(v -> showCitySelectionDialog());
-        binding.btnStrategySwitcher.setOnClickListener(v -> showStrategySelectionDialog());
-    }
-
-    /**
-     * Dialog to switch between Strategy Design Pattern implementations at runtime.
-     * Evaluator can witness live architectural polymorphism.
-     */
-    private void showStrategySelectionDialog() {
-        List<WeatherProvider> strategies = weatherViewModel.getAvailableStrategies();
-        String[] titles = new String[strategies.size()];
-        int selectedIndex = 0;
-
-        WeatherProvider current = weatherViewModel.getCurrentStrategy();
-        for (int i = 0; i < strategies.size(); i++) {
-            WeatherProvider s = strategies.get(i);
-            titles[i] = s.getDisplayName();
-            if (current != null && current.getProviderId().equals(s.getProviderId())) {
-                selectedIndex = i;
+        // 5-Day Agricultural Summary Banner
+        if (weather.getFiveDaySummary() != null && !weather.getFiveDaySummary().trim().isEmpty()) {
+            binding.bannerFiveDaySummary.setVisibility(View.VISIBLE);
+            binding.tvFiveDaySummaryText.setText(weather.getFiveDaySummary());
+            if (weather.getFiveDaySummary().contains("HEAVY RAIN") || weather.getFiveDaySummary().contains("WARNING")) {
+                binding.bannerFiveDaySummary.setBackgroundColor(Color.parseColor("#FFCDD2"));
+                binding.tvSummaryIcon.setText("⚠️");
+                binding.tvFiveDaySummaryText.setTextColor(Color.parseColor("#B71C1C"));
+            } else {
+                binding.bannerFiveDaySummary.setBackgroundColor(Color.parseColor("#E8F5E9"));
+                binding.tvSummaryIcon.setText("🌤️");
+                binding.tvFiveDaySummaryText.setTextColor(Color.parseColor("#1B5E20"));
             }
         }
 
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Select Weather Retrieval Strategy")
-                .setSingleChoiceItems(titles, selectedIndex, (dialog, which) -> {
-                    WeatherProvider chosen = strategies.get(which);
-                    weatherViewModel.setStrategy(chosen);
-                    Toast.makeText(this, "Strategy switched: " + chosen.getDisplayName(), Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                    refreshCurrentWeather();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        // Render Previous vs. Updated Advisory Alert Card (Requirement 8)
+        WeatherAdvisoryChange change = weather.getLatestAdvisoryChange();
+        if (change != null) {
+            binding.cardAdvisoryChange.setVisibility(View.VISIBLE);
+            binding.tvChangeActivity.setText(change.getActivity() != null ? change.getActivity() + " Activity" : "Advisory Update");
+            binding.tvPrevStatus.setText("Previous: " + (change.getPreviousStatus() != null ? change.getPreviousStatus() : "Suitable"));
+            binding.tvNewStatus.setText("Updated: " + (change.getUpdatedStatus() != null ? change.getUpdatedStatus() : "Avoid/Delay"));
+            binding.tvChangeReason.setText("Reason: " + (change.getChangeReason() != null ? change.getChangeReason() : "Significant forecast change detected."));
+
+            String deliveryStatus = change.getNotificationDeliveryStatus() != null ? change.getNotificationDeliveryStatus() : "DELIVERED";
+            binding.tvNotifBadge.setText("DELIVERED".equalsIgnoreCase(deliveryStatus) ? "🔔 Alert Delivered" : "📱 Saved in App");
+            binding.tvChangeTimestamps.setText("Retrieved: " + (change.getUpdatedRetrievedAt() != null ? change.getUpdatedRetrievedAt() : "Just now"));
+        } else {
+            binding.cardAdvisoryChange.setVisibility(View.GONE);
+        }
+
+        // 5-Day Forecast items
+        if (weather.getForecast() != null) {
+            forecastAdapter.setItems(weather.getForecast());
+        }
+
+        // Smart Farming Advisories
+        if (weather.getAdvisories() != null && !weather.getAdvisories().isEmpty()) {
+            advisoryAdapter.setItems(weather.getAdvisories());
+        } else {
+            // Generate fallback default advisories based on current weather
+            List<FarmingAdvisory> defaults = generateFallbackAdvisories(weather);
+            advisoryAdapter.setItems(defaults);
+        }
+    }
+
+    private List<FarmingAdvisory> generateFallbackAdvisories(WeatherResponse w) {
+        List<FarmingAdvisory> list = new ArrayList<>();
+        boolean rainRisk = w.getRainChance() >= 50 || w.getRainfallMm() >= 15.0;
+        boolean windRisk = w.getWindSpeed() >= 18.0;
+
+        // Sowing
+        list.add(new FarmingAdvisory(
+                "Sowing",
+                rainRisk ? "Avoid/Delay" : "Suitable",
+                rainRisk ? "#D32F2F" : "#2E7D32",
+                rainRisk ? "Excessive rain probability creates high waterlogging risks." : "Soil moisture and temperature are favorable.",
+                String.format(Locale.US, "Rain: %.1f mm | Pop: %d%%", w.getRainfallMm(), w.getRainChance()),
+                rainRisk ? "Delay sowing until field drains." : "Proceed with sowing at standard depth.",
+                "Today", "Just now"
+        ));
+
+        // Spraying
+        list.add(new FarmingAdvisory(
+                "Pesticide Spraying",
+                (rainRisk || windRisk) ? "Avoid/Delay" : "Suitable",
+                (rainRisk || windRisk) ? "#D32F2F" : "#2E7D32",
+                rainRisk ? "Rainfall will wash away chemical application." : (windRisk ? "Strong winds will cause spray drift." : "Calm winds ensure high spray efficacy."),
+                String.format(Locale.US, "Wind: %.1f km/h | Pop: %d%%", w.getWindSpeed(), w.getRainChance()),
+                (rainRisk || windRisk) ? "Postpone spraying until calm, dry window." : "Conduct foliar spraying in morning hours.",
+                "Today", "Just now"
+        ));
+
+        // Harvesting
+        list.add(new FarmingAdvisory(
+                "Harvesting",
+                rainRisk ? "Avoid/Delay" : "Suitable",
+                rainRisk ? "#D32F2F" : "#2E7D32",
+                rainRisk ? "Heavy rain threatens grain spoilage and field mudding." : "Dry clear weather suitable for threshing.",
+                String.format(Locale.US, "Rain: %.1f mm | Pop: %d%%", w.getRainfallMm(), w.getRainChance()),
+                rainRisk ? "Cover harvested heaps immediately." : "Proceed with combine harvesting and drying.",
+                "Today", "Just now"
+        ));
+
+        return list;
+    }
+
+    /**
+     * Hackathon Demonstration Trigger (Requirement 11).
+     * Simulates an updated weather forecast introducing heavy rain on Saturday,
+     * recalculates advice, logs changes, updates UI, and triggers real system notification.
+     */
+    private void triggerHackathonDemonstration() {
+        binding.swipeRefresh.setRefreshing(true);
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("farmerPhone", sessionManager.getUserPhone());
+        payload.put("locationName", currentLocationName);
+        payload.put("dayIndex", 2); // Saturday
+        payload.put("simulatedRainfallMm", 48.0);
+        payload.put("simulatedRainProbability", 85);
+        payload.put("condition", "Heavy Rain");
+        payload.put("heavyRainWarning", true);
+
+        ApiClient.getInstance().getApi().simulateWeatherChange(payload)
+                .enqueue(new Callback<Map<String, Object>>() {
+                    @Override
+                    public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                        binding.swipeRefresh.setRefreshing(false);
+                        if (response.isSuccessful() && response.body() != null) {
+                            // Fire system heads-up notification on phone
+                            AgroSmartNotificationHelper.showRainAlertNotification(
+                                    WeatherActivity.this,
+                                    "Heavy Rain Alert – AgroSmart",
+                                    "The latest forecast predicts heavy rain for Saturday (48 mm, 85% prob). Your harvesting advisory has changed to Avoid/Delay.",
+                                    "Harvesting"
+                            );
+
+                            Toast.makeText(WeatherActivity.this,
+                                    "⚡ Demonstration Triggered! Heavy Rain alert simulated on Saturday.",
+                                    Toast.LENGTH_LONG).show();
+
+                            // Reload forecast to render updated change banner immediately
+                            refreshCurrentWeather();
+                        } else {
+                            runLocalSimulationFallback();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                        binding.swipeRefresh.setRefreshing(false);
+                        runLocalSimulationFallback();
+                    }
+                });
+    }
+
+    private void runLocalSimulationFallback() {
+        // Local simulation fallback if backend server is not running during presentation
+        AgroSmartNotificationHelper.showRainAlertNotification(
+                this,
+                "Heavy Rain Alert – AgroSmart",
+                "The latest forecast predicts heavy rain for Saturday (48 mm, 85% prob). Your harvesting advisory has changed to Avoid/Delay.",
+                "Harvesting"
+        );
+
+        binding.cardAdvisoryChange.setVisibility(View.VISIBLE);
+        binding.tvChangeActivity.setText("🌾 Harvesting Activity");
+        binding.tvPrevStatus.setText("Previous: Suitable");
+        binding.tvNewStatus.setText("Updated: Avoid/Delay");
+        binding.tvChangeReason.setText("Reason: Heavy rain warning introduced for Saturday (48.0 mm expected, 85% probability). Advisory shifted from Suitable to Avoid/Delay.");
+        binding.tvNotifBadge.setText("🔔 Alert Delivered");
+        binding.tvChangeTimestamps.setText("Prev: 12 hrs ago • Updated: Just now");
+
+        binding.bannerFiveDaySummary.setVisibility(View.VISIBLE);
+        binding.bannerFiveDaySummary.setBackgroundColor(Color.parseColor("#FFCDD2"));
+        binding.tvSummaryIcon.setText("⚠️");
+        binding.tvFiveDaySummaryText.setText("⚠️ HEAVY RAIN WARNING: Severe rainfall predicted on Saturday (48.0 mm). Sowing and harvesting operations should be paused.");
+        binding.tvFiveDaySummaryText.setTextColor(Color.parseColor("#B71C1C"));
+
+        // Update harvesting card in list
+        List<FarmingAdvisory> advisories = new ArrayList<>();
+        advisories.add(new FarmingAdvisory("Sowing", "Avoid/Delay", "#D32F2F",
+                "Heavy rain forecast (48.0 mm, 85% probability). Waterlogging and severe seed washout risk will hinder germination.",
+                "Rain: 48.0 mm | Pop: 85%", "Postpone sowing until heavy rains subside.", "Saturday", "Just now"));
+        advisories.add(new FarmingAdvisory("Pesticide Spraying", "Avoid/Delay", "#D32F2F",
+                "Precipitation predicted (48.0 mm, 85% chance). Rain will wash away active chemical ingredients.",
+                "Rain: 48.0 mm | Pop: 85% | Wind: 24.5 km/h", "Halt spraying operations.", "Saturday", "Just now"));
+        advisories.add(new FarmingAdvisory("Harvesting", "Avoid/Delay", "#D32F2F",
+                "Severe rainfall threat (48.0 mm, 85% probability). Wet standing crop risks grain shattering and mold.",
+                "Rain: 48.0 mm | Pop: 85% | Risk: HIGH", "Do not cut standing crop. Shelter existing harvested piles.", "Saturday", "Just now"));
+
+        advisoryAdapter.setItems(advisories);
+
+        Toast.makeText(this, "⚡ Local Demonstration Active: Heavy rain warning simulated!", Toast.LENGTH_LONG).show();
     }
 
     private void showErrorDialog(String errorMessage) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Weather Retrieval Issue")
                 .setMessage(errorMessage)
-                .setPositiveButton("Retry", (dialog, which) -> refreshCurrentWeather());
-
-        // If currently on live API, offer one-click fallback to demo strategy
-        WeatherProvider current = weatherViewModel.getCurrentStrategy();
-        if (current != null && !current.isDemoMode()) {
-            builder.setNeutralButton("Switch to Demo Mode", (dialog, which) -> {
-                weatherViewModel.setStrategyById(MockWeatherProvider.PROVIDER_ID);
-                refreshCurrentWeather();
-            });
-        }
-
-        builder.setNegativeButton("Close", null).show();
-    }
-
-    private void refreshCurrentWeather() {
-        weatherViewModel.fetchWeather(currentLatitude, currentLongitude, currentLocationName);
+                .setPositiveButton("Retry", (dialog, which) -> refreshCurrentWeather())
+                .setNegativeButton("Close", null)
+                .show();
     }
 
     private void showCitySelectionDialog() {
         String[] cities = {
-                "Mumbai, Maharashtra (Default)",
-                "Pune, Maharashtra",
+                "Pune, Maharashtra (Default)",
+                "Mumbai, Maharashtra",
                 "Nashik, Maharashtra",
                 "Nagpur, Maharashtra",
                 "Chhatrapati Sambhajinagar, Maharashtra",
@@ -211,9 +421,9 @@ public class WeatherActivity extends BaseActivity {
                 .setTitle("Select Weather Location")
                 .setItems(cities, (dialog, which) -> {
                     if (which == 0) {
-                        selectCity("Mumbai, Maharashtra", 19.0760, 72.8777);
-                    } else if (which == 1) {
                         selectCity("Pune, Maharashtra", 18.5204, 73.8567);
+                    } else if (which == 1) {
+                        selectCity("Mumbai, Maharashtra", 19.0760, 72.8777);
                     } else if (which == 2) {
                         selectCity("Nashik, Maharashtra", 19.9975, 73.7898);
                     } else if (which == 3) {
@@ -239,19 +449,20 @@ public class WeatherActivity extends BaseActivity {
 
     private void loadSelectedCityWeather() {
         String savedCity = sessionManager.getSelectedCity();
-        if (savedCity != null && savedCity.contains("Pune")) {
-            selectCity("Pune, Maharashtra", 18.5204, 73.8567);
+        if (savedCity != null && savedCity.contains("Mumbai")) {
+            selectCity("Mumbai, Maharashtra", 19.0760, 72.8777);
         } else if (savedCity != null && savedCity.contains("Nashik")) {
             selectCity("Nashik, Maharashtra", 19.9975, 73.7898);
         } else if (savedCity != null && savedCity.contains("Nagpur")) {
             selectCity("Nagpur, Maharashtra", 21.1458, 79.0882);
         } else {
-            selectCity("Mumbai, Maharashtra", 19.0760, 72.8777);
+            selectCity("Pune, Maharashtra", 18.5204, 73.8567);
         }
     }
 
     private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadWeatherWithGps();
         } else {
             locationPermissionLauncher.launch(new String[]{
@@ -262,40 +473,41 @@ public class WeatherActivity extends BaseActivity {
     }
 
     private void loadWeatherWithGps() {
-        try {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-                if (location != null) {
-                    currentLatitude = location.getLatitude();
-                    currentLongitude = location.getLongitude();
-                    currentLocationName = reverseGeocode(currentLatitude, currentLongitude);
-                    sessionManager.setSelectedCity(currentLocationName);
-                    refreshCurrentWeather();
-                } else {
-                    loadSelectedCityWeather();
-                }
-            }).addOnFailureListener(e -> loadSelectedCityWeather());
-        } catch (SecurityException e) {
-            loadSelectedCityWeather();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
+
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+                resolveLocationName(currentLatitude, currentLongitude);
+            } else {
+                refreshCurrentWeather();
+            }
+        }).addOnFailureListener(e -> refreshCurrentWeather());
     }
 
-    private String reverseGeocode(double lat, double lon) {
+    private void resolveLocationName(double lat, double lon) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(lat, lon, 1);
             if (addresses != null && !addresses.isEmpty()) {
-                Address addr = addresses.get(0);
-                String locality = addr.getLocality();
-                String adminArea = addr.getAdminArea();
-                if (locality != null) {
-                    return locality + (adminArea != null ? ", " + adminArea : "");
-                }
-                String subAdmin = addr.getSubAdminArea();
-                if (subAdmin != null) {
-                    return subAdmin + (adminArea != null ? ", " + adminArea : "");
+                Address address = addresses.get(0);
+                String locality = address.getLocality();
+                String adminArea = address.getAdminArea();
+                if (locality != null && adminArea != null) {
+                    currentLocationName = locality + ", " + adminArea;
+                } else if (locality != null) {
+                    currentLocationName = locality;
+                } else if (adminArea != null) {
+                    currentLocationName = adminArea;
+                } else {
+                    currentLocationName = String.format(Locale.US, "Lat: %.2f, Lon: %.2f", lat, lon);
                 }
             }
         } catch (IOException ignored) {}
-        return "Mumbai, Maharashtra";
+        refreshCurrentWeather();
     }
 }

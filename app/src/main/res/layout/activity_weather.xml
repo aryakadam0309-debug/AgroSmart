@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="32dp">
+            android:paddingBottom="40dp">
 
             <!-- Gradient Header Banner -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,14 +44,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="@string/weather_forecast"
+                    android:text="Weather &amp; Smart Advisory"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/btnBack"
                     app:layout_constraintStart_toEndOf="@+id/btnBack"
                     app:layout_constraintTop_toTopOf="@+id/btnBack" />
 
+                <!-- Quick Hackathon Demo Trigger Action -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSimulateAlert"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:backgroundTint="#FFCC00"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="⚡ Test Rain Alert"
+                    android:textColor="#3E2723"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="18dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnBack"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/btnBack" />
+
+                <!-- Location & Mode Controls -->
                 <LinearLayout
                     android:id="@+id/rowControls"
                     android:layout_width="match_parent"
@@ -82,7 +101,7 @@
                             android:id="@+id/tvLocation"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📍 Mumbai, Maharashtra"
+                            android:text="📍 Pune, Maharashtra"
                             android:textColor="@color/forest_green_surface"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -101,47 +120,13 @@
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1" />
-
-                    <!-- Strategy Design Pattern Mode Switcher -->
-                    <LinearLayout
-                        android:id="@+id/btnStrategySwitcher"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_rounded_card"
-                        android:backgroundTint="#33FFFFFF"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="5dp">
-
-                        <TextView
-                            android:id="@+id/tvActiveStrategyLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🌐 Live API"
-                            android:textColor="@color/golden_harvest"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="▾"
-                            android:textColor="@color/golden_harvest"
-                            android:textSize="11sp" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvMainTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="31°C"
+                    android:text="29°C"
                     android:textColor="@color/white"
                     android:textSize="54sp"
                     android:textStyle="bold"
@@ -153,7 +138,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="@string/weather_condition_sample"
+                    android:text="Partly Cloudy • Favorable for agronomic fieldwork"
                     android:textColor="@color/golden_harvest"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -163,34 +148,34 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Academic Demo Strategy Alert Banner -->
+            <!-- 5-Day Agricultural Summary Banner -->
             <LinearLayout
-                android:id="@+id/bannerDemoMode"
+                android:id="@+id/bannerFiveDaySummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFF3CD"
+                android:background="#E8F5E9"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
-                android:paddingTop="8dp"
+                android:paddingTop="10dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:visibility="gone">
+                android:paddingBottom="10dp">
 
                 <TextView
+                    android:id="@+id/tvSummaryIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🧪"
+                    android:text="🌤️"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tvDemoBannerText"
+                    android:id="@+id/tvFiveDaySummaryText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="@string/weather_demo_banner"
-                    android:textColor="#856404"
+                    android:text="5-Day Weather Forecast: Comprehensive agro-climatic outlook."
+                    android:textColor="@color/forest_green_dark"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -200,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="-16dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal">
 
@@ -208,8 +193,8 @@
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.AgroSmart.Card"
                     android:layout_width="0dp"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_height="85dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1">
 
                     <LinearLayout
@@ -222,7 +207,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="💧"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tvHumidityValue"
@@ -230,15 +215,15 @@
                             android:layout_height="wrap_content"
                             android:text="62%"
                             android:textColor="@color/text_primary"
-                            android:textSize="16sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/humidity"
+                            android:text="Humidity"
                             android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -246,8 +231,9 @@
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.AgroSmart.Card"
                     android:layout_width="0dp"
-                    android:layout_height="90dp"
-                    android:layout_marginStart="6dp"
+                    android:layout_height="85dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1">
 
                     <LinearLayout
@@ -260,41 +246,33 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="💨"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tvWindValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="14 km/h"
+                            android:text="12 km/h"
                             android:textColor="@color/text_primary"
-                            android:textSize="16sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/wind_speed"
+                            android:text="Wind Speed"
                             android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
-                android:orientation="horizontal">
 
                 <!-- Rain Chance -->
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.AgroSmart.Card"
                     android:layout_width="0dp"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_height="85dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1">
 
                     <LinearLayout
@@ -307,7 +285,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="🌧️"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tvRainValue"
@@ -315,15 +293,15 @@
                             android:layout_height="wrap_content"
                             android:text="15%"
                             android:textColor="@color/text_primary"
-                            android:textSize="16sp"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/rainfall"
+                            android:text="Rain Chance"
                             android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -331,8 +309,8 @@
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.AgroSmart.Card"
                     android:layout_width="0dp"
-                    android:layout_height="90dp"
-                    android:layout_marginStart="6dp"
+                    android:layout_height="85dp"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1">
 
                     <LinearLayout
@@ -345,7 +323,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="⏲️"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tvPressureValue"
@@ -353,29 +331,185 @@
                             android:layout_height="wrap_content"
                             android:text="1012 hPa"
                             android:textColor="@color/text_primary"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/pressure"
+                            android:text="Pressure"
                             android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- 5-Day Forecast Header -->
+            <!-- ADVISORY ALERT & FORECAST CHANGE SECTION (Requirement 8) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardAdvisoryChange"
+                style="@style/Widget.AgroSmart.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#FFF8E1"
+                app:cardElevation="3dp"
+                app:strokeColor="#FFB300"
+                app:strokeWidth="1.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⚠️"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:text="Advisory Update Detected"
+                            android:textColor="#BF360C"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvNotifBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_rounded_card"
+                            android:backgroundTint="#FFCC80"
+                            android:paddingStart="8dp"
+                            android:paddingTop="3dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="3dp"
+                            android:text="🔔 Alert Sent"
+                            android:textColor="#E65100"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Comparison Table: Previous vs Updated -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="#12000000"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <!-- Row 1: Activity & Status Comparison -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvChangeActivity"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="🌾 Harvesting Activity"
+                                android:textColor="@color/text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvPrevStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Previous: Suitable"
+                                android:textColor="#2E7D32"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:layout_marginEnd="6dp"
+                                android:text="➔"
+                                android:textColor="@color/text_primary"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvNewStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Updated: Avoid/Delay"
+                                android:textColor="#D32F2F"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Row 2: Change Reason -->
+                        <TextView
+                            android:id="@+id/tvChangeReason"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Reason: Heavy rain warning introduced (85% rain chance, 48 mm expected)."
+                            android:textColor="#4E342E"
+                            android:textSize="12sp" />
+
+                        <!-- Row 3: Timestamps -->
+                        <TextView
+                            android:id="@+id/tvChangeTimestamps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="Prev: 12 hrs ago • Updated: Just now"
+                            android:textColor="@color/text_muted"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- SMART FARMING ADVISORIES SECTION -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"
-                android:text="5-Day Farm Forecast"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="🌱 Smart Farming Advisories (Sowing • Spraying • Harvesting)"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAdvisories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+            <!-- 5-DAY FARM FORECAST SECTION -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="10dp"
+                android:text="📅 5-Day Farm Weather Forecast"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView

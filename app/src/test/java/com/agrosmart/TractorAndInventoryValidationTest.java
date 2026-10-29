@@ -43,7 +43,12 @@ public class TractorAndInventoryValidationTest {
 
     @Test
     public void testTractorBookingConflictValidation() {
-        // Sample initial booking BK-1001 for TR01 on "15 Sep 2026" exists in repository
+        // Sample initial booking BK-1001 for TR01 on "15 Sep 2026"
+        tractorRepository.addBooking(new TractorBooking(
+                "BK-1001", "TR01", "Mahindra 575 DI XP Plus",
+                "Ramesh Patil", "9822334455", "15 Sep 2026",
+                4, 3200.0, "Nashik", "Ploughing", "CONFIRMED", "14 Sep 2026"
+        ));
         assertTrue("Conflict should be detected for same tractor on same date",
                 tractorRepository.hasBookingConflict("TR01", "15 Sep 2026"));
 

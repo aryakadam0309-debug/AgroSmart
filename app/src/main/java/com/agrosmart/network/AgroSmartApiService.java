@@ -352,6 +352,40 @@ public interface AgroSmartApiService {
     @GET("feedback")
     Call<List<com.agrosmart.models.FarmerFeedback>> getAllFeedback();
 
+    // Weather Forecast & Smart Farming Advisory (PS 5.4)
+    @GET("weather/forecast")
+    Call<com.agrosmart.models.WeatherResponse> getWeatherForecast(
+            @Query("lat") double lat,
+            @Query("lon") double lon,
+            @Query("location") String location,
+            @Query("crop") String crop,
+            @Query("phone") String phone
+    );
+
+    @GET("weather/advisories")
+    Call<List<com.agrosmart.models.FarmingAdvisory>> getWeatherAdvisories(
+            @Query("lat") double lat,
+            @Query("lon") double lon,
+            @Query("location") String location,
+            @Query("crop") String crop,
+            @Query("phone") String phone
+    );
+
+    @GET("weather/advisory-changes")
+    Call<List<com.agrosmart.models.WeatherAdvisoryChange>> getAdvisoryChanges(
+            @Query("phone") String phone
+    );
+
+    @POST("weather/simulate-change")
+    Call<Map<String, Object>> simulateWeatherChange(
+            @Body Map<String, Object> simulationPayload
+    );
+
+    @POST("weather/device-token")
+    Call<Map<String, Object>> registerDeviceToken(
+            @Body Map<String, String> tokenPayload
+    );
+
     @POST("feedback")
     Call<com.agrosmart.models.FarmerFeedback> submitFeedback(
             @Body com.agrosmart.models.FarmerFeedback feedback

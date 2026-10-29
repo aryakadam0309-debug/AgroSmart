@@ -34,7 +34,7 @@ public class SecurityConfig {
                                          "/api/marketplace/**", "/api/inventory/**", "/api/admin/**",
                                          "/api/guides/**", "/api/diseases/**", "/api/schemes/**",
                                          "/api/news/**", "/api/notifications/**", "/api/iot/**",
-                                         "/api/advisory/**", "/api/finance/**", "/api/feedback/**").permitAll()
+                                         "/api/advisory/**", "/api/weather/**", "/api/finance/**", "/api/feedback/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

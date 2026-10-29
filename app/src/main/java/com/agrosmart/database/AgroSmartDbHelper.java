@@ -37,7 +37,7 @@ import java.util.List;
 public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "agrosmart_local.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     private static AgroSmartDbHelper instance;
 
@@ -354,6 +354,40 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "is_planted INTEGER DEFAULT 0, " +
                 "created_date TEXT)");
 
+        // 18. Weather Forecast Snapshots & Offline Cache (PS 5.4)
+        db.execSQL("CREATE TABLE IF NOT EXISTS weather_forecast_cache (" +
+                "id TEXT PRIMARY KEY, " +
+                "location_name TEXT NOT NULL, " +
+                "current_temp REAL, " +
+                "feels_like REAL, " +
+                "condition TEXT, " +
+                "description TEXT, " +
+                "humidity INTEGER, " +
+                "wind_speed REAL, " +
+                "rain_chance INTEGER, " +
+                "rainfall_mm REAL, " +
+                "risk_level TEXT, " +
+                "five_day_summary TEXT, " +
+                "forecast_json TEXT, " +
+                "advisories_json TEXT, " +
+                "retrieved_at TEXT)");
+
+        // 19. Weather Advisory Changes
+        db.execSQL("CREATE TABLE IF NOT EXISTS weather_advisory_changes (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "farmer_phone TEXT NOT NULL, " +
+                "location_name TEXT, " +
+                "forecast_date TEXT, " +
+                "day_name TEXT, " +
+                "activity TEXT NOT NULL, " +
+                "previous_status TEXT, " +
+                "updated_status TEXT, " +
+                "previous_summary TEXT, " +
+                "updated_summary TEXT, " +
+                "change_reason TEXT, " +
+                "notification_status TEXT, " +
+                "detected_at TEXT)");
+
         // Seed default initial data
         seedInitialData(db);
     }
@@ -442,6 +476,38 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                     "reviewing_admin TEXT, " +
                     "last_reviewed_at TEXT, " +
                     "ingestion_type TEXT)");
+        } catch (Exception ignored) {}
+        try {
+            db.execSQL("CREATE TABLE IF NOT EXISTS weather_forecast_cache (" +
+                    "id TEXT PRIMARY KEY, " +
+                    "location_name TEXT NOT NULL, " +
+                    "current_temp REAL, " +
+                    "feels_like REAL, " +
+                    "condition TEXT, " +
+                    "description TEXT, " +
+                    "humidity INTEGER, " +
+                    "wind_speed REAL, " +
+                    "rain_chance INTEGER, " +
+                    "rainfall_mm REAL, " +
+                    "risk_level TEXT, " +
+                    "five_day_summary TEXT, " +
+                    "forecast_json TEXT, " +
+                    "advisories_json TEXT, " +
+                    "retrieved_at TEXT)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS weather_advisory_changes (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "farmer_phone TEXT NOT NULL, " +
+                    "location_name TEXT, " +
+                    "forecast_date TEXT, " +
+                    "day_name TEXT, " +
+                    "activity TEXT NOT NULL, " +
+                    "previous_status TEXT, " +
+                    "updated_status TEXT, " +
+                    "previous_summary TEXT, " +
+                    "updated_summary TEXT, " +
+                    "change_reason TEXT, " +
+                    "notification_status TEXT, " +
+                    "detected_at TEXT)");
         } catch (Exception ignored) {}
         seedBaselineAdvisoriesIfEmpty(db);
     }
@@ -2179,5 +2245,128 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
         if (id == null) return false;
         SQLiteDatabase db = getWritableDatabase();
         return db.delete("saved_crop_plans", "id = ?", new String[]{id}) > 0;
+    }
+
+    // --- WEATHER FORECAST & ADVISORY OFFLINE CACHING (PS 5.4) ---
+
+    public synchronized void saveWeatherForecastCache(com.agrosmart.models.WeatherResponse weather) {
+        if (weather == null || weather.getCityName() == null) return;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        String id = weather.getCityName().toLowerCase().replaceAll("[^a-z0-9]", "_");
+        cv.put("id", id);
+        cv.put("location_name", weather.getCityName());
+        cv.put("current_temp", weather.getTemp());
+        cv.put("feels_like", weather.getFeelsLike());
+        cv.put("condition", weather.getCondition());
+        cv.put("description", weather.getDescription());
+        cv.put("humidity", weather.getHumidity());
+        cv.put("wind_speed", weather.getWindSpeed());
+        cv.put("rain_chance", weather.getRainChance());
+        cv.put("rainfall_mm", weather.getRainfallMm());
+        cv.put("risk_level", weather.getOverallRiskLevel());
+        cv.put("five_day_summary", weather.getFiveDaySummary());
+
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+        cv.put("forecast_json", weather.getForecast() != null ? gson.toJson(weather.getForecast()) : "[]");
+        cv.put("advisories_json", weather.getAdvisories() != null ? gson.toJson(weather.getAdvisories()) : "[]");
+        cv.put("retrieved_at", String.valueOf(System.currentTimeMillis()));
+
+        db.insertWithOnConflict("weather_forecast_cache", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public synchronized com.agrosmart.models.WeatherResponse getCachedWeatherForecast(String location) {
+        if (location == null) return null;
+        SQLiteDatabase db = getReadableDatabase();
+        String id = location.toLowerCase().replaceAll("[^a-z0-9]", "_");
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT * FROM weather_forecast_cache WHERE id = ? OR location_name LIKE ? LIMIT 1",
+                    new String[]{id, "%" + location + "%"});
+            if (c != null && c.moveToFirst()) {
+                com.agrosmart.models.WeatherResponse w = new com.agrosmart.models.WeatherResponse();
+                w.setCityName(c.getString(c.getColumnIndexOrThrow("location_name")));
+                w.setTemp(c.getDouble(c.getColumnIndexOrThrow("current_temp")));
+                w.setFeelsLike(c.getDouble(c.getColumnIndexOrThrow("feels_like")));
+                w.setCondition(c.getString(c.getColumnIndexOrThrow("condition")));
+                w.setDescription(c.getString(c.getColumnIndexOrThrow("description")));
+                w.setHumidity(c.getInt(c.getColumnIndexOrThrow("humidity")));
+                w.setWindSpeed(c.getDouble(c.getColumnIndexOrThrow("wind_speed")));
+                w.setRainChance(c.getInt(c.getColumnIndexOrThrow("rain_chance")));
+                w.setRainfallMm(c.getDouble(c.getColumnIndexOrThrow("rainfall_mm")));
+                w.setOverallRiskLevel(c.getString(c.getColumnIndexOrThrow("risk_level")));
+                w.setFiveDaySummary(c.getString(c.getColumnIndexOrThrow("five_day_summary")));
+
+                com.google.gson.Gson gson = new com.google.gson.Gson();
+                String fJson = c.getString(c.getColumnIndexOrThrow("forecast_json"));
+                if (fJson != null && !fJson.isEmpty()) {
+                    java.lang.reflect.Type fType = new com.google.gson.reflect.TypeToken<java.util.List<com.agrosmart.models.ForecastItem>>(){}.getType();
+                    w.setForecast(gson.fromJson(fJson, fType));
+                }
+
+                String aJson = c.getString(c.getColumnIndexOrThrow("advisories_json"));
+                if (aJson != null && !aJson.isEmpty()) {
+                    java.lang.reflect.Type aType = new com.google.gson.reflect.TypeToken<java.util.List<com.agrosmart.models.FarmingAdvisory>>(){}.getType();
+                    w.setAdvisories(gson.fromJson(aJson, aType));
+                }
+                return w;
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return null;
+    }
+
+    public synchronized void saveAdvisoryChange(com.agrosmart.models.WeatherAdvisoryChange change) {
+        if (change == null) return;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("farmer_phone", change.getFarmerPhone() != null ? change.getFarmerPhone() : "9876543210");
+        cv.put("location_name", change.getLocationName());
+        cv.put("forecast_date", change.getForecastDate());
+        cv.put("day_name", change.getDayName());
+        cv.put("activity", change.getActivity());
+        cv.put("previous_status", change.getPreviousStatus());
+        cv.put("updated_status", change.getUpdatedStatus());
+        cv.put("previous_summary", change.getPreviousForecastSummary());
+        cv.put("updated_summary", change.getUpdatedForecastSummary());
+        cv.put("change_reason", change.getChangeReason());
+        cv.put("notification_status", change.getNotificationDeliveryStatus());
+        cv.put("detected_at", change.getDetectedAt() != null ? change.getDetectedAt() : String.valueOf(System.currentTimeMillis()));
+        db.insert("weather_advisory_changes", null, cv);
+    }
+
+    public synchronized java.util.List<com.agrosmart.models.WeatherAdvisoryChange> getLocalAdvisoryChanges(String phone) {
+        java.util.List<com.agrosmart.models.WeatherAdvisoryChange> list = new java.util.ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT * FROM weather_advisory_changes WHERE farmer_phone = ? ORDER BY id DESC LIMIT 20",
+                    new String[]{phone != null ? phone : "9876543210"});
+            if (c != null && c.moveToFirst()) {
+                do {
+                    com.agrosmart.models.WeatherAdvisoryChange ch = new com.agrosmart.models.WeatherAdvisoryChange();
+                    ch.setId(c.getLong(c.getColumnIndexOrThrow("id")));
+                    ch.setFarmerPhone(c.getString(c.getColumnIndexOrThrow("farmer_phone")));
+                    ch.setLocationName(c.getString(c.getColumnIndexOrThrow("location_name")));
+                    ch.setForecastDate(c.getString(c.getColumnIndexOrThrow("forecast_date")));
+                    ch.setDayName(c.getString(c.getColumnIndexOrThrow("day_name")));
+                    ch.setActivity(c.getString(c.getColumnIndexOrThrow("activity")));
+                    ch.setPreviousStatus(c.getString(c.getColumnIndexOrThrow("previous_status")));
+                    ch.setUpdatedStatus(c.getString(c.getColumnIndexOrThrow("updated_status")));
+                    ch.setPreviousForecastSummary(c.getString(c.getColumnIndexOrThrow("previous_summary")));
+                    ch.setUpdatedForecastSummary(c.getString(c.getColumnIndexOrThrow("updated_summary")));
+                    ch.setChangeReason(c.getString(c.getColumnIndexOrThrow("change_reason")));
+                    ch.setNotificationDeliveryStatus(c.getString(c.getColumnIndexOrThrow("notification_status")));
+                    ch.setDetectedAt(c.getString(c.getColumnIndexOrThrow("detected_at")));
+                    list.add(ch);
+                } while (c.moveToNext());
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
     }
 }

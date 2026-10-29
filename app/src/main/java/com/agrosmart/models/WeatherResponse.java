@@ -17,6 +17,13 @@ public class WeatherResponse implements Serializable {
     private int rainChance;
     private List<ForecastItem> forecast;
 
+    // Enhanced metrics & advisory layer (PS 5.4)
+    private double rainfallMm = 0.0;
+    private String overallRiskLevel = "LOW";
+    private String fiveDaySummary;
+    private List<FarmingAdvisory> advisories;
+    private WeatherAdvisoryChange latestAdvisoryChange;
+
     public WeatherResponse() {}
 
     public WeatherResponse(String cityName, double temp, double feelsLike, double tempMin, double tempMax,
@@ -71,4 +78,19 @@ public class WeatherResponse implements Serializable {
 
     public List<ForecastItem> getForecast() { return forecast; }
     public void setForecast(List<ForecastItem> forecast) { this.forecast = forecast; }
+
+    public double getRainfallMm() { return rainfallMm; }
+    public void setRainfallMm(double rainfallMm) { this.rainfallMm = rainfallMm; }
+
+    public String getOverallRiskLevel() { return overallRiskLevel; }
+    public void setOverallRiskLevel(String overallRiskLevel) { this.overallRiskLevel = overallRiskLevel; }
+
+    public String getFiveDaySummary() { return fiveDaySummary; }
+    public void setFiveDaySummary(String fiveDaySummary) { this.fiveDaySummary = fiveDaySummary; }
+
+    public List<FarmingAdvisory> getAdvisories() { return advisories; }
+    public void setAdvisories(List<FarmingAdvisory> advisories) { this.advisories = advisories; }
+
+    public WeatherAdvisoryChange getLatestAdvisoryChange() { return latestAdvisoryChange; }
+    public void setLatestAdvisoryChange(WeatherAdvisoryChange latestAdvisoryChange) { this.latestAdvisoryChange = latestAdvisoryChange; }
 }

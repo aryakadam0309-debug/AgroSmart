@@ -378,3 +378,62 @@ CREATE TABLE IF NOT EXISTS `saved_crop_plans` (
 
 
 
+
+-- 25. Weather Forecast Snapshots (PS 5.4)
+CREATE TABLE IF NOT EXISTS `weather_forecast_snapshots` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_phone` VARCHAR(15),
+    `location_name` VARCHAR(100),
+    `latitude` DOUBLE,
+    `longitude` DOUBLE,
+    `forecast_date` VARCHAR(20) NOT NULL,
+    `day_name` VARCHAR(20),
+    `min_temp` DOUBLE,
+    `max_temp` DOUBLE,
+    `temp` DOUBLE,
+    `humidity` INT,
+    `wind_speed` DOUBLE,
+    `rain_probability` INT,
+    `expected_rainfall_mm` DOUBLE,
+    `condition` VARCHAR(50),
+    `condition_description` VARCHAR(200),
+    `risk_level` VARCHAR(20),
+    `is_heavy_rain` BOOLEAN DEFAULT FALSE,
+    `provider` VARCHAR(100),
+    `retrieved_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_snap_phone_date` (`farmer_phone`, `forecast_date`),
+    INDEX `idx_snap_location` (`location_name`)
+) ENGINE=InnoDB;
+
+-- 26. Weather Advisory Changes (Previous vs Updated Tracking)
+CREATE TABLE IF NOT EXISTS `weather_advisory_changes` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_phone` VARCHAR(15) NOT NULL,
+    `location_name` VARCHAR(100),
+    `forecast_date` VARCHAR(20),
+    `day_name` VARCHAR(20),
+    `activity` VARCHAR(50) NOT NULL,
+    `previous_status` VARCHAR(30),
+    `updated_status` VARCHAR(30),
+    `previous_forecast_summary` TEXT,
+    `updated_forecast_summary` TEXT,
+    `change_reason` TEXT,
+    `notification_sent` BOOLEAN DEFAULT FALSE,
+    `notification_delivery_status` VARCHAR(30),
+    `dedup_key` VARCHAR(128),
+    `previous_retrieved_at` TIMESTAMP NULL,
+    `updated_retrieved_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `detected_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_advisory_farmer` (`farmer_phone`),
+    INDEX `idx_advisory_dedup` (`dedup_key`)
+) ENGINE=InnoDB;
+
+-- 27. Device Push Notification Tokens
+CREATE TABLE IF NOT EXISTS `device_tokens` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `farmer_phone` VARCHAR(15) NOT NULL,
+    `token` VARCHAR(512) NOT NULL UNIQUE,
+    `device_model` VARCHAR(100),
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_device_phone` (`farmer_phone`)
+) ENGINE=InnoDB;

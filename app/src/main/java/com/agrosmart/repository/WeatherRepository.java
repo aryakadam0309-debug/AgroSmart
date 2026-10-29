@@ -47,7 +47,7 @@ public class WeatherRepository {
         MockWeatherProvider mockProvider = new MockWeatherProvider();
 
         availableStrategies.add(liveProvider);
-        availableStrategies.add(mockProvider);
+
 
         // Default to Live API for real telemetry, switchable anytime
         this.activeStrategy = liveProvider;

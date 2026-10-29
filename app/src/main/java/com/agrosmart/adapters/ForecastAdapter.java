@@ -1,5 +1,6 @@
 package com.agrosmart.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import com.agrosmart.models.ForecastItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastViewHolder> {
 
@@ -46,11 +48,36 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         }
 
         public void bind(ForecastItem item) {
+            if (item == null) return;
+
             binding.tvDay.setText(item.getDay());
             binding.tvDate.setText(item.getDate());
             binding.tvCondition.setText(item.getCondition());
-            binding.tvTemp.setText(String.format("%.0f°C", item.getTemp()));
-            binding.tvMinMax.setText(String.format("H: %.0f° • L: %.0f°", item.getMaxTemp(), item.getMinTemp()));
+            binding.tvTemp.setText(String.format(Locale.US, "%.0f°C", item.getTemp()));
+            binding.tvMinMax.setText(String.format(Locale.US, "H: %.0f° • L: %.0f°", item.getMaxTemp(), item.getMinTemp()));
+
+            // Metrics: Rain & Wind/Humidity
+            binding.tvRainMetrics.setText(String.format(Locale.US, "🌧️ %d%% • %.1f mm",
+                    item.getRainProbability(), item.getExpectedRainfallMm()));
+            binding.tvWindHumidity.setText(String.format(Locale.US, "💨 %.1f km/h • 💧 %d%%",
+                    item.getWindSpeed(), item.getHumidity()));
+
+            // Farming Risk Indicator Chip: shown for High / Moderate risk alerts, low risk text removed
+            String risk = item.getRiskLevel() != null ? item.getRiskLevel().toUpperCase() : "LOW";
+            if (item.isHeavyRain() || "HIGH".equalsIgnoreCase(risk)) {
+                binding.tvRiskBadge.setVisibility(android.view.View.VISIBLE);
+                binding.tvRiskBadge.setText("🔴 High Risk (Heavy Rain)");
+                binding.tvRiskBadge.setBackgroundColor(Color.parseColor("#FFCDD2"));
+                binding.tvRiskBadge.setTextColor(Color.parseColor("#B71C1C"));
+            } else if ("MODERATE".equalsIgnoreCase(risk)) {
+                binding.tvRiskBadge.setVisibility(android.view.View.VISIBLE);
+                binding.tvRiskBadge.setText("🟡 Moderate Risk");
+                binding.tvRiskBadge.setBackgroundColor(Color.parseColor("#FFE0B2"));
+                binding.tvRiskBadge.setTextColor(Color.parseColor("#E65100"));
+            } else {
+                binding.tvRiskBadge.setVisibility(android.view.View.GONE);
+                binding.tvRiskBadge.setText("");
+            }
         }
     }
 }
