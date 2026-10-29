@@ -437,3 +437,13 @@ CREATE TABLE IF NOT EXISTS `device_tokens` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX `idx_device_phone` (`farmer_phone`)
 ) ENGINE=InnoDB;
+
+
+-- 28. Saved Government Schemes Bookmarks (PS 5.3)
+CREATE TABLE IF NOT EXISTS saved_schemes (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    armer_phone VARCHAR(20) NOT NULL,
+    scheme_id VARCHAR(30) NOT NULL,
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uk_farmer_scheme UNIQUE (armer_phone, scheme_id)
+) ENGINE=InnoDB;

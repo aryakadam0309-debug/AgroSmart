@@ -34,6 +34,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/white" />
 
+            <ImageView
+                android:id="@+id/btnDetailBookmark"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Save Scheme"
+                android:padding="6dp"
+                android:src="@drawable/ic_notification"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
             <TextView
                 android:id="@+id/tvDetailCategoryBadge"
                 android:layout_width="wrap_content"
@@ -47,9 +59,25 @@
                 android:text="Financial Support"
                 android:textColor="@color/forest_green_dark"
                 android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDetailLevelBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="#E1F5FE"
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp"
+                android:text="CENTRAL GOVT"
+                android:textColor="#0288D1"
+                android:textSize="11sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSchemeDetailBack" />
+                app:layout_constraintBottom_toBottomOf="@+id/tvDetailCategoryBadge"
+                app:layout_constraintStart_toEndOf="@+id/tvDetailCategoryBadge"
+                app:layout_constraintTop_toTopOf="@+id/tvDetailCategoryBadge" />
 
             <TextView
                 android:id="@+id/tvDetailSchemeName"
@@ -62,6 +90,16 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailCategoryBadge" />
+
+            <TextView
+                android:id="@+id/tvDetailMinistry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Ministry of Agriculture &amp; Farmers Welfare"
+                android:textColor="#E0F2F1"
+                android:textSize="12sp"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailSchemeName" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -69,10 +107,122 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="16dp"
-            android:paddingTop="16dp"
+            android:paddingTop="14dp"
             android:paddingEnd="16dp">
 
-            <!-- 1. Benefits Card -->
+            <!-- 0. Verified Source Status & Verification Date Banner -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="#E0F7FA"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#80DEEA"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🛡️"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvVerifiedSourceInfo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="Verified Official Source • Last Verified: 25 Oct 2026"
+                        android:textColor="#006064"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 1. Eligibility Matching Evaluation Card (PS 5.3 Requirement 4) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardEligibilityEvaluation"
+                style="@style/Widget.AgroSmart.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🎯 Eligibility Evaluation"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvDetailEligibilityStatusBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_rounded_card"
+                            android:backgroundTint="#E8F5E9"
+                            android:paddingStart="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="✅ Likely Eligible"
+                            android:textColor="#2E7D32"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvDetailEligibilityExplanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="All official criteria are satisfied based on your current farmer profile."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+
+                    <!-- Detailed Criteria Met/Unmet List -->
+                    <LinearLayout
+                        android:id="@+id/layoutCriteriaList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical" />
+
+                    <!-- Re-Check / Complete Profile Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRecheckProfile"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="✏️ Update Profile &amp; Re-check"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Benefits Card -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.AgroSmart.Card"
                 android:layout_width="match_parent"
@@ -105,7 +255,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 2. Eligibility Card -->
+            <!-- 3. Official Eligibility Criteria Card -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.AgroSmart.Card"
                 android:layout_width="match_parent"
@@ -121,7 +271,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📋 Farmer Eligibility Criteria"
+                        android:text="📋 Who Can Apply (Official Rules)"
                         android:textColor="@color/deep_teal"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -138,7 +288,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 3. Required Documents Card -->
+            <!-- 4. Required Documents Card -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.AgroSmart.Card"
                 android:layout_width="match_parent"
@@ -171,12 +321,12 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 4. Application Process Card -->
+            <!-- 5. Application Process & Deadlines Card -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.AgroSmart.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -187,7 +337,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📝 Application &amp; Timeline"
+                        android:text="📝 How to Apply (Step-by-Step)"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -211,6 +361,15 @@
                         android:textColor="@color/status_warning"
                         android:textSize="13sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailHelpline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="📞 Helpline: 1800-180-1551"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -220,7 +379,20 @@
                 style="@style/Widget.AgroSmart.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Visit Official Government Portal 🌐" />
+                android:text="Apply on Official Website 🌐" />
+
+            <!-- Closed Application Disclaimer View (Visible only when application is closed) -->
+            <TextView
+                android:id="@+id/tvClosedNotice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="🔒 Applications for this scheme are currently closed by the official authority."
+                android:textColor="#C62828"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
     </LinearLayout>

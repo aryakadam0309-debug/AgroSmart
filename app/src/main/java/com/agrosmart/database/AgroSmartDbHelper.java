@@ -37,7 +37,7 @@ import java.util.List;
 public class AgroSmartDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "agrosmart_local.db";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     private static AgroSmartDbHelper instance;
 
@@ -373,7 +373,20 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                 "retrieved_at TEXT)");
 
         // 19. Weather Advisory Changes
-        db.execSQL("CREATE TABLE IF NOT EXISTS weather_advisory_changes (" +
+                db.execSQL("CREATE TABLE IF NOT EXISTS saved_schemes_cache (" +
+                "scheme_id TEXT PRIMARY KEY, " +
+                "farmer_phone TEXT, " +
+                "title TEXT, " +
+                "ministry TEXT, " +
+                "category TEXT, " +
+                "benefits TEXT, " +
+                "eligibility TEXT, " +
+                "portal_url TEXT, " +
+                "deadline TEXT, " +
+                "application_status TEXT, " +
+                "verified_date TEXT, " +
+                "saved_at TEXT);");
+db.execSQL("CREATE TABLE IF NOT EXISTS weather_advisory_changes (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "farmer_phone TEXT NOT NULL, " +
                 "location_name TEXT, " +
@@ -2361,6 +2374,79 @@ public class AgroSmartDbHelper extends SQLiteOpenHelper {
                     ch.setNotificationDeliveryStatus(c.getString(c.getColumnIndexOrThrow("notification_status")));
                     ch.setDetectedAt(c.getString(c.getColumnIndexOrThrow("detected_at")));
                     list.add(ch);
+                } while (c.moveToNext());
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return list;
+    }
+
+    // --- GOVERNMENT SCHEMES OFFLINE CACHING & BOOKMARKS (PS 5.3) ---
+
+    public synchronized void saveSchemeBookmark(com.agrosmart.models.GovernmentScheme scheme, String phone) {
+        if (scheme == null) return;
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("scheme_id", scheme.getSchemeId());
+        cv.put("farmer_phone", phone != null ? phone : "9876543210");
+        cv.put("title", scheme.getSchemeName());
+        cv.put("ministry", scheme.getMinistry());
+        cv.put("category", scheme.getCategory());
+        cv.put("benefits", scheme.getBenefits());
+        cv.put("eligibility", scheme.getEligibility());
+        cv.put("portal_url", scheme.getOfficialPortalUrl());
+        cv.put("deadline", scheme.getDeadline());
+        cv.put("application_status", scheme.getApplicationStatus());
+        cv.put("verified_date", scheme.getLastVerifiedDate());
+        cv.put("saved_at", String.valueOf(System.currentTimeMillis()));
+        db.insertWithOnConflict("saved_schemes_cache", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public synchronized void removeSchemeBookmark(String schemeId, String phone) {
+        if (schemeId == null) return;
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("saved_schemes_cache", "scheme_id = ? AND farmer_phone = ?",
+                new String[]{schemeId, phone != null ? phone : "9876543210"});
+    }
+
+    public synchronized boolean isSchemeSaved(String schemeId, String phone) {
+        if (schemeId == null) return false;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT 1 FROM saved_schemes_cache WHERE scheme_id = ? AND farmer_phone = ? LIMIT 1",
+                    new String[]{schemeId, phone != null ? phone : "9876543210"});
+            return c != null && c.moveToFirst();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (c != null) c.close();
+        }
+    }
+
+    public synchronized java.util.List<com.agrosmart.models.GovernmentScheme> getLocalSavedSchemes(String phone) {
+        java.util.List<com.agrosmart.models.GovernmentScheme> list = new java.util.ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery("SELECT * FROM saved_schemes_cache WHERE farmer_phone = ? ORDER BY saved_at DESC",
+                    new String[]{phone != null ? phone : "9876543210"});
+            if (c != null && c.moveToFirst()) {
+                do {
+                    com.agrosmart.models.GovernmentScheme s = new com.agrosmart.models.GovernmentScheme();
+                    s.setSchemeId(c.getString(c.getColumnIndexOrThrow("scheme_id")));
+                    s.setSchemeName(c.getString(c.getColumnIndexOrThrow("title")));
+                    s.setMinistry(c.getString(c.getColumnIndexOrThrow("ministry")));
+                    s.setCategory(c.getString(c.getColumnIndexOrThrow("category")));
+                    s.setBenefits(c.getString(c.getColumnIndexOrThrow("benefits")));
+                    s.setEligibility(c.getString(c.getColumnIndexOrThrow("eligibility")));
+                    s.setOfficialPortalUrl(c.getString(c.getColumnIndexOrThrow("portal_url")));
+                    s.setDeadline(c.getString(c.getColumnIndexOrThrow("deadline")));
+                    s.setApplicationStatus(c.getString(c.getColumnIndexOrThrow("application_status")));
+                    s.setLastVerifiedDate(c.getString(c.getColumnIndexOrThrow("verified_date")));
+                    list.add(s);
                 } while (c.moveToNext());
             }
         } catch (Exception ignored) {

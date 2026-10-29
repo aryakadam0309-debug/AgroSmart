@@ -58,13 +58,95 @@ VALUES
 ('PR05', 'Battery Powered Knapsack Sprayer (16L)', 'Tools', 'KisanKraft', 2850.0, 3500.0, '16 Liter Tank', '12V rechargeable battery, dual nozzles, comfortable padded shoulder straps.', 4.9, 25)
 ON DUPLICATE KEY UPDATE `price` = VALUES(`price`);
 
--- 7. Seed Government Schemes
-INSERT INTO `government_schemes` (`id`, `title`, `ministry`, `subsidy_amount`, `eligibility`, `description`, `official_url`, `category`, `deadline`)
-VALUES
-('SCH01', 'PM-KISAN Samman Nidhi', 'Ministry of Agriculture & Farmers Welfare', '₹6,000 / Year', 'All landholding farmer families across India', 'Direct income support of ₹6,000 per year paid in three equal installments of ₹2,000 directly into bank accounts via DBT.', 'https://pmkisan.gov.in', 'Direct Benefit Transfer', 'Ongoing (Open)'),
-('SCH02', 'Pradhan Mantri Fasal Bima Yojana (PMFBY)', 'Ministry of Agriculture & Farmers Welfare', 'Up to 90% Premium Subsidy', 'All farmers growing notified crops in notified areas', 'Comprehensive crop insurance covering yield loss from non-preventable natural risks (drought, flood, pests).', 'https://pmfby.gov.in', 'Crop Insurance', 'Kharif: 31 July / Rabi: 31 Dec'),
-('SCH03', 'Sub-Mission on Agricultural Mechanization (SMAM)', 'Ministry of Agriculture', '40% - 50% Subsidy on Tractors & Implements', 'Individual farmers, Custom Hiring Centers, FPOs', 'Financial assistance for purchasing farm tractors, power tillers, rotavators, and laser land levelers.', 'https://agrimachinery.nic.in', 'Farm Equipment', 'Annual Allocation')
-ON DUPLICATE KEY UPDATE `title` = VALUES(`title`);
+-- 7. Seed Government Schemes (PS 5.3 Verified Data)
+DELETE FROM government_schemes;
+INSERT INTO government_schemes (
+    id, 	itle, ministry, subsidy_amount, eligibility, description, enefits, 
+equired_documents,
+    pplication_process, official_url, source_url, helpline, category, level, pplicable_state,
+    deadline, pplication_status, last_verified_date, min_land_acres, max_land_acres,
+    llowed_farmer_categories, llowed_crops, max_annual_income, 
+equires_land_ownership
+) VALUES
+('SCH01', 'PM-KISAN Samman Nidhi', 'Ministry of Agriculture & Farmers Welfare', '₹6,000 / Year', 
+ 'All landholding farmer families with cultivable land in their names across India',
+ 'Direct income support of ₹6,000 per year paid in three equal installments of ₹2,000 directly into bank accounts via DBT.',
+ 'Direct financial grant of ₹6,000 per annum paid in 3 four-monthly cycles. Transferred via Aadhaar-linked DBT directly without middlemen.',
+ '1. Aadhaar Card\n2. Land ownership record (7/12 & 8-A extract)\n3. Bank passbook linked with Aadhaar\n4. Active mobile number',
+ '1. Visit pmkisan.gov.in -> Farmers Corner -> New Farmer Registration.\n2. Enter Aadhaar and mobile number, verify OTP.\n3. Upload land survey number and 7/12 details.\n4. Self-registration is validated by State Nodal Officer.',
+ 'https://pmkisan.gov.in', 'https://pmkisan.gov.in/Guidelines.aspx', '155261 / 011-24300606',
+ 'Financial Assistance', 'CENTRAL', 'ALL_INDIA', 'Ongoing (Continuous)', 'OPEN', '2026-10-25',
+ 0.1, NULL, 'ALL', 'ALL', NULL, TRUE),
+
+('SCH02', 'Pradhan Mantri Fasal Bima Yojana (PMFBY)', 'Ministry of Agriculture & Farmers Welfare', 'Up to 90% Premium Subsidy',
+ 'All farmers growing notified food crops, oilseeds, or annual horticultural crops in notified areas',
+ 'Comprehensive crop insurance covering yield loss from non-preventable natural risks (drought, flood, unseasonal storm, pest attack).',
+ 'Full sum insured coverage for yield loss, localized disasters, and post-harvest cyclone damage. Farmer pays only nominal premium: 2% for Kharif, 1.5% for Rabi, 5% for commercial/horticultural crops.',
+ '1. Sowing Certificate / Crop Sowing Self-Declaration\n2. Land revenue record (7/12) or Tenancy/Sharecropper Agreement\n3. Bank Passbook copy\n4. Aadhaar Card',
+ '1. Apply through National Crop Insurance Portal (pmfby.gov.in) before cut-off date.\n2. Non-loanee farmers apply via CSC or authorized bank branch.\n3. Loanee farmers are enrolled automatically by credit-issuing banks.',
+ 'https://pmfby.gov.in', 'https://pmfby.gov.in/pdf/Revised_Operational_Guidelines.pdf', '14447',
+ 'Crop Insurance', 'CENTRAL', 'ALL_INDIA', 'Kharif: 31 July / Rabi: 31 Dec', 'OPEN', '2026-10-25',
+ NULL, NULL, 'ALL', 'Soybean,Cotton,Wheat,Rice,Maize,Pulses,ALL', NULL, FALSE),
+
+('SCH03', 'Sub-Mission on Agricultural Mechanization (SMAM)', 'Ministry of Agriculture & Farmers Welfare', '40% - 50% Subsidy on Farm Equipment',
+ 'Small and marginal farmers (<= 5 acres), women, and SC/ST farmers purchasing certified modern machinery',
+ 'Financial assistance to purchase tractors, power tillers, rotavators, multi-crop threshers, and laser land levelers to promote farm mechanization.',
+ '40% subsidy for General category and 50% subsidy for SC/ST, Women, and Small/Marginal farmers on certified agricultural implements from authorized manufacturers.',
+ '1. Aadhaar Card\n2. Land holding record showing <= 5.0 acres (7/12 & 8-A extract)\n3. Bank account passbook\n4. Proforma invoice / quotation from authorized machinery dealer\n5. Caste Certificate (for affirmative subsidy tier)',
+ '1. Register on DBT Agricultural Mechanization portal (agrimachinery.nic.in).\n2. Select machine type and authorized dealer.\n3. Upload land records and dealer quotation.\n4. Lottery/sanction letter issued by District Agriculture Officer.\n5. Purchase machine and upload tax invoice for DBT subsidy credit.',
+ 'https://agrimachinery.nic.in', 'https://agrimachinery.nic.in/Guidelines/SMAM_Guidelines.pdf', '011-23382012',
+ 'Farm Machinery', 'CENTRAL', 'ALL_INDIA', 'Annual Quota Window', 'OPEN', '2026-10-25',
+ 0.1, 5.0, 'SMALL_MARGINAL,SC_ST,WOMEN', 'ALL', NULL, TRUE),
+
+('SCH04', 'Kisan Credit Card (KCC) Scheme', 'Ministry of Finance & RBI', '4% Effective Concessional Loan Interest',
+ 'All farmers - individuals/joint cultivators, tenant farmers, oral lessees, sharecroppers, and SHGs',
+ 'Adequate and timely credit support from the banking system for agricultural crop production and investment needs.',
+ 'Short term crop loans up to ₹3 Lakh at standard 7% interest rate, with 3% prompt repayment incentive bringing effective interest down to only 4% per annum. No collateral required for loans up to ₹1.6 Lakh.',
+ '1. Duly filled KCC application form\n2. Land record documents (7/12) or crop tenancy agreement\n3. Identity Proof (Aadhaar / Voter ID)\n4. Address Proof\n5. 2 Passport size photos',
+ '1. Submit KCC one-page form at any Commercial Bank, Regional Rural Bank (RRB), or Cooperative Bank branch.\n2. Digital KCC available through state portals with pre-populated land records.\n3. Card issued within 14 business days.',
+ 'https://myscheme.gov.in/schemes/kcc', 'https://rbi.org.in/Scripts/NotificationUser.aspx?Id=11488', '1800-180-1551',
+ 'Agricultural Credit', 'CENTRAL', 'ALL_INDIA', 'Ongoing (Continuous)', 'OPEN', '2026-10-25',
+ NULL, NULL, 'ALL', 'ALL', NULL, FALSE),
+
+('SCH05', 'PMKSY - Per Drop More Crop (Micro-Irrigation)', 'Ministry of Agriculture & Farmers Welfare', 'Up to 55% Subsidy for Drip / Sprinkler',
+ 'All landholding farmers with assured water source (well, tube-well, farm pond)',
+ 'Promotes water-use efficiency through micro-irrigation technologies (drip and sprinkler systems), saving up to 50% irrigation water and enhancing yields.',
+ '55% subsidy of total benchmark cost for Small & Marginal farmers; 45% subsidy for other farmers for installing ISI-marked drip and sprinkler systems.',
+ '1. Aadhaar Card\n2. Land ownership record (7/12 extract)\n3. Electricity bill or water source certificate\n4. Drip layout design and quotation from registered micro-irrigation vendor\n5. Bank passbook',
+ '1. Apply online via State Agriculture Portal (e.g. Mahadbt in Maharashtra or state PMKSY portal).\n2. Select empanelled micro-irrigation company.\n3. Pre-sanction inspection by Taluka Agriculture Officer.\n4. Installation, geo-tagging, and post-verification before DBT subsidy release.',
+ 'https://pmksy.gov.in', 'https://pmksy.gov.in/pdmc/Guidelines.aspx', '011-23383370',
+ 'Irrigation & Water', 'CENTRAL', 'ALL_INDIA', 'Annual Budget Allocation', 'OPEN', '2026-10-25',
+ 0.5, NULL, 'ALL', 'ALL', NULL, TRUE),
+
+('SCH06', 'Soil Health Card Scheme', 'Ministry of Agriculture & Farmers Welfare', '100% Free Soil Nutrient Testing',
+ 'All farmers cultivating agricultural land in India',
+ 'Provides comprehensive soil fertility status report every two years to optimize fertilizer usage and restore soil health.',
+ 'Free laboratory testing of 12 crucial parameters: Macro-nutrients (N, P, K), Secondary nutrients (S), Micro-nutrients (Zn, Fe, Cu, Mn, Bo), and Physical properties (pH, Electrical Conductivity, Organic Carbon). Includes customized dosage recommendations for 6 major crops.',
+ '1. Aadhaar Card or Farmer ID\n2. Land Survey / Gut Number details',
+ '1. Soil samples collected from farmer fields (grid basis) by agriculture department staff.\n2. Tested at Soil Testing Laboratories (STLs).\n3. Soil Health Card printed and distributed directly or downloaded from soilhealth.dac.gov.in.',
+ 'https://soilhealth.dac.gov.in', 'https://soilhealth.dac.gov.in/about-scheme', '011-24305948',
+ 'Soil Health', 'CENTRAL', 'ALL_INDIA', 'Continuous (Biennial)', 'CONTINUOUS', '2026-10-25',
+ NULL, NULL, 'ALL', 'ALL', NULL, FALSE),
+
+('SCH07', 'Dr. Babasaheb Ambedkar Krishi Swavalamban Yojana', 'Department of Agriculture, Govt. of Maharashtra', '100% Grant up to ₹2.5 Lakh for Irrigation',
+ 'Scheduled Caste (SC) / Nav-Bouddha farmers owning cultivable land between 0.40 to 6.0 hectares with annual income <= ₹1.5 Lakh',
+ 'State-sponsored scheme for SC farmers in Maharashtra to establish assured irrigation through new wells, solar pumps, and micro-irrigation.',
+ '100% financial assistance: New Well up to ₹2,50,000, In-well boring up to ₹20,000, Drip irrigation up to ₹50,000, Sprinkler up to ₹25,000.',
+ '1. Caste Certificate issued by competent authority\n2. Land 7/12 and 8-A records\n3. Tahsildar Income Certificate (<= ₹1,50,000/year)\n4. Ground Water Survey Agency (GSDA) feasibility certificate\n5. Bank Passbook and Aadhaar',
+ '1. Register and submit application on Mahadbt Farmer Portal (mahadbt.maharashtra.gov.in).\n2. Select Scheme: Dr. Babasaheb Ambedkar Krishi Swavalamban Yojana.\n3. Scrutiny by Taluka Agriculture Officer and online lottery selection.',
+ 'https://mahadbt.maharashtra.gov.in', 'https://krishi.maharashtra.gov.in', '022-49150800',
+ 'Irrigation & Water', 'STATE', 'Maharashtra', 'Annual State Quota', 'OPEN', '2026-10-25',
+ 1.0, 15.0, 'SC_ST', 'ALL', 150000.0, TRUE),
+
+('SCH08', 'Kharif Special Emergency Drought Relief Grant 2025', 'State Disaster Management Authority', '₹6,800 / Hectare Input Subsidy',
+ 'Farmers in declared drought-affected revenue circles who suffered > 33% crop loss during Kharif 2025',
+ 'Emergency financial relief compensation for rainfall deficit crop damage.',
+ 'Ex-gratia DBT compensation of ₹6,800 per hectare for rainfed crops, directly deposited to eligible farmers bank accounts.',
+ '1. Crop Damage Panchnama Certificate\n2. Land 7/12 record\n3. Aadhaar linked bank account',
+ 'Application cycle closed on 15 September 2025 following final district audit disbursements. No new applications are accepted for this fiscal cycle.',
+ 'https://mahadbt.maharashtra.gov.in', 'https://maharashtra.gov.in/gr/drought_relief_archive_2025.pdf', '1800-120-8040',
+ 'Disaster Relief', 'STATE', 'Maharashtra', 'Closed on 15 Sep 2025', 'CLOSED', '2026-10-25',
+ NULL, NULL, 'ALL', 'ALL', NULL, FALSE);
 
 -- 8. Seed Agri News
 INSERT INTO `agri_news` (`id`, `title`, `summary`, `content`, `source`, `category`, `published_date`, `read_time`)
