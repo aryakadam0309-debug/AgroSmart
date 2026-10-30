@@ -39,6 +39,11 @@ public class IotViewModel extends AndroidViewModel {
         repository.refreshAll(currentDeviceId);
     }
 
+    public void pollLatest() {
+        repository.fetchLatestReadingFromNetwork(currentDeviceId);
+        repository.fetchHistoryFromNetwork(currentDeviceId, 20);
+    }
+
     public LiveData<IotDevice> getDevice() {
         return repository.getDeviceLiveData();
     }
@@ -88,3 +93,4 @@ public class IotViewModel extends AndroidViewModel {
         repository.updateDeviceLocation(currentDeviceId, location, callback);
     }
 }
+
