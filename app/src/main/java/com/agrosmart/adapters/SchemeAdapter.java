@@ -97,11 +97,19 @@ public class SchemeAdapter extends RecyclerView.Adapter<SchemeAdapter.SchemeView
             binding.tvSchemeDesc.setText(item.getDescription());
             binding.tvSchemeBenefits.setText("🎁 " + item.getBenefits());
             binding.tvSchemeCategory.setText(item.getCategory());
-            binding.tvSchemeLevel.setText(item.getLevel() != null ? item.getLevel().toUpperCase() : "CENTRAL");
+            
+            String level = item.getLevel() != null ? item.getLevel().toUpperCase() : "CENTRAL";
+            if ("CENTRAL".equalsIgnoreCase(level)) {
+                binding.tvSchemeLevel.setText(context.getString(R.string.scheme_level_central));
+            } else if ("STATE".equalsIgnoreCase(level)) {
+                binding.tvSchemeLevel.setText(context.getString(R.string.scheme_level_state));
+            } else {
+                binding.tvSchemeLevel.setText(level);
+            }
 
             String deadlineText = "🗓️ " + item.getDeadline();
             if (item.getLastVerifiedDate() != null) {
-                deadlineText += " • Verified: " + item.getLastVerifiedDate();
+                deadlineText += " • " + context.getString(R.string.scheme_verified_prefix) + " " + item.getLastVerifiedDate();
             }
             binding.tvSchemeDeadline.setText(deadlineText);
 
@@ -110,32 +118,31 @@ public class SchemeAdapter extends RecyclerView.Adapter<SchemeAdapter.SchemeView
             if (res != null) {
                 binding.layoutEligibilityBadge.setVisibility(View.VISIBLE);
                 String status = res.getEligibilityStatus();
-                binding.tvEligibilityBadge.setText(status);
 
                 if ("Likely Eligible".equalsIgnoreCase(status)) {
-                    binding.tvEligibilityBadge.setText("✅ Likely Eligible");
+                    binding.tvEligibilityBadge.setText(context.getString(R.string.eligibility_likely));
                     binding.tvEligibilityBadge.setBackgroundColor(Color.parseColor("#E8F5E9"));
                     binding.tvEligibilityBadge.setTextColor(Color.parseColor("#2E7D32"));
                 } else if ("Possibly Eligible – More Information Required".equalsIgnoreCase(status)) {
-                    binding.tvEligibilityBadge.setText("⚠️ More Info Required");
+                    binding.tvEligibilityBadge.setText(context.getString(R.string.eligibility_possibly));
                     binding.tvEligibilityBadge.setBackgroundColor(Color.parseColor("#FFF3E0"));
                     binding.tvEligibilityBadge.setTextColor(Color.parseColor("#E65100"));
                 } else if ("Not Eligible".equalsIgnoreCase(status)) {
-                    binding.tvEligibilityBadge.setText("❌ Not Eligible");
+                    binding.tvEligibilityBadge.setText(context.getString(R.string.eligibility_not_eligible));
                     binding.tvEligibilityBadge.setBackgroundColor(Color.parseColor("#FFEBEE"));
                     binding.tvEligibilityBadge.setTextColor(Color.parseColor("#C62828"));
                 } else if ("Application Closed".equalsIgnoreCase(status) || "CLOSED".equalsIgnoreCase(item.getApplicationStatus())) {
-                    binding.tvEligibilityBadge.setText("🔒 Application Closed");
+                    binding.tvEligibilityBadge.setText(context.getString(R.string.eligibility_closed));
                     binding.tvEligibilityBadge.setBackgroundColor(Color.parseColor("#ECEFF1"));
                     binding.tvEligibilityBadge.setTextColor(Color.parseColor("#455A64"));
                 } else {
-                    binding.tvEligibilityBadge.setText("❓ Status Unverified");
+                    binding.tvEligibilityBadge.setText(context.getString(R.string.eligibility_unverified));
                     binding.tvEligibilityBadge.setBackgroundColor(Color.parseColor("#F5F5F5"));
                     binding.tvEligibilityBadge.setTextColor(Color.parseColor("#757575"));
                 }
             } else if ("CLOSED".equalsIgnoreCase(item.getApplicationStatus())) {
                 binding.layoutEligibilityBadge.setVisibility(View.VISIBLE);
-                binding.tvEligibilityBadge.setText("🔒 Application Closed");
+                binding.tvEligibilityBadge.setText(context.getString(R.string.eligibility_closed));
                 binding.tvEligibilityBadge.setBackgroundColor(Color.parseColor("#ECEFF1"));
                 binding.tvEligibilityBadge.setTextColor(Color.parseColor("#455A64"));
             } else {

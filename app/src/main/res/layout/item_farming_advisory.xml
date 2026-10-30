@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="Sowing Advisory"
+                android:text="@string/advisory_sowing"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -50,7 +50,7 @@
                 android:paddingTop="4dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="4dp"
-                android:text="Suitable"
+                android:text="@string/status_suitable"
                 android:textColor="@color/forest_green_primary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📋 Recommended Action:"
+                android:text="@string/recommended_action_label"
                 android:textColor="@color/forest_green_dark"
                 android:textSize="11sp"
                 android:textStyle="bold" />

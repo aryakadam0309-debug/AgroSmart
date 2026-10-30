@@ -1,5 +1,6 @@
 package com.agrosmart.adapters;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.agrosmart.R;
 import com.agrosmart.databinding.ItemSensorReadingBinding;
 import com.agrosmart.models.SensorReading;
 
@@ -55,20 +57,24 @@ public class SensorReadingAdapter extends RecyclerView.Adapter<SensorReadingAdap
 
         public void bind(SensorReading reading) {
             if (reading == null) return;
-            binding.tvRecordedAt.setText(reading.getRecordedAt() != null ? reading.getRecordedAt() : "Recent");
+            Context ctx = binding.getRoot().getContext();
+
+            binding.tvRecordedAt.setText(reading.getRecordedAt() != null ? reading.getRecordedAt() : ctx.getString(R.string.recent_label));
             binding.tvMoisturePct.setText(String.format(Locale.US, "%.1f%%", reading.getSoilMoisturePct()));
             binding.tvRawAdc.setText("ADC: " + reading.getSoilMoistureRaw());
 
             String status = reading.getMoistureStatus() != null ? reading.getMoistureStatus().toUpperCase() : "NORMAL";
-            binding.tvMoistureBadge.setText(status);
 
             if ("DRY".equals(status)) {
+                binding.tvMoistureBadge.setText(ctx.getString(R.string.iot_status_dry));
                 binding.tvMoistureBadge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFCDD2")));
                 binding.tvMoistureBadge.setTextColor(Color.parseColor("#C62828"));
             } else if ("WET".equals(status)) {
+                binding.tvMoistureBadge.setText(ctx.getString(R.string.iot_status_wet));
                 binding.tvMoistureBadge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B3E5FC")));
                 binding.tvMoistureBadge.setTextColor(Color.parseColor("#0277BD"));
             } else {
+                binding.tvMoistureBadge.setText(ctx.getString(R.string.iot_status_moderate));
                 binding.tvMoistureBadge.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C8E6C9")));
                 binding.tvMoistureBadge.setTextColor(Color.parseColor("#2E7D32"));
             }
@@ -85,7 +91,7 @@ public class SensorReadingAdapter extends RecyclerView.Adapter<SensorReadingAdap
                 binding.tvHumidity.setText("--");
             }
 
-            binding.tvSensorStatus.setText("Status: " + (reading.getSensorStatus() != null ? reading.getSensorStatus() : "OK"));
+            binding.tvSensorStatus.setText(ctx.getString(R.string.status_label) + ": " + (reading.getSensorStatus() != null ? reading.getSensorStatus() : "OK"));
         }
     }
 }

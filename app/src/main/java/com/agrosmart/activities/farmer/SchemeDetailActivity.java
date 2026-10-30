@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.agrosmart.R;
 import com.agrosmart.activities.BaseActivity;
 import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.databinding.ActivitySchemeDetailBinding;
@@ -84,17 +85,26 @@ public class SchemeDetailActivity extends BaseActivity {
         binding.tvDetailSchemeName.setText(scheme.getSchemeName());
         binding.tvDetailMinistry.setText(scheme.getMinistry());
         binding.tvDetailCategoryBadge.setText(scheme.getCategory());
-        binding.tvDetailLevelBadge.setText(scheme.getLevel() != null ? scheme.getLevel().toUpperCase() : "CENTRAL");
+        
+        String level = scheme.getLevel() != null ? scheme.getLevel().toUpperCase() : "CENTRAL";
+        if ("CENTRAL".equalsIgnoreCase(level)) {
+            binding.tvDetailLevelBadge.setText(getString(R.string.scheme_level_central));
+        } else if ("STATE".equalsIgnoreCase(level)) {
+            binding.tvDetailLevelBadge.setText(getString(R.string.scheme_level_state));
+        } else {
+            binding.tvDetailLevelBadge.setText(level);
+        }
+
         binding.tvDetailBenefits.setText(scheme.getBenefits());
         binding.tvDetailEligibility.setText(scheme.getEligibility());
         binding.tvDetailDocuments.setText(scheme.getRequiredDocuments());
         binding.tvDetailProcess.setText(scheme.getApplicationProcess());
-        binding.tvDetailDates.setText("🗓️ Timeline / Deadline: " + scheme.getDeadline());
-        binding.tvDetailHelpline.setText("📞 Official Helpline: " + scheme.getHelpline());
+        binding.tvDetailDates.setText("🗓️ " + scheme.getDeadline());
+        binding.tvDetailHelpline.setText("📞 " + scheme.getHelpline());
 
-        String verText = "🛡️ Verified Source: " + scheme.getSourceUrl();
+        String verText = "🛡️ " + scheme.getSourceUrl();
         if (scheme.getLastVerifiedDate() != null) {
-            verText += " • Last Verified: " + scheme.getLastVerifiedDate();
+            verText += " • " + getString(R.string.scheme_verified_prefix) + " " + scheme.getLastVerifiedDate();
         }
         binding.tvVerifiedSourceInfo.setText(verText);
 
@@ -103,17 +113,17 @@ public class SchemeDetailActivity extends BaseActivity {
                            (scheme.getDeadline() != null && scheme.getDeadline().toLowerCase().contains("closed"));
 
         if (isClosed) {
-            binding.btnOpenPortal.setText("Applications Closed on Official Portal 🔒");
+            binding.btnOpenPortal.setText(getString(R.string.scheme_portal_closed));
             binding.btnOpenPortal.setBackgroundColor(Color.parseColor("#78909C"));
             binding.tvClosedNotice.setVisibility(View.VISIBLE);
-            binding.tvClosedNotice.setText("🔒 The official application window for this scheme is closed. You may inspect guidelines on the portal.");
+            binding.tvClosedNotice.setText(getString(R.string.scheme_closed_notice));
 
             binding.btnOpenPortal.setOnClickListener(v -> {
-                Toast.makeText(this, "Notice: Application window is closed on the government portal.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.scheme_closed_notice), Toast.LENGTH_SHORT).show();
                 openOfficialPortal();
             });
         } else {
-            binding.btnOpenPortal.setText("Apply on Official Website 🌐");
+            binding.btnOpenPortal.setText(getString(R.string.scheme_portal_apply));
             binding.btnOpenPortal.setBackgroundColor(Color.parseColor("#2E7D32"));
             binding.tvClosedNotice.setVisibility(View.GONE);
             binding.btnOpenPortal.setOnClickListener(v -> openOfficialPortal());
@@ -126,7 +136,7 @@ public class SchemeDetailActivity extends BaseActivity {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
         } else {
-            Toast.makeText(this, "Official portal URL not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_portal_error), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -150,14 +160,14 @@ public class SchemeDetailActivity extends BaseActivity {
                 @Override public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {}
                 @Override public void onFailure(Call<Map<String, Object>> call, Throwable t) {}
             });
-            Toast.makeText(this, "❤️ Scheme saved to My Bookmarks", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_scheme_saved), Toast.LENGTH_SHORT).show();
         } else {
             dbHelper.removeSchemeBookmark(scheme.getSchemeId(), phone);
             ApiClient.getInstance().getApi().unsaveScheme(phone, scheme.getSchemeId()).enqueue(new Callback<Map<String, Object>>() {
                 @Override public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {}
                 @Override public void onFailure(Call<Map<String, Object>> call, Throwable t) {}
             });
-            Toast.makeText(this, "Scheme removed from bookmarks", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_scheme_unsaved), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -192,26 +202,30 @@ public class SchemeDetailActivity extends BaseActivity {
     private void renderEligibilityReport(SchemeEligibilityResult res) {
         if (res == null) return;
 
-        binding.tvDetailEligibilityStatusBadge.setText(res.getEligibilityStatus());
-        binding.tvDetailEligibilityExplanation.setText(res.getSummaryExplanation());
-
         String status = res.getEligibilityStatus();
         if ("Likely Eligible".equalsIgnoreCase(status)) {
+            binding.tvDetailEligibilityStatusBadge.setText(getString(R.string.eligibility_likely));
             binding.tvDetailEligibilityStatusBadge.setBackgroundColor(Color.parseColor("#E8F5E9"));
             binding.tvDetailEligibilityStatusBadge.setTextColor(Color.parseColor("#2E7D32"));
         } else if ("Possibly Eligible – More Information Required".equalsIgnoreCase(status)) {
+            binding.tvDetailEligibilityStatusBadge.setText(getString(R.string.eligibility_possibly));
             binding.tvDetailEligibilityStatusBadge.setBackgroundColor(Color.parseColor("#FFF3E0"));
             binding.tvDetailEligibilityStatusBadge.setTextColor(Color.parseColor("#E65100"));
         } else if ("Not Eligible".equalsIgnoreCase(status)) {
+            binding.tvDetailEligibilityStatusBadge.setText(getString(R.string.eligibility_not_eligible));
             binding.tvDetailEligibilityStatusBadge.setBackgroundColor(Color.parseColor("#FFEBEE"));
             binding.tvDetailEligibilityStatusBadge.setTextColor(Color.parseColor("#C62828"));
         } else if ("Application Closed".equalsIgnoreCase(status)) {
+            binding.tvDetailEligibilityStatusBadge.setText(getString(R.string.eligibility_closed));
             binding.tvDetailEligibilityStatusBadge.setBackgroundColor(Color.parseColor("#ECEFF1"));
             binding.tvDetailEligibilityStatusBadge.setTextColor(Color.parseColor("#455A64"));
         } else {
+            binding.tvDetailEligibilityStatusBadge.setText(getString(R.string.eligibility_unverified));
             binding.tvDetailEligibilityStatusBadge.setBackgroundColor(Color.parseColor("#F5F5F5"));
             binding.tvDetailEligibilityStatusBadge.setTextColor(Color.parseColor("#757575"));
         }
+
+        binding.tvDetailEligibilityExplanation.setText(res.getSummaryExplanation());
 
         // Render Criteria Checks
         binding.layoutCriteriaList.removeAllViews();
@@ -223,10 +237,10 @@ public class SchemeDetailActivity extends BaseActivity {
                 tv.setPadding(0, 4, 0, 4);
 
                 if (Boolean.TRUE.equals(c.getIsSatisfied())) {
-                    tv.setText("✅ " + c.getCriterionName() + ": " + c.getFarmerValue() + " (Satisfied)");
+                    tv.setText("✅ " + c.getCriterionName() + ": " + c.getFarmerValue());
                     tv.setTextColor(Color.parseColor("#2E7D32"));
                 } else if (Boolean.FALSE.equals(c.getIsSatisfied())) {
-                    tv.setText("❌ " + c.getCriterionName() + ": " + c.getFarmerValue() + " (Unmet: " + c.getExplanation() + ")");
+                    tv.setText("❌ " + c.getCriterionName() + ": " + c.getFarmerValue() + " (" + c.getExplanation() + ")");
                     tv.setTextColor(Color.parseColor("#C62828"));
                 } else {
                     tv.setText("⚠️ " + c.getCriterionName() + ": " + c.getExplanation());
@@ -239,16 +253,16 @@ public class SchemeDetailActivity extends BaseActivity {
 
     private void showProfileCompletionDialog() {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
-        View view = getLayoutInflater().inflate(com.agrosmart.R.layout.dialog_farmer_profile_completion, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_farmer_profile_completion, null);
         dialog.setContentView(view);
 
-        Spinner spState = view.findViewById(com.agrosmart.R.id.spinnerProfileState);
-        EditText etLand = view.findViewById(com.agrosmart.R.id.etProfileLandAcres);
-        Spinner spCategory = view.findViewById(com.agrosmart.R.id.spinnerProfileCategory);
-        EditText etCrops = view.findViewById(com.agrosmart.R.id.etProfileCrops);
-        Spinner spOwnership = view.findViewById(com.agrosmart.R.id.spinnerProfileOwnership);
-        MaterialButton btnSave = view.findViewById(com.agrosmart.R.id.btnSaveProfile);
-        MaterialButton btnCancel = view.findViewById(com.agrosmart.R.id.btnCancelProfile);
+        Spinner spState = view.findViewById(R.id.spinnerProfileState);
+        EditText etLand = view.findViewById(R.id.etProfileLandAcres);
+        Spinner spCategory = view.findViewById(R.id.spinnerProfileCategory);
+        EditText etCrops = view.findViewById(R.id.etProfileCrops);
+        Spinner spOwnership = view.findViewById(R.id.spinnerProfileOwnership);
+        MaterialButton btnSave = view.findViewById(R.id.btnSaveProfile);
+        MaterialButton btnCancel = view.findViewById(R.id.btnCancelProfile);
 
         String[] states = {"Maharashtra", "Punjab", "Gujarat", "Madhya Pradesh", "Karnataka", "Uttar Pradesh"};
         ArrayAdapter<String> stateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, states);
@@ -328,10 +342,10 @@ public class SchemeDetailActivity extends BaseActivity {
 
                 sessionManager.saveFarmerProfile(farmerProfile);
                 dialog.dismiss();
-                Toast.makeText(this, "Profile updated. Re-evaluating eligibility...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_re_evaluating), Toast.LENGTH_SHORT).show();
                 fetchOnlineEligibility();
             } catch (Exception e) {
-                Toast.makeText(this, "Please enter valid numeric land size", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_valid_land), Toast.LENGTH_SHORT).show();
             }
         });
 

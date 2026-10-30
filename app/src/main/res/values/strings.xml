@@ -35,7 +35,7 @@
     <string name="logout_confirm_msg">Are you sure you want to log out of AgroSmart?</string>
     <string name="cancel">Cancel</string>
 
-    <!-- Navigation & Common -->
+    <!-- Navigation &amp; Common -->
     <string name="nav_home">Home</string>
     <string name="nav_crop_planner">Crop Planner</string>
     <string name="nav_services">Services</string>
@@ -53,7 +53,7 @@
     <string name="status">Status</string>
     <string name="all">All</string>
 
-    <!-- Home & Profile -->
+    <!-- Home &amp; Profile -->
     <string name="greeting_farmer">Hello, %s! 👋</string>
     <string name="registered_farmer">🌱 REGISTERED FARMER</string>
     <string name="system_admin">🛡️ SYSTEM ADMINISTRATOR</string>
@@ -75,7 +75,7 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
 
-    <!-- Mandi & Crop Prices -->
+    <!-- Mandi &amp; Crop Prices -->
     <string name="crop_prices">Crop Prices (Mandi)</string>
     <string name="market_name">Market / APMC</string>
     <string name="modal_price">Modal Price</string>
@@ -93,7 +93,7 @@
     <string name="scheme_deadline">Application Deadline</string>
     <string name="scheme_apply">Apply Now</string>
 
-    <!-- Crop Guides & Disease Directory -->
+    <!-- Crop Guides &amp; Disease Directory -->
     <string name="crop_guide">Crop Cultivation Guide</string>
     <string name="crop_disease">Crop Disease Directory</string>
     <string name="scientific_name">Scientific Name</string>
@@ -107,7 +107,7 @@
     <string name="chemical_control">Chemical Treatment</string>
     <string name="preventive_measures">Preventive Measures</string>
 
-    <!-- Tractor Rental & Booking -->
+    <!-- Tractor Rental &amp; Booking -->
     <string name="tractor_booking">Tractor Rental</string>
     <string name="available_tractors">Available Tractors &amp; Machinery</string>
     <string name="rent_out_tractor">Rent Out My Tractor</string>
@@ -151,7 +151,7 @@
     <string name="upload_item_image">Upload Item Photo</string>
     <string name="no_inventory_found">No inventory records found</string>
 
-    <!-- Marketplace & Cart -->
+    <!-- Marketplace &amp; Cart -->
     <string name="marketplace">Agri Marketplace</string>
     <string name="cart">My Cart</string>
     <string name="orders">My Orders</string>
@@ -209,7 +209,7 @@
     <string name="manage_tractors">Manage Machinery</string>
     <string name="delivery_address_hint">Delivery Address / Village Name</string>
 
-    <!-- My Farm Today & Agro-Climatic Advisory -->
+    <!-- My Farm Today &amp; Agro-Climatic Advisory -->
     <string name="my_farm_today">My Farm Today</string>
     <string name="farm_advisory_alert">Agronomic Action Plan</string>
     <string name="kharif_season">Kharif Season (Monsoon)</string>
@@ -239,7 +239,7 @@
     <string name="iron_val">Available Iron Fe (ppm)</string>
     <string name="evaluate_soil">Analyze Soil Fertility</string>
 
-    <!-- Cultivation Cost & Profitability Ledger -->
+    <!-- Cultivation Cost &amp; Profitability Ledger -->
     <string name="farm_expenses">Cultivation Cost &amp; Profitability</string>
     <string name="farm_expenses_subtitle">Farm expense ledger, input costs &amp; crop sales profit</string>
     <string name="add_expense">Record Farm Expense</string>
@@ -260,7 +260,7 @@
     <string name="submit_report">Submit Disease Report</string>
     <string name="triage_status">Verification Status</string>
 
-    <!-- Farmer Field Testing & Feedback -->
+    <!-- Farmer Field Testing &amp; Feedback -->
     <string name="share_feedback">Share App Feedback</string>
     <string name="share_feedback_subtitle">Help us improve AgroSmart for Indian farmers</string>
     <string name="feedback_rating">Usability &amp; Utility Rating</string>
@@ -269,7 +269,7 @@
     <string name="submit_feedback">Submit Farmer Feedback</string>
     <string name="admin_feedback_title">Farmer Field Reviews &amp; Feedback</string>
 
-    <!-- Additional UI & Module Strings -->
+    <!-- Additional UI &amp; Module Strings -->
     <string name="farmer_registration">Farmer Registration</string>
     <string name="join_community">Join the AgroSmart agricultural community</string>
     <string name="or_text">OR</string>
@@ -363,4 +363,249 @@
     <string name="tab_admin_alerts">Regional Alerts</string>
     <string name="admin_crop_watch_review">Crop Watch Review</string>
     <string name="admin_crop_watch_review_desc">Review farmer reports, clusters &amp; publish regional alerts</string>
+
+    <string name="weather_title">Weather &amp; Smart Advisory</string>
+    <string name="btn_test_rain_alert">⚡ Test Rain Alert</string>
+    <string name="five_day_summary_text">5-Day Weather Forecast: Comprehensive agro-climatic outlook.</string>
+    <string name="humidity_label">Humidity</string>
+    <string name="wind_speed_label">Wind Speed</string>
+    <string name="rain_chance_label">Rain Chance</string>
+    <string name="pressure_label">Pressure</string>
+    <string name="advisory_update_detected">Advisory Update Detected</string>
+    <string name="alert_sent_badge">🔔 Alert Sent</string>
+    <string name="smart_advisories_heading">🌱 Smart Farming Advisories (Sowing • Spraying • Harvesting)</string>
+    <string name="five_day_forecast_heading">📅 5-Day Farm Weather Forecast</string>
+    <string name="advisory_sowing">Sowing Advisory</string>
+    <string name="advisory_spraying">Spraying Advisory</string>
+    <string name="advisory_harvesting">Harvesting Advisory</string>
+    <string name="status_suitable">Suitable</string>
+    <string name="status_avoid_delay">Avoid/Delay</string>
+    <string name="status_caution">Caution</string>
+    <string name="recommended_action_label">📋 Recommended Action:</string>
+    <string name="period_label">Period: %s</string>
+    <string name="today_label">Today</string>
+    <string name="high_risk_badge">🔴 High Risk (Heavy Rain)</string>
+    <string name="moderate_risk_badge">🟡 Moderate Risk</string>
+    <string name="low_risk_badge">🟢 Low Risk</string>
+    <string name="prev_status_format">Previous: %s</string>
+    <string name="updated_status_format">Updated: %s</string>
+    <string name="harvesting_activity">🌾 Harvesting Activity</string>
+    <string name="sowing_activity">🌱 Sowing Activity</string>
+    <string name="spraying_activity">🧪 Spraying Activity</string>
+    <string name="iot_device_name_default">ESP32 Smart Station #1</string>
+    <string name="iot_location_synced">Location synced • Verified</string>
+    <string name="iot_edit_btn">✏️ Edit</string>
+    <string name="iot_station_online">Station Online (ESP32 Live)</string>
+    <string name="iot_station_offline">Station Offline</string>
+    <string name="iot_last_sync_now">Last sync: Just now</string>
+    <string name="iot_last_sync_format">Last sync: %s</string>
+    <string name="iot_moisture_level_heading">🌱 Soil Moisture Level</string>
+    <string name="iot_microclimate_heading">⛅ Microclimate &amp; Weather (DHT22)</string>
+    <string name="iot_ambient_temp">Ambient Temp</string>
+    <string name="iot_crop_field_air">Crop Field Air</string>
+    <string name="iot_relative_humidity">Relative Humidity</string>
+    <string name="iot_optimal_range">Optimal Range</string>
+    <string name="iot_dry_label">0% (Dry: ~3200 ADC)</string>
+    <string name="iot_wet_label">100% (Wet: ~1400 ADC)</string>
+    <string name="iot_low_moisture_alert_title">Low Soil Moisture Warning</string>
+    <string name="iot_low_moisture_alert_msg">Moisture dropped below threshold (30%). Irrigation recommended.</string>
+    <string name="iot_status_dry">DRY</string>
+    <string name="iot_status_moderate">MODERATE</string>
+    <string name="iot_status_wet">WET</string>
+    <string name="iot_latest_entries_format">Latest %d Entries</string>
+    <string name="scheme_header_title">Government Schemes (PS 5.3)</string>
+    <string name="btn_test_closed_demo">⚡ Test Closed Scheme</string>
+    <string name="search_scheme_hint">Search by scheme name, subsidy, crop, or ministry...</string>
+    <string name="profile_banner_format">Profile: %1$s • %2$.1f Acres (%3$s) • %4$s</string>
+    <string name="tab_recommended">✨ Recommended</string>
+    <string name="tab_all_schemes">📋 All Schemes</string>
+    <string name="tab_saved">❤️ Saved</string>
+    <string name="chip_all">All</string>
+    <string name="chip_financial">Financial</string>
+    <string name="chip_insurance">Insurance</string>
+    <string name="chip_machinery">Machinery</string>
+    <string name="chip_irrigation">Irrigation</string>
+    <string name="chip_credit">Credit</string>
+    <string name="chip_soil_health">Soil Health</string>
+    <string name="no_schemes_found">No Schemes Found</string>
+    <string name="no_schemes_sub">Try adjusting your filter category or search keyword.</string>
+    <string name="eligibility_likely">✅ Likely Eligible</string>
+    <string name="eligibility_possibly">⚠️ More Info Required</string>
+    <string name="eligibility_not_eligible">❌ Not Eligible</string>
+    <string name="eligibility_closed">🔒 Application Closed</string>
+    <string name="eligibility_unverified">❓ Status Unverified</string>
+    <string name="btn_apply_official_website">Apply on Official Website 🌐</string>
+    <string name="btn_applications_closed">Applications Closed on Official Portal 🔒</string>
+    <string name="notice_closed_portal">🔒 The official application window for this scheme is closed. You may inspect guidelines on the portal.</string>
+    <string name="recheck_eligibility">🔄 Recheck My Eligibility</string>
+    <string name="criteria_checklist_heading">📋 Official Criteria Checklist</string>
+    <string name="status_satisfied">Satisfied</string>
+    <string name="status_unmet">Unmet</string>
+    <string name="mandi_prices_title">Live Mandi Prices</string>
+    <string name="search_crop_price_hint">Search crop name, market yard, variety...</string>
+    <string name="filter_all_states">All States</string>
+    <string name="modal_price_label">Modal Price</string>
+    <string name="min_price_label">Min: ₹%1$,.0f</string>
+    <string name="max_price_label">Max: ₹%1$,.0f</string>
+    <string name="arrival_label">Arrival: %s</string>
+    <string name="trend_up_badge">▲ Rising</string>
+    <string name="trend_down_badge">▼ Falling</string>
+    <string name="trend_stable_badge">● Stable</string>
+    <string name="no_crop_prices_found">No Mandi Prices Found</string>
+    <string name="crop_guide_title">Crop Cultivation Guides</string>
+    <string name="crop_disease_title">Crop Disease Directory</string>
+    <string name="search_guide_hint">Search crop name, variety, season...</string>
+    <string name="search_disease_hint">Search crop, disease name, symptoms...</string>
+    <string name="symptoms_heading">🩺 Symptoms</string>
+    <string name="causes_heading">🔬 Favorable Conditions</string>
+    <string name="remedy_organic">🌿 Organic / Cultural Remedy</string>
+    <string name="remedy_chemical">🧪 Chemical Control</string>
+    <string name="duration_label">Duration: %s</string>
+    <string name="expected_yield_label">Expected Yield: %s</string>
+    <string name="report_pest_incident">➕ Report Crop Problem</string>
+    <string name="my_reports">My Submitted Reports</string>
+    <string name="community_alerts">Community Outbreak Alerts</string>
+    <string name="status_pending_review">Pending Review</string>
+    <string name="status_verified_expert">Verified</string>
+    <string name="status_action_taken">Resolved</string>
+    <string name="no_reports_found">No crop reports submitted yet.</string>
+    <string name="marketplace_title">AgroSmart Krishi Marketplace</string>
+    <string name="search_marketplace_hint">Search certified seeds, fertilizers, tools...</string>
+    <string name="cart_empty_title">Your cart is currently empty.</string>
+    <string name="cart_empty_subtitle">Browse certified seeds, fertilizers and equipment from the marketplace.</string>
+    <string name="bill_summary">Bill Summary</string>
+    <string name="items_subtotal">Items Subtotal</string>
+    <string name="village_delivery_fee">Village Delivery Fee</string>
+    <string name="free_delivery">FREE</string>
+    <string name="total_payable">Total Amount Payable</string>
+    <string name="btn_place_order">Place Order</string>
+    <string name="order_success_title">Order Placed Successfully! 🎉</string>
+    <string name="order_success_desc">Your agricultural supplies will be delivered to your village address.</string>
+    <string name="view_cart">View Cart</string>
+    <string name="in_stock">In Stock</string>
+    <string name="out_of_stock">Out of Stock</string>
+    <string name="admin_system_title">AGROSMART SYSTEM</string>
+    <string name="system_metrics">System Metrics</string>
+    <string name="total_farmers_label">Total Farmers</string>
+    <string name="verified_tractors_label">Verified Tractors</string>
+    <string name="mandi_commodities_label">Mandi Commodities</string>
+    <string name="active_schemes_label">Active Schemes</string>
+    <string name="management_modules">Management Modules</string>
+    <string name="manage_mandi_prices">Mandi Prices Management</string>
+    <string name="manage_iot">IoT Hardware Administration</string>
+    <string name="system_diagnostics">System Diagnostics</string>
+    <string name="total_crop_reports_label">Crop Reports</string>
+    <string name="notifications_title">Advisory &amp; Alerts</string>
+    <string name="no_news_found">No News Articles Available</string>
+    <string name="no_notifications_found">No Notifications Yet</string>
+    <string name="read_more">Read Full Article</string>
+    <string name="btn_save_profile">Save Changes</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_edit">Edit ✏️</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_submit">Submit</string>
+    <string name="btn_apply">Apply</string>
+    <string name="btn_filter">Filter</string>
+    <string name="btn_refresh">Refresh</string>
+    <string name="loading_text">Loading...</string>
+    <string name="toast_profile_updated">Profile updated successfully</string>
+    <string name="toast_scheme_saved">❤️ Scheme saved to My Bookmarks</string>
+    <string name="toast_scheme_unsaved">Scheme removed from bookmarks</string>
+    <string name="offline_mode_active">Offline mode: Loaded from local cache</string>
+    <string name="category_small_marginal">Small/Marginal</string>
+    <string name="category_large">Large</string>
+    <string name="ownership_owner">Owner</string>
+    <string name="ownership_tenant">Tenant</string>
+    <string name="ownership_sharecropper">Sharecropper</string>
+    <string name="scheme_level_central">CENTRAL</string>
+    <string name="scheme_level_state">STATE</string>
+    <string name="scheme_verified_prefix">Verified:</string>
+    <string name="scheme_portal_closed">Applications Closed on Official Portal 🔒</string>
+    <string name="scheme_portal_apply">Apply on Official Portal ↗</string>
+    <string name="scheme_closed_notice">🔒 The official application window for this scheme is closed. You may inspect guidelines, keep mandatory documents ready, or explore active alternative schemes below.</string>
+    <string name="scheme_closed_alternatives_title">💡 Alternative Active Schemes:</string>
+    <string name="scheme_closed_alternatives">PM-KUSUM Solar Pump, PM Fasal Bima Yojana (PMFBY), or State Micro-Irrigation Subsidies.</string>
+    <string name="scheme_likely_title">Likely Eligible ✅</string>
+    <string name="scheme_likely_sub">All verified mandatory criteria match your farmer profile!</string>
+    <string name="scheme_possibly_title">More Information Required ⚠️</string>
+    <string name="scheme_possibly_sub">Some specific details like exact land ceiling or category need confirmation.</string>
+    <string name="scheme_not_eligible_title">Not Eligible ❌</string>
+    <string name="scheme_not_eligible_sub">One or more eligibility criteria (landholding, category, or state) do not meet official requirements.</string>
+    <string name="scheme_closed_title">Application Closed 🔒</string>
+    <string name="scheme_closed_sub">The official application cycle has concluded.</string>
+    <string name="scheme_unverified_title">Status Unverified ❓</string>
+    <string name="scheme_unverified_sub">Live eligibility rules cannot be confirmed at this moment.</string>
+    <string name="criteria_checks_format">Official Criteria Checks (%1$d/%2$d Passed)</string>
+    <string name="scheme_explanation_prefix">📋 Scheme Explanation:</string>
+    <string name="toast_portal_error">Unable to open official portal link</string>
+    <string name="toast_offline_criteria">Offline mode: Showing local criteria check</string>
+    <string name="toast_valid_land">Please enter valid numeric land size</string>
+    <string name="toast_re_evaluating">Profile updated. Re-evaluating eligibility...</string>
+    <string name="cat_small_marginal">Small/Marginal</string>
+    <string name="cat_large">Large</string>
+    <string name="cat_sc_st">SC/ST</string>
+    <string name="cat_women">Women</string>
+    <string name="cat_general">General</string>
+    <string name="variety_arrivals_format">Variety: %1$s • Arrivals: %2$s</string>
+    <string name="updated_prefix">Updated:</string>
+    <string name="recent_label">Recent</string>
+    <string name="status_label">Status</string>
+    <string name="active_tractors_label">Active Tractors</string>
+    <string name="mandi_rates_label">Mandi Rates</string>
+    <string name="soil_crop_tests">Soil &amp; Crop Tests</string>
+    <string name="farmer_reviews">Farmer Reviews</string>
+    <string name="manage_schemes_title">Government Schemes Management</string>
+    <string name="manage_schemes_desc">Add, edit and remove farmer welfare schemes</string>
+    <string name="manage_news_title">Agriculture News Management</string>
+    <string name="manage_news_desc">Publish news updates, categories and advisories</string>
+    <string name="manage_crop_prices_title">Crop Prices Management</string>
+    <string name="manage_crop_prices_desc">Update APMC market commodity rates</string>
+    <string name="crop_guides_directory_title">Crop Guides &amp; Disease Directory</string>
+    <string name="crop_guides_directory_desc">Maintain agronomic care guides and symptoms</string>
+    <string name="admin_feedback_desc">Inspect farmer ratings, suggestions and field usability</string>
+    <string name="broadcast_notifications_title">Broadcast Notifications</string>
+    <string name="broadcast_notifications_desc">Push advisories and urgent alerts to farmers</string>
+    <string name="soil_health_title">🧪 Soil Health Card Evaluation</string>
+    <string name="soil_health_desc">Enter parameters from your laboratory Soil Health Card to receive scientific fertilizer adjustment guidelines and soil reclamation advice.</string>
+    <string name="enter_lab_params">Enter Lab Test Parameters</string>
+    <string name="ph_level">pH Level (Reaction)</string>
+    <string name="available_n">Available Nitrogen (N kg/ha)</string>
+    <string name="available_p">Available Phosphorus (P kg/ha)</string>
+    <string name="available_k">Available Potassium (K kg/ha)</string>
+    <string name="electrical_cond">Electrical Conductivity (EC dS/m)</string>
+    <string name="btn_evaluate_soil">🔬 Evaluate Soil Health &amp; Nutrients</string>
+    <string name="soil_evaluation_report">Scientific Evaluation Report</string>
+    <string name="reclamation_advice">Soil Reclamation Advice</string>
+    <string name="fertilizer_recommendation">Fertilizer Dose Adjustments</string>
+    <string name="crop_planner_title">🌱 Before You Sow</string>
+    <string name="crop_planner_desc">Scientific Maharashtra Crop Plan Simulator &amp; What-If Decision Engine</string>
+    <string name="crop_simulator">Crop Simulator</string>
+    <string name="saved_plans">Saved Plans</string>
+    <string name="season_label">Season</string>
+    <string name="water_source_label">Water Availability</string>
+    <string name="budget_label">Investment Budget (₹/Acre)</string>
+    <string name="risk_appetite_label">Risk Appetite</string>
+    <string name="btn_simulate_crop_plans">🚀 Simulate Best Crop Plans</string>
+    <string name="view_eligibility_and_apply">View Eligibility &amp; Apply ➔</string>
+    <string name="complete_farmer_profile">Complete Farmer Profile for Eligibility</string>
+    <string name="complete_profile_desc">Accurate profile details help the advisory engine match official subsidies and welfare schemes precisely.</string>
+    <string name="state_territory">State / Territory</string>
+    <string name="landholding_acres">Total Landholding (in Acres) *</string>
+    <string name="farmer_category">Farmer Category *</string>
+    <string name="land_ownership">Land Ownership / Tenancy *</string>
+    <string name="primary_crops">Primary Crops Grown *</string>
+    <string name="btn_save_and_check">Save &amp; Check Eligibility</string>
+    <string name="required_documents_label">📑 Required Documents</string>
+    <string name="how_to_apply_label">📝 How to Apply (Step-by-Step)</string>
+    <string name="eligibility_eval_heading">🎯 Eligibility Evaluation</string>
+    <string name="cultivable_land_label">Cultivable Landholding (Acres)</string>
+    <string name="land_hint_demo">e.g. 2.5 (Use 15.0 to test ineligible demo)</string>
+    <string name="primary_crops_label">Primary Crops Cultivated</string>
+    <string name="crops_hint">e.g. Soybean, Cotton, Wheat</string>
+    <string name="land_ownership_title">Land Title Ownership Status</string>
+    <string name="demo_badge_label">Demo / Test Rules</string>
+    <string name="total_amount_payable">Total Amount Payable</string>
+    <string name="pay_online_btn">💳 Pay Online via Razorpay / UPI</string>
+    <string name="cod_btn">💵 Kisan Cash on Delivery (COD)</string>
+    <string name="temperature_label">Temperature</string>
 </resources>

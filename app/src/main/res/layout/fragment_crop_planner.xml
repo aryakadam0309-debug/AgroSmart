@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🌱 Before You Sow"
+                android:text="@string/crop_planner_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/white" />
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Scientific Maharashtra Crop Plan Simulator &amp; What-If Decision Engine"
+                android:text="@string/crop_planner_desc"
                 android:textSize="12sp"
                 android:textColor="#D8F3DC" />
 
@@ -50,7 +50,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:text="Crop Simulator"
+                    android:text="@string/crop_simulator"
                     android:textSize="12sp"
                     android:textAllCaps="false"
                     app:cornerRadius="8dp"

@@ -67,11 +67,15 @@ public class CropPriceAdapter extends RecyclerView.Adapter<CropPriceAdapter.Pric
 
             binding.tvCropName.setText(price.getCropName());
             binding.tvCategoryBadge.setText(price.getCategory());
-            binding.tvVarietyArrival.setText("Variety: " + price.getVariety() + " • Arrivals: " + price.getArrivalQuantity());
+            
+            String varietyStr = price.getVariety() != null ? price.getVariety() : "--";
+            String arrivalsStr = price.getArrivalQuantity() != null ? price.getArrivalQuantity() : "--";
+            binding.tvVarietyArrival.setText(ctx.getString(R.string.variety_arrivals_format, varietyStr, arrivalsStr));
+            
             binding.tvMarketLocation.setText("📍 " + price.getMarketName() + ", " + price.getState());
             binding.tvModalPrice.setText(String.format("₹%,.0f %s", price.getModalPrice(), price.getPriceUnit()));
-            binding.tvPriceRange.setText(String.format("Min: ₹%,.0f  |  Max: ₹%,.0f", price.getMinPrice(), price.getMaxPrice()));
-            binding.tvUpdatedTime.setText("Updated: " + price.getUpdatedDate());
+            binding.tvPriceRange.setText(String.format(ctx.getString(R.string.min_max_price), price.getMinPrice(), price.getMaxPrice()));
+            binding.tvUpdatedTime.setText(ctx.getString(R.string.updated_prefix) + " " + price.getUpdatedDate());
 
             // Market Demand / Need in Market Indicator
             String demand = price.getMarketDemand();
@@ -98,7 +102,7 @@ public class CropPriceAdapter extends RecyclerView.Adapter<CropPriceAdapter.Pric
             } else {
                 binding.tvTrend.setBackground(ContextCompat.getDrawable(ctx, R.drawable.bg_trend_stable));
                 binding.tvTrend.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted));
-                binding.tvTrend.setText("● Stable");
+                binding.tvTrend.setText(ctx.getString(R.string.trend_stable_badge));
             }
 
             binding.getRoot().setOnClickListener(v -> {

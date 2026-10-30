@@ -51,6 +51,7 @@ public class LanguageSelectionActivity extends BaseActivity {
         binding.btnContinue.setOnClickListener(v -> {
             sessionManager.setLanguage(selectedLanguage);
             LocaleHelper.setLocale(this, selectedLanguage);
+            LocaleHelper.setLocale(getApplicationContext(), selectedLanguage);
 
             Intent intent;
             if (sessionManager.isLoggedIn()) {

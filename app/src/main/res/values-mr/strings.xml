@@ -35,7 +35,7 @@
     <string name="logout_confirm_msg">आपण खात्रीने ॲग्रोस्मार्टमधून लॉग आउट करू इच्छिता?</string>
     <string name="cancel">रद्द करा</string>
 
-    <!-- Navigation & Common -->
+    <!-- Navigation &amp; Common -->
     <string name="nav_crop_planner">पीक नियोजक</string>
     <string name="nav_home">मुख्यपृष्ठ</string>
     <string name="nav_services">सेवा</string>
@@ -53,7 +53,7 @@
     <string name="status">स्थिती</string>
     <string name="all">सर्व</string>
 
-    <!-- Home & Profile -->
+    <!-- Home &amp; Profile -->
     <string name="greeting_farmer">नमस्कार, %s! 👋</string>
     <string name="registered_farmer">🌱 नोंदणीकृत शेतकरी</string>
     <string name="system_admin">🛡️ प्रणाली प्रशासक</string>
@@ -75,7 +75,7 @@
     <string name="sunrise">सूर्योदय</string>
     <string name="sunset">सूर्यास्त</string>
 
-    <!-- Mandi & Crop Prices -->
+    <!-- Mandi &amp; Crop Prices -->
     <string name="crop_prices">बाजारभाव (मंडी भाव)</string>
     <string name="market_name">बाजार समिती / APMC</string>
     <string name="modal_price">सर्वसाधारण भाव</string>
@@ -93,7 +93,7 @@
     <string name="scheme_deadline">अर्जाची शेवटची तारीख</string>
     <string name="scheme_apply">आता अर्ज करा</string>
 
-    <!-- Crop Guides & Disease Directory -->
+    <!-- Crop Guides &amp; Disease Directory -->
     <string name="crop_guide">पीक लागवड मार्गदर्शिका</string>
     <string name="crop_disease">पीक रोग व कीड माहिती</string>
     <string name="scientific_name">शास्त्रीय नाव</string>
@@ -107,7 +107,7 @@
     <string name="chemical_control">रासायनिक नियंत्रण</string>
     <string name="preventive_measures">प्रतिबंधात्मक काळजी</string>
 
-    <!-- Tractor Rental & Booking -->
+    <!-- Tractor Rental &amp; Booking -->
     <string name="tractor_booking">ट्रॅक्टर भाडे सेवा</string>
     <string name="available_tractors">उपलब्ध ट्रॅक्टर व अवजारे</string>
     <string name="rent_out_tractor">माझा ट्रॅक्टर भाड्याने द्या</string>
@@ -151,7 +151,7 @@
     <string name="upload_item_image">साहित्याचा फोटो अपलोड करा</string>
     <string name="no_inventory_found">कोणतीही साठा नोंद आढळली नाही</string>
 
-    <!-- Marketplace & Cart -->
+    <!-- Marketplace &amp; Cart -->
     <string name="marketplace">कृषी बाजारपेठ</string>
     <string name="cart">माझी कार्ट</string>
     <string name="orders">माझ्या ऑर्डर्स</string>
@@ -208,7 +208,7 @@
     <string name="manage_crop_prices">बाजारभाव व्यवस्थापन</string>
     <string name="manage_tractors">यंत्रसामग्री व्यवस्थापन</string>
     <string name="delivery_address_hint">वितरण पत्ता / गावाचे नाव</string>
-    <!-- My Farm Today & Agro-Climatic Advisory -->
+    <!-- My Farm Today &amp; Agro-Climatic Advisory -->
     <string name="my_farm_today">माझे शेत आज</string>
     <string name="farm_advisory_alert">कृषी कार्य योजना</string>
     <string name="kharif_season">खरीप हंगाम (पावसाळी)</string>
@@ -238,7 +238,7 @@
     <string name="iron_val">उपलब्ध लोह Fe (ppm)</string>
     <string name="evaluate_soil">मातीची सुपीकता तपासा</string>
 
-    <!-- Cultivation Cost & Profitability Ledger -->
+    <!-- Cultivation Cost &amp; Profitability Ledger -->
     <string name="farm_expenses">शेती खर्च व नफा-तोटा</string>
     <string name="farm_expenses_subtitle">शेती खर्च नोंदवही, निविष्ठा खर्च व विक्री नफा</string>
     <string name="add_expense">शेती खर्च नोंदवा</string>
@@ -259,7 +259,7 @@
     <string name="submit_report">रोग अहवाल पाठवा</string>
     <string name="triage_status">पडताळणी स्थिती</string>
 
-    <!-- Farmer Field Testing & Feedback -->
+    <!-- Farmer Field Testing &amp; Feedback -->
     <string name="share_feedback">अभिप्राय नोंदवा</string>
     <string name="share_feedback_subtitle">भारतीय शेतकऱ्यांसाठी ॲग्रोस्मार्ट अधिक सक्षम बनवा</string>
     <string name="feedback_rating">उपयुक्तता रेटिंग</string>
@@ -268,7 +268,7 @@
     <string name="submit_feedback">अभिप्राय सबमिट करा</string>
     <string name="admin_feedback_title">शेतकरी अभिप्राय व पुनरावलोकन</string>
 
-    <!-- Additional UI & Module Strings (Marathi) -->
+    <!-- Additional UI &amp; Module Strings (Marathi) -->
     <string name="farmer_registration">शेतकरी नोंदणी</string>
     <string name="join_community">AgroSmart कृषी समुदायामध्ये सामील व्हा</string>
     <string name="or_text">किंवा</string>
@@ -362,4 +362,249 @@
     <string name="tab_admin_alerts">स्थानिक सूचना</string>
     <string name="admin_crop_watch_review">क्रॉप वॉच पुनरावलोकन</string>
     <string name="admin_crop_watch_review_desc">शेतकरी अहवाल, क्लस्टर्स तपासा आणि स्थानिक सूचना प्रसिद्ध करा</string>
+
+    <string name="weather_title">हवामान आणि स्मार्ट कृषी सल्लागार</string>
+    <string name="btn_test_rain_alert">⚡ पावसाचा इशारा चाचणी</string>
+    <string name="five_day_summary_text">५ दिवसांचा हवामान अंदाज: सर्वसमावेशक शेती हवामान माहिती.</string>
+    <string name="humidity_label">आर्द्रता</string>
+    <string name="wind_speed_label">वाऱ्याचा वेग</string>
+    <string name="rain_chance_label">पावसाची शक्यता</string>
+    <string name="pressure_label">हवेचा दाब</string>
+    <string name="advisory_update_detected">सल्लागार अपडेट आढळले</string>
+    <string name="alert_sent_badge">🔔 इशारा पाठवला</string>
+    <string name="smart_advisories_heading">🌱 स्मार्ट शेती सल्ला (पेरणी • फवारणी • काढणी)</string>
+    <string name="five_day_forecast_heading">📅 ५ दिवसांचा शेती हवामान अंदाज</string>
+    <string name="advisory_sowing">पेरणी सल्ला</string>
+    <string name="advisory_spraying">फवारणी सल्ला</string>
+    <string name="advisory_harvesting">काढणी सल्ला</string>
+    <string name="status_suitable">योग्य</string>
+    <string name="status_avoid_delay">टाळा / पुढे ढकला</string>
+    <string name="status_caution">सावधगिरी बाळगा</string>
+    <string name="recommended_action_label">📋 शिफारस केलेली कृती:</string>
+    <string name="period_label">कालावधी: %s</string>
+    <string name="today_label">आज</string>
+    <string name="high_risk_badge">🔴 उच्च धोका (मुसळधार पाऊस)</string>
+    <string name="moderate_risk_badge">🟡 मध्यम धोका</string>
+    <string name="low_risk_badge">🟢 कमी धोका</string>
+    <string name="prev_status_format">मागील: %s</string>
+    <string name="updated_status_format">अपडेट केलेले: %s</string>
+    <string name="harvesting_activity">🌾 पीक काढणी काम</string>
+    <string name="sowing_activity">🌱 पेरणी काम</string>
+    <string name="spraying_activity">🧪 फवारणी काम</string>
+    <string name="iot_device_name_default">ईएसपी३२ स्मार्ट स्टेशन #१</string>
+    <string name="iot_location_synced">ठिकाण समक्रमित • सत्यापित</string>
+    <string name="iot_edit_btn">✏️ संपादन करा</string>
+    <string name="iot_station_online">स्टेशन ऑनलाइन (ESP32 लाइव्ह)</string>
+    <string name="iot_station_offline">स्टेशन ऑफलाइन</string>
+    <string name="iot_last_sync_now">शेवटचे सिंक: नुकतेच</string>
+    <string name="iot_last_sync_format">शेवटचे सिंक: %s</string>
+    <string name="iot_moisture_level_heading">🌱 मातीतील ओलावा पातळी</string>
+    <string name="iot_microclimate_heading">⛅ सूक्ष्म हवामान व तापमान (DHT22)</string>
+    <string name="iot_ambient_temp">सभोवतालचे तापमान</string>
+    <string name="iot_crop_field_air">शेतातील हवा</string>
+    <string name="iot_relative_humidity">सापेक्ष आर्द्रता</string>
+    <string name="iot_optimal_range">इष्टतम मर्यादा</string>
+    <string name="iot_dry_label">०% (कोरडी: ~३२०० ADC)</string>
+    <string name="iot_wet_label">१००% (ओली: ~१४०० ADC)</string>
+    <string name="iot_low_moisture_alert_title">कमी माती ओलावा इशारा</string>
+    <string name="iot_low_moisture_alert_msg">मातीतील ओलावा मर्यादा (३०%) पेक्षा कमी झाला आहे. पाणी देण्याची शिफारस केली जाते.</string>
+    <string name="iot_status_dry">कोरडी</string>
+    <string name="iot_status_moderate">मध्यम</string>
+    <string name="iot_status_wet">ओली</string>
+    <string name="iot_latest_entries_format">नवीनतम %d नोंदी</string>
+    <string name="scheme_header_title">शासकीय कृषी योजना (PS 5.3)</string>
+    <string name="btn_test_closed_demo">⚡ बंद योजना चाचणी</string>
+    <string name="search_scheme_hint">योजनेचे नाव, अनुदान, पीक किंवा मंत्रालयानुसार शोधा...</string>
+    <string name="profile_banner_format">प्रोफाइल: %1$s • %2$.1f एकर (%3$s) • %4$s</string>
+    <string name="tab_recommended">✨ शिफारस केलेल्या</string>
+    <string name="tab_all_schemes">📋 सर्व योजना</string>
+    <string name="tab_saved">❤️ जतन केलेल्या</string>
+    <string name="chip_all">सर्व</string>
+    <string name="chip_financial">आर्थिक सहाय्य</string>
+    <string name="chip_insurance">पीक विमा</string>
+    <string name="chip_machinery">कृषी यंत्रसामग्री</string>
+    <string name="chip_irrigation">सिंचन व्यवस्था</string>
+    <string name="chip_credit">कृषी पतपुरवठा</string>
+    <string name="chip_soil_health">मृदा आरोग्य</string>
+    <string name="no_schemes_found">कोणतीही योजना आढळली नाही</string>
+    <string name="no_schemes_sub">कृपया आपली श्रेणी किंवा शोध शब्द बदलून पहा.</string>
+    <string name="eligibility_likely">✅ पात्र असण्याची दाट शक्यता</string>
+    <string name="eligibility_possibly">⚠️ अधिक माहिती आवश्यक</string>
+    <string name="eligibility_not_eligible">❌ अपात्र</string>
+    <string name="eligibility_closed">🔒 अर्ज बंद</string>
+    <string name="eligibility_unverified">❓ स्थिती असत्यापित</string>
+    <string name="btn_apply_official_website">अधिकृत संकेतस्थळावर अर्ज करा 🌐</string>
+    <string name="btn_applications_closed">अधिकृत संकेतस्थळावर अर्ज बंद आहेत 🔒</string>
+    <string name="notice_closed_portal">🔒 या योजनेची अधिकृत अर्ज मुदत संपली आहे. आपण मार्गदर्शक तत्त्वे तपासू शकता.</string>
+    <string name="recheck_eligibility">🔄 माझी पात्रता पुन्हा तपासा</string>
+    <string name="criteria_checklist_heading">📋 अधिकृत पात्रता निकष पडताळणी</string>
+    <string name="status_satisfied">पात्र (अटी पूर्ण)</string>
+    <string name="status_unmet">अपात्र (अटी अपूर्ण)</string>
+    <string name="mandi_prices_title">थेट बाजारभाव (मंडी भाव)</string>
+    <string name="search_crop_price_hint">पिकाचे नाव, बाजार समिती, वाण शोधा...</string>
+    <string name="filter_all_states">सर्व राज्ये</string>
+    <string name="modal_price_label">सर्वसाधारण दर</string>
+    <string name="min_price_label">किमान: ₹%1$,.0f</string>
+    <string name="max_price_label">कमाल: ₹%1$,.0f</string>
+    <string name="arrival_label">आवक: %s</string>
+    <string name="trend_up_badge">▲ वाढता भाव</string>
+    <string name="trend_down_badge">▼ घसरता भाव</string>
+    <string name="trend_stable_badge">● स्थिर भाव</string>
+    <string name="no_crop_prices_found">बाजारभाव नोंदी आढळल्या नाहीत</string>
+    <string name="crop_guide_title">पीक लागवड मार्गदर्शिका</string>
+    <string name="crop_disease_title">पीक रोग व कीड माहिती</string>
+    <string name="search_guide_hint">पिकाचे नाव, वाण, हंगाम शोधा...</string>
+    <string name="search_disease_hint">पीक, रोगाचे नाव, लक्षणे शोधा...</string>
+    <string name="symptoms_heading">🩺 रोगाची लक्षणे</string>
+    <string name="causes_heading">🔬 अनुकूल हवामान व कारणे</string>
+    <string name="remedy_organic">🌿 सेंद्रिय / जैविक उपाय</string>
+    <string name="remedy_chemical">🧪 रासायनिक नियंत्रण</string>
+    <string name="duration_label">कालावधी: %s</string>
+    <string name="expected_yield_label">अपेक्षित उत्पादन: %s</string>
+    <string name="report_pest_incident">➕ पीक समस्येची नोंद करा</string>
+    <string name="my_reports">माझे सादर केलेले अहवाल</string>
+    <string name="community_alerts">परिसरातील कीड प्रादुर्भाव सूचना</string>
+    <string name="status_pending_review">तपासणी प्रलंबित</string>
+    <string name="status_verified_expert">सत्यापित</string>
+    <string name="status_action_taken">निवारण झाले</string>
+    <string name="no_reports_found">अद्याप कोणताही पीक अहवाल नोंदवलेला नाही.</string>
+    <string name="marketplace_title">ॲग्रोस्मार्ट कृषी बाजारपेठ</string>
+    <string name="search_marketplace_hint">प्रमाणित बियाणे, खते, अवजारे शोधा...</string>
+    <string name="cart_empty_title">आपली कार्ट सध्या रिकामी आहे.</string>
+    <string name="cart_empty_subtitle">बाजारपेठेतून दर्जेदार बियाणे, खते आणि अवजारे निवडा.</string>
+    <string name="bill_summary">बिल तपशील</string>
+    <string name="items_subtotal">एकूण वस्तूंची किंमत</string>
+    <string name="village_delivery_fee">गाव पोहोच डिलिव्हरी शुल्क</string>
+    <string name="free_delivery">मोफत</string>
+    <string name="total_payable">एकूण देय रक्कम</string>
+    <string name="btn_place_order">ऑर्डर द्या</string>
+    <string name="order_success_title">ऑर्डर यशस्वीरीत्या नोंदवली गेली! 🎉</string>
+    <string name="order_success_desc">आपले कृषी साहित्य लवकरच आपल्या गावातील पत्त्यावर पोहोचवले जाईल.</string>
+    <string name="view_cart">कार्ट पहा</string>
+    <string name="in_stock">उपलब्ध आहे</string>
+    <string name="out_of_stock">साठा संपला</string>
+    <string name="admin_system_title">ॲग्रोस्मार्ट प्रणाली</string>
+    <string name="system_metrics">प्रणाली सांख्यिकी</string>
+    <string name="total_farmers_label">एकूण नोंदणीकृत शेतकरी</string>
+    <string name="verified_tractors_label">सत्यापित ट्रॅक्टर</string>
+    <string name="mandi_commodities_label">बाजारभाव नोंदी</string>
+    <string name="active_schemes_label">सक्रिय योजना</string>
+    <string name="management_modules">व्यवस्थापन विभाग</string>
+    <string name="manage_mandi_prices">बाजारभाव व्यवस्थापन</string>
+    <string name="manage_iot">IoT यंत्रणा प्रशासन</string>
+    <string name="system_diagnostics">प्रणाली निदान व स्थिती</string>
+    <string name="total_crop_reports_label">पीक अहवाल</string>
+    <string name="notifications_title">सूचना व इशारे</string>
+    <string name="no_news_found">बातम्या उपलब्ध नाहीत</string>
+    <string name="no_notifications_found">अद्याप कोणत्याही सूचना नाहीत</string>
+    <string name="read_more">पूर्ण बातमी वाचा</string>
+    <string name="btn_save_profile">बदल जतन करा</string>
+    <string name="btn_cancel">रद्द करा</string>
+    <string name="btn_edit">संपादन ✏️</string>
+    <string name="btn_delete">हटवा</string>
+    <string name="btn_submit">सबमिट करा</string>
+    <string name="btn_apply">अर्ज करा</string>
+    <string name="btn_filter">फिल्टर</string>
+    <string name="btn_refresh">ताजे करा</string>
+    <string name="loading_text">लोड होत आहे...</string>
+    <string name="toast_profile_updated">प्रोफाइल यशस्वीरीत्या अपडेट केले</string>
+    <string name="toast_scheme_saved">❤️ योजना जतन केली गेली</string>
+    <string name="toast_scheme_unsaved">योजना बुकमार्कवरून काढली</string>
+    <string name="offline_mode_active">ऑफलाइन मोड: स्थानिक कॅशवरून लोड केले</string>
+    <string name="category_small_marginal">लहान / सीमांत</string>
+    <string name="category_large">मोठा शेतकरी</string>
+    <string name="ownership_owner">जमीन मालक</string>
+    <string name="ownership_tenant">कुळ / भाडेकरू</string>
+    <string name="ownership_sharecropper">बटाईदार</string>
+    <string name="scheme_level_central">केंद्र शासन</string>
+    <string name="scheme_level_state">राज्य शासन</string>
+    <string name="scheme_verified_prefix">सत्यापित:</string>
+    <string name="scheme_portal_closed">अधिकृत पोर्टलवर अर्ज बंद आहेत 🔒</string>
+    <string name="scheme_portal_apply">अधिकृत पोर्टलवर अर्ज करा ↗</string>
+    <string name="scheme_closed_notice">🔒 या योजनेसाठी अधिकृत अर्ज प्रक्रिया बंद आहे. आपण मार्गदर्शक तत्त्वे तपासू शकता, आवश्यक कागदपत्रे तयार ठेवू शकता किंवा खालील सक्रिय पर्यायी योजना पाहू शकता.</string>
+    <string name="scheme_closed_alternatives_title">💡 पर्यायी सक्रिय योजना:</string>
+    <string name="scheme_closed_alternatives">पीएम-कुसुम सौर कृषी पंप, प्रधानमंत्री पीक विमा योजना (PMFBY), किंवा राज्य सूक्ष्म सिंचन अनुदान.</string>
+    <string name="scheme_likely_title">पात्र असण्याची दाट शक्यता ✅</string>
+    <string name="scheme_likely_sub">सर्व सत्यापित अनिवार्य निकष आपल्या शेतकरी प्रोफाइलशी जुळतात!</string>
+    <string name="scheme_possibly_title">अधिक माहिती आवश्यक ⚠️</string>
+    <string name="scheme_possibly_sub">जमीन मर्यादा किंवा श्रेणी यासारख्या काही विशिष्ट तपशीलांची पुष्टी करणे आवश्यक आहे.</string>
+    <string name="scheme_not_eligible_title">अपात्र ❌</string>
+    <string name="scheme_not_eligible_sub">एक किंवा अधिक पात्रता निकष (जमीन धारणा, श्रेणी किंवा राज्य) अधिकृत अटी पूर्ण करत नाहीत.</string>
+    <string name="scheme_closed_title">अर्ज बंद 🔒</string>
+    <string name="scheme_closed_sub">अधिकृत अर्ज प्रक्रिया समाप्त झाली आहे.</string>
+    <string name="scheme_unverified_title">स्थिती असत्यापित ❓</string>
+    <string name="scheme_unverified_sub">या क्षणी थेट पात्रता नियम निश्चित करता येत नाहीत.</string>
+    <string name="criteria_checks_format">अधिकृत निकष पडताळणी (%1$d/%2$d पूर्ण)</string>
+    <string name="scheme_explanation_prefix">📋 योजना स्पष्टीकरण:</string>
+    <string name="toast_portal_error">अधिकृत पोर्टल उघडण्यात त्रुटी</string>
+    <string name="toast_offline_criteria">ऑफलाइन मोड: स्थानिक निकष पडताळणी दाखवत आहे</string>
+    <string name="toast_valid_land">कृपया जमिनीचे योग्य संख्यात्मक क्षेत्र प्रविष्ट करा</string>
+    <string name="toast_re_evaluating">प्रोफाइल अपडेट केले. पात्रतेचे पुनर्मूल्यांकन करत आहे...</string>
+    <string name="cat_small_marginal">अल्प/अत्यल्प भूधारक</string>
+    <string name="cat_large">मोठा शेतकरी</string>
+    <string name="cat_sc_st">अनुसूचित जाती / जमाती</string>
+    <string name="cat_women">महिला शेतकरी</string>
+    <string name="cat_general">सर्वसाधारण</string>
+    <string name="variety_arrivals_format">वाण: %1$s • आवक: %2$s</string>
+    <string name="updated_prefix">अपडेट केले:</string>
+    <string name="recent_label">नुकतेच</string>
+    <string name="status_label">स्थिती</string>
+    <string name="active_tractors_label">सक्रिय ट्रॅक्टर</string>
+    <string name="mandi_rates_label">बाजारभाव दर</string>
+    <string name="soil_crop_tests">माती व पीक चाचण्या</string>
+    <string name="farmer_reviews">शेतकरी अभिप्राय</string>
+    <string name="manage_schemes_title">शासकीय योजना व्यवस्थापन</string>
+    <string name="manage_schemes_desc">शेतकरी कल्याणकारी योजना जोडा, संपादित करा किंवा काढा</string>
+    <string name="manage_news_title">कृषी बातम्या व्यवस्थापन</string>
+    <string name="manage_news_desc">बातम्या, श्रेणी आणि कृषी सल्ले प्रसिद्ध करा</string>
+    <string name="manage_crop_prices_title">बाजारभाव व्यवस्थापन</string>
+    <string name="manage_crop_prices_desc">कृषी उत्पन्न बाजार समितीचे बाजारभाव अपडेट करा</string>
+    <string name="crop_guides_directory_title">पीक मार्गदर्शक व रोग डिरेक्टरी</string>
+    <string name="crop_guides_directory_desc">कृषीविषयक काळजी मार्गदर्शक व रोगांची लक्षणे व्यवस्थापित करा</string>
+    <string name="admin_feedback_desc">शेतकऱ्यांचे रेटिंग, सूचना व वापराबद्दल अभिप्राय तपासा</string>
+    <string name="broadcast_notifications_title">सूचना प्रसारण (नोटिफिकेशन्स)</string>
+    <string name="broadcast_notifications_desc">शेतकऱ्यांना तातडीच्या सूचना व सल्ले पाठवा</string>
+    <string name="soil_health_title">🧪 माती आरोग्य पत्रिका मूल्यांकन</string>
+    <string name="soil_health_desc">प्रयोगशाळेतील माती आरोग्य पत्रिकेनुसार घटक प्रविष्ट करा आणि वैज्ञानिक खत व्यवस्थापन व जमीन सुधारणा सल्ला मिळवा.</string>
+    <string name="enter_lab_params">प्रयोगशाळा चाचणी घटक प्रविष्ट करा</string>
+    <string name="ph_level">सामू / pH पातळी (प्रतिक्रिया)</string>
+    <string name="available_n">उपलब्ध नत्र (N किलो/हेक्टर)</string>
+    <string name="available_p">उपलब्ध स्फुरद (P किलो/हेक्टर)</string>
+    <string name="available_k">उपलब्ध पालाश (K किलो/हेक्टर)</string>
+    <string name="electrical_cond">विद्युत वाहकता (EC dS/m)</string>
+    <string name="btn_evaluate_soil">🔬 माती आरोग्य व पोषणमूल्ये तपासा</string>
+    <string name="soil_evaluation_report">वैज्ञानिक मूल्यांकन अहवाल</string>
+    <string name="reclamation_advice">जमीन सुधारणा सल्ला</string>
+    <string name="fertilizer_recommendation">खत मात्रा समायोजन शिफारसी</string>
+    <string name="crop_planner_title">🌱 पेरणीपूर्वी पीक नियोजन</string>
+    <string name="crop_planner_desc">वैज्ञानिक पीक नियोजन सिम्युलेटर व निर्णय प्रणाली</string>
+    <string name="crop_simulator">पीक सिम्युलेटर</string>
+    <string name="saved_plans">जतन केलेले आराखडे</string>
+    <string name="season_label">हंगाम</string>
+    <string name="water_source_label">पाण्याची उपलब्धता</string>
+    <string name="budget_label">गुंतवणूक बजेट (₹/एकर)</string>
+    <string name="risk_appetite_label">जोखीम क्षमता</string>
+    <string name="btn_simulate_crop_plans">🚀 सर्वोत्तम पीक आराखड्यांची चाचणी घ्या</string>
+    <string name="view_eligibility_and_apply">पात्रता तपासा व अर्ज करा ➔</string>
+    <string name="complete_farmer_profile">पात्रतेसाठी शेतकरी प्रोफाइल पूर्ण करा</string>
+    <string name="complete_profile_desc">अचूक शेतकरी माहितीमुळे सरकारी अनुदाने व कल्याणकारी योजना अचूकपणे जुळवणे शक्य होते.</string>
+    <string name="state_territory">राज्य / केंद्रशासित प्रदेश</string>
+    <string name="landholding_acres">एकूण जमीन धारणा (एकर मध्ये) *</string>
+    <string name="farmer_category">शेतकरी श्रेणी *</string>
+    <string name="land_ownership">जमीन मालकी हक्क / भाडेकरू *</string>
+    <string name="primary_crops">मुख्य पिके *</string>
+    <string name="btn_save_and_check">जतन करा व पात्रता तपासा</string>
+    <string name="required_documents_label">📑 आवश्यक कागदपत्रे</string>
+    <string name="how_to_apply_label">📝 अर्ज कसा करावा (टप्प्याटप्प्याने)</string>
+    <string name="eligibility_eval_heading">🎯 पात्रता मूल्यांकन</string>
+    <string name="cultivable_land_label">लागवडीखालील जमीन (एकर)</string>
+    <string name="land_hint_demo">उदा. २.५ (अपात्रतेची चाचणी घेण्यासाठी १५.० वापरा)</string>
+    <string name="primary_crops_label">पिकवली जाणारी मुख्य पिके</string>
+    <string name="crops_hint">उदा. सोयाबीन, कापूस, गहू</string>
+    <string name="land_ownership_title">जमीन मालकी हक्क स्थिती</string>
+    <string name="demo_badge_label">डेमो / चाचणी नियम</string>
+    <string name="total_amount_payable">एकूण देय रक्कम</string>
+    <string name="pay_online_btn">💳 ऑनलाइन पेमेंट करा (Razorpay / UPI)</string>
+    <string name="cod_btn">💵 शेतकरी कॅश ऑन डिलिव्हरी (COD)</string>
+    <string name="temperature_label">तापमान</string>
 </resources>

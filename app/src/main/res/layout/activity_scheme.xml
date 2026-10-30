@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text="Government Schemes (PS 5.3)"
+            android:text="@string/scheme_header_title"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -52,7 +52,7 @@
             android:insetBottom="0dp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:text="⚡ Test Closed Scheme"
+            android:text="@string/btn_test_closed_demo"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="@+id/tvHeaderTitle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +75,7 @@
             android:background="@android:color/transparent"
             android:drawableStart="@android:drawable/ic_menu_search"
             android:drawablePadding="12dp"
-            android:hint="Search by scheme name, subsidy, crop, or ministry..."
+            android:hint="@string/search_scheme_hint"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:paddingStart="14dp"
@@ -130,7 +130,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit ✏️"
+                android:text="@string/btn_edit"
                 android:textColor="#1B5E20"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -157,7 +157,7 @@
             android:background="@drawable/bg_rounded_card"
             android:backgroundTint="@color/forest_green_primary"
             android:gravity="center"
-            android:text="✨ Recommended"
+            android:text="@string/tab_recommended"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -169,7 +169,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="📋 All Schemes"
+            android:text="@string/tab_all_schemes"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -181,7 +181,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="❤️ Saved"
+            android:text="@string/tab_saved"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -212,49 +212,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="All Categories" />
+                android:text="@string/chip_all" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipFinancial"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Financial Support" />
+                android:text="@string/chip_financial" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipInsurance"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Crop Insurance" />
+                android:text="@string/chip_insurance" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMachinery"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Farm Machinery" />
+                android:text="@string/chip_machinery" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipIrrigation"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Irrigation &amp; Water" />
+                android:text="@string/chip_irrigation" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipCredit"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Agricultural Credit" />
+                android:text="@string/chip_credit" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipSoilHealth"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Soil Health" />
+                android:text="@string/chip_soil_health" />
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
@@ -280,7 +280,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="No Schemes Found"
+            android:text="@string/no_schemes_found"
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -291,7 +291,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:gravity="center"
-            android:text="Try adjusting your search keywords or category filters."
+            android:text="@string/no_schemes_sub"
             android:textColor="@color/text_muted"
             android:textSize="13sp" />
     </LinearLayout>

@@ -72,14 +72,17 @@ public class SchemeActivity extends BaseActivity {
     }
 
     private void updateProfileBannerText() {
-        String catLabel = "SMALL_MARGINAL".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? "Small/Marginal"
-                : ("LARGE".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? "Large" : farmerProfile.getFarmerCategory());
+        String catLabel = "SMALL_MARGINAL".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? getString(R.string.cat_small_marginal)
+                : ("LARGE".equalsIgnoreCase(farmerProfile.getFarmerCategory()) ? getString(R.string.cat_large) : farmerProfile.getFarmerCategory());
 
-        binding.tvProfileSummary.setText(String.format("Profile: %s • %.1f Acres (%s) • %s",
+        String ownLabel = "OWNER".equalsIgnoreCase(farmerProfile.getOwnershipStatus()) ? getString(R.string.ownership_owner)
+                : ("TENANT".equalsIgnoreCase(farmerProfile.getOwnershipStatus()) ? getString(R.string.ownership_tenant) : farmerProfile.getOwnershipStatus());
+
+        binding.tvProfileSummary.setText(String.format(getString(R.string.profile_banner_format),
                 farmerProfile.getState(),
                 farmerProfile.getLandAreaAcres(),
                 catLabel,
-                farmerProfile.getOwnershipStatus()));
+                ownLabel));
     }
 
     private void setupRecyclerView() {
@@ -95,14 +98,14 @@ public class SchemeActivity extends BaseActivity {
                     @Override public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {}
                     @Override public void onFailure(Call<Map<String, Object>> call, Throwable t) {}
                 });
-                Toast.makeText(this, "❤️ Scheme saved to My Bookmarks", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_scheme_saved), Toast.LENGTH_SHORT).show();
             } else {
                 dbHelper.removeSchemeBookmark(scheme.getSchemeId(), phone);
                 ApiClient.getInstance().getApi().unsaveScheme(phone, scheme.getSchemeId()).enqueue(new Callback<Map<String, Object>>() {
                     @Override public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {}
                     @Override public void onFailure(Call<Map<String, Object>> call, Throwable t) {}
                 });
-                Toast.makeText(this, "Scheme removed from bookmarks", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_scheme_unsaved), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -465,10 +468,10 @@ public class SchemeActivity extends BaseActivity {
                 sessionManager.saveFarmerProfile(farmerProfile);
                 updateProfileBannerText();
                 dialog.dismiss();
-                Toast.makeText(this, "Profile updated. Refreshing eligibility ranking...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_profile_updated), Toast.LENGTH_SHORT).show();
                 switchTab(activeTab);
             } catch (Exception e) {
-                Toast.makeText(this, "Please enter valid numeric land acreage", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_valid_land), Toast.LENGTH_SHORT).show();
             }
         });
 

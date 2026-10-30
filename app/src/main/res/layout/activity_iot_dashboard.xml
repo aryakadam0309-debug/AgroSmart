@@ -70,7 +70,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="ESP32 Smart Station #1"
+                    android:text="@string/iot_device_name_default"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -112,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
-                        android:text="✏️ Edit"
+                        android:text="@string/iot_edit_btn"
                         android:textColor="@color/forest_green_surface"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -123,7 +123,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Location synced • Verified"
+                    android:text="@string/iot_location_synced"
                     android:textColor="#CCFFFFFF"
                     android:textSize="11sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -159,7 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Station Online (ESP32 Live)"
+                        android:text="@string/iot_station_online"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -170,7 +170,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Last sync: Just now"
+                    android:text="@string/iot_last_sync_now"
                     android:textColor="@color/forest_green_surface"
                     android:textSize="11sp"
                     app:layout_constraintBottom_toBottomOf="@+id/layoutStatusChip"
@@ -220,7 +220,7 @@
                                 android:id="@+id/tvAlertTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Low Soil Moisture Advisory"
+                                android:text="@string/iot_low_moisture_alert_title"
                                 android:textColor="#E65100"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
@@ -230,7 +230,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
-                                android:text="Moisture dropped below threshold (30%). Irrigation recommended."
+                                android:text="@string/iot_low_moisture_alert_msg"
                                 android:textColor="@color/text_secondary"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -262,7 +262,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="🌱 Soil Moisture Level"
+                                android:text="@string/iot_moisture_level_heading"
                                 android:textColor="@color/text_primary"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -277,7 +277,7 @@
                                 android:paddingTop="4dp"
                                 android:paddingEnd="10dp"
                                 android:paddingBottom="4dp"
-                                android:text="MODERATE"
+                                android:text="@string/iot_status_moderate"
                                 android:textColor="@color/forest_green_dark"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -345,14 +345,14 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="0% (Dry: ~3200 ADC)"
+                                android:text="@string/iot_dry_label"
                                 android:textColor="@color/text_muted"
                                 android:textSize="10sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="100% (Wet: ~1400 ADC)"
+                                android:text="@string/iot_wet_label"
                                 android:textColor="@color/text_muted"
                                 android:textSize="10sp" />
                         </LinearLayout>
@@ -377,7 +377,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="⛅ Microclimate &amp; Weather (DHT22)"
+                            android:text="@string/iot_microclimate_heading"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -402,7 +402,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Ambient Temp"
+                                    android:text="@string/iot_ambient_temp"
                                     android:textColor="@color/earth_brown"
                                     android:textSize="12sp" />
 
@@ -419,7 +419,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Crop Field Air"
+                                    android:text="@string/iot_crop_field_air"
                                     android:textColor="@color/text_muted"
                                     android:textSize="10sp" />
                             </LinearLayout>
@@ -438,7 +438,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Relative Humidity"
+                                    android:text="@string/iot_relative_humidity"
                                     android:textColor="@color/deep_teal"
                                     android:textSize="12sp" />
 
@@ -455,7 +455,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Optimal Range"
+                                    android:text="@string/iot_optimal_range"
                                     android:textColor="@color/text_muted"
                                     android:textSize="10sp" />
                             </LinearLayout>

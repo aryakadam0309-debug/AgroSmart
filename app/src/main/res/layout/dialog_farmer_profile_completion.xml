@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🌾 Complete Farmer Profile for Eligibility"
+        android:text="@string/complete_farmer_profile"
         android:textColor="@color/forest_green_primary"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Accurate profile details help the advisory engine match official subsidies and welfare schemes precisely."
+        android:text="@string/complete_profile_desc"
         android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="State / Territory"
+        android:text="@string/state_territory"
         android:textColor="@color/text_primary"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Cultivable Landholding (Acres)"
+        android:text="@string/cultivable_land_label"
         android:textColor="@color/text_primary"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -64,7 +64,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/bg_rounded_card"
-        android:hint="e.g. 2.5 (Use 15.0 to test ineligible demo)"
+        android:hint="@string/land_hint_demo"
         android:inputType="numberDecimal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
@@ -75,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Farmer Category"
+        android:text="@string/farmer_category"
         android:textColor="@color/text_primary"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -92,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Primary Crops Cultivated"
+        android:text="@string/primary_crops_label"
         android:textColor="@color/text_primary"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -103,7 +103,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/bg_rounded_card"
-        android:hint="e.g. Soybean, Cotton, Wheat"
+        android:hint="@string/crops_hint"
         android:inputType="text"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
@@ -114,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Land Title Ownership Status"
+        android:text="@string/land_ownership_title"
         android:textColor="@color/text_primary"
         android:textSize="13sp"
         android:textStyle="bold" />
@@ -140,7 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="Cancel" />
+            android:text="@string/cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveProfile"
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Save &amp; Check" />
+            android:text="@string/btn_save_and_check" />
     </LinearLayout>
 
 </LinearLayout>

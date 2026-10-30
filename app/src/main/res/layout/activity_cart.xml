@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
-                android:text="Your cart is currently empty."
+                android:text="@string/cart_empty_title"
                 android:textColor="@color/text_muted"
                 android:textSize="15sp"
                 android:visibility="gone" />
@@ -70,7 +70,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bill Summary"
+                        android:text="@string/bill_summary"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary" />
@@ -84,7 +84,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Items Subtotal"
+                            android:text="@string/items_subtotal"
                             android:textColor="@color/text_secondary" />
                         <TextView
                             android:id="@+id/tvBillSubtotal"
@@ -104,12 +104,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Village Delivery Fee"
+                            android:text="@string/village_delivery_fee"
                             android:textColor="@color/text_secondary" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="FREE"
+                            android:text="@string/free_delivery"
                             android:textStyle="bold"
                             android:textColor="@color/forest_green_primary" />
                     </LinearLayout>
@@ -129,7 +129,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Total Amount Payable"
+                            android:text="@string/total_amount_payable"
                             android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/text_primary" />
@@ -153,7 +153,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
-                android:hint="Delivery Address / Village Name"
+                android:hint="@string/delivery_address_hint"
                 app:boxCornerRadiusTopStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
@@ -176,7 +176,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="20dp"
-                android:text="💳 Pay Online via Razorpay / UPI"
+                android:text="@string/pay_online_btn"
                 android:textSize="15sp"
                 app:cornerRadius="12dp"
                 android:backgroundTint="@color/deep_teal"
@@ -191,7 +191,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="32dp"
-                android:text="💵 Kisan Cash on Delivery (COD)"
+                android:text="@string/cod_btn"
                 android:textSize="15sp"
                 app:cornerRadius="12dp"
                 android:textColor="@color/forest_green_primary" />

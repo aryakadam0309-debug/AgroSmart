@@ -26,7 +26,7 @@
                 android:id="@+id/tvAdminTag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AGROSMART SYSTEM"
+                android:text="@string/admin_system_title"
                 android:textColor="@color/forest_green_surface"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Admin Control Center"
+                android:text="@string/admin_control_center"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold"
@@ -51,7 +51,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logout"
+                android:text="@string/logout"
                 android:textColor="@color/harvest_wheat"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAdminTitle"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"
-            android:text="System Metrics"
+            android:text="@string/system_metrics"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -105,7 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Total Farmers"
+                        android:text="@string/total_farmers_label"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -138,7 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Soil &amp; Crop Tests"
+                        android:text="@string/soil_crop_tests"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -181,7 +181,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Farmer Reviews"
+                        android:text="@string/farmer_reviews"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -274,7 +274,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Government Schemes Management"
+                            android:text="@string/manage_schemes_title"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -282,7 +282,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add, edit and remove farmer welfare schemes"
+                            android:text="@string/manage_schemes_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -329,7 +329,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Agriculture News Management"
+                            android:text="@string/manage_news_title"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -337,7 +337,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Publish news updates, categories and advisories"
+                            android:text="@string/manage_news_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -384,7 +384,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Crop Prices Management"
+                            android:text="@string/manage_crop_prices_title"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -392,7 +392,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Update APMC market commodity rates"
+                            android:text="@string/manage_crop_prices_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -439,7 +439,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Crop Guides &amp; Disease Directory"
+                            android:text="@string/crop_guides_directory_title"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -447,7 +447,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Maintain agronomic care guides and symptoms"
+                            android:text="@string/crop_guides_directory_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -494,7 +494,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Farmer Feedback &amp; Field Reviews"
+                            android:text="@string/admin_feedback_title"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -502,7 +502,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Inspect farmer ratings, suggestions and field usability"
+                            android:text="@string/admin_feedback_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -611,7 +611,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Broadcast Notifications"
+                            android:text="@string/broadcast_notifications_title"
                             android:textColor="@color/text_primary"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -619,7 +619,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Push advisories and urgent alerts to farmers"
+                            android:text="@string/broadcast_notifications_desc"
                             android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
                     </LinearLayout>

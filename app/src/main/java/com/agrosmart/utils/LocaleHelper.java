@@ -12,6 +12,9 @@ import java.util.Locale;
 public class LocaleHelper {
 
     public static Context setLocale(Context context, String language) {
+        if (language == null || language.trim().isEmpty()) {
+            language = Constants.LANG_ENGLISH;
+        }
         persistLanguage(context, language);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return updateResources(context, language);
@@ -20,8 +23,10 @@ public class LocaleHelper {
     }
 
     private static void persistLanguage(Context context, String language) {
-        SessionManager sessionManager = new SessionManager(context);
-        sessionManager.setLanguage(language);
+        try {
+            SessionManager sessionManager = new SessionManager(context);
+            sessionManager.setLanguage(language);
+        } catch (Exception ignored) {}
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -34,6 +39,7 @@ public class LocaleHelper {
         LocaleList localeList = new LocaleList(locale);
         LocaleList.setDefault(localeList);
         configuration.setLocales(localeList);
+        configuration.setLayoutDirection(locale);
 
         try {
             context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
@@ -50,6 +56,9 @@ public class LocaleHelper {
         Resources resources = context.getResources();
         Configuration configuration = resources.getConfiguration();
         configuration.locale = locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            configuration.setLayoutDirection(locale);
+        }
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
 
         return context;

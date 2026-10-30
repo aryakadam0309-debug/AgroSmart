@@ -27,7 +27,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Today, 10:30 AM"
+                android:text="@string/recent_label"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
 
@@ -41,7 +41,7 @@
                 android:paddingTop="3dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
-                android:text="MODERATE"
+                android:text="@string/iot_status_moderate"
                 android:textColor="@color/forest_green_dark"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Moisture"
+                    android:text="@string/iot_soil_moisture"
                     android:textColor="@color/text_muted"
                     android:textSize="11sp" />
 
@@ -96,7 +96,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Temperature"
+                    android:text="@string/temperature_label"
                     android:textColor="@color/text_muted"
                     android:textSize="11sp" />
 
@@ -127,7 +127,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Humidity"
+                    android:text="@string/humidity_label"
                     android:textColor="@color/text_muted"
                     android:textSize="11sp" />
 

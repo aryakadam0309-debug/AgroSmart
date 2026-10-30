@@ -56,7 +56,7 @@
                 android:paddingTop="4dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="4dp"
-                android:text="Financial Support"
+                android:text="@string/chip_financial"
                 android:textColor="@color/forest_green_dark"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -71,7 +71,7 @@
                 android:paddingTop="4dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="4dp"
-                android:text="CENTRAL GOVT"
+                android:text="@string/scheme_level_central"
                 android:textColor="#0288D1"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -171,7 +171,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="🎯 Eligibility Evaluation"
+                            android:text="@string/eligibility_eval_heading"
                             android:textColor="@color/text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -186,7 +186,7 @@
                             android:paddingTop="4dp"
                             android:paddingEnd="10dp"
                             android:paddingBottom="4dp"
-                            android:text="✅ Likely Eligible"
+                            android:text="@string/eligibility_likely"
                             android:textColor="#2E7D32"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -198,7 +198,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:lineSpacingExtra="3dp"
-                        android:text="All official criteria are satisfied based on your current farmer profile."
+                        android:text="@string/scheme_likely_sub"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -217,7 +217,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="✏️ Update Profile &amp; Re-check"
+                        android:text="@string/recheck_eligibility"
                         android:textSize="12sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -238,7 +238,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🎁 Scheme Benefits &amp; Subsidies"
+                        android:text="@string/scheme_benefits"
                         android:textColor="@color/forest_green_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -271,7 +271,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📋 Who Can Apply (Official Rules)"
+                        android:text="@string/scheme_eligibility"
                         android:textColor="@color/deep_teal"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -304,7 +304,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📑 Required Documents"
+                        android:text="@string/required_documents_label"
                         android:textColor="@color/earth_brown"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -337,7 +337,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📝 How to Apply (Step-by-Step)"
+                        android:text="@string/how_to_apply_label"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -379,7 +379,7 @@
                 style="@style/Widget.AgroSmart.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Apply on Official Website 🌐" />
+                android:text="@string/scheme_apply" />
 
             <!-- Closed Application Disclaimer View (Visible only when application is closed) -->
             <TextView
@@ -388,7 +388,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="🔒 Applications for this scheme are currently closed by the official authority."
+                android:text="@string/scheme_closed_notice"
                 android:textColor="#C62828"
                 android:textSize="12sp"
                 android:textStyle="bold"

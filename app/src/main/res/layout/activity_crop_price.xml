@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@null"
-                android:hint="Search crop (e.g. Wheat, Soybean, Mandi)..."
+                android:hint="@string/search_crop_price_hint"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:textSize="14sp"

@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Weather &amp; Smart Advisory"
+                    android:text="@string/weather_title"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -61,7 +61,7 @@
                     android:backgroundTint="#FFCC00"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:text="⚡ Test Rain Alert"
+                    android:text="@string/btn_test_rain_alert"
                     android:textColor="#3E2723"
                     android:textSize="11sp"
                     android:textStyle="bold"
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:text="5-Day Weather Forecast: Comprehensive agro-climatic outlook."
+                    android:text="@string/five_day_summary_text"
                     android:textColor="@color/forest_green_dark"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -221,7 +221,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Humidity"
+                            android:text="@string/humidity_label"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -260,7 +260,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Wind Speed"
+                            android:text="@string/wind_speed_label"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -299,7 +299,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rain Chance"
+                            android:text="@string/rain_chance_label"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -337,7 +337,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pressure"
+                            android:text="@string/pressure_label"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp" />
                     </LinearLayout>
@@ -382,7 +382,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Advisory Update Detected"
+                            android:text="@string/advisory_update_detected"
                             android:textColor="#BF360C"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -397,7 +397,7 @@
                             android:paddingTop="3dp"
                             android:paddingEnd="8dp"
                             android:paddingBottom="3dp"
-                            android:text="🔔 Alert Sent"
+                            android:text="@string/alert_sent_badge"
                             android:textColor="#E65100"
                             android:textSize="10sp"
                             android:textStyle="bold" />
@@ -423,7 +423,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="🌾 Harvesting Activity"
+                                android:text="@string/harvesting_activity"
                                 android:textColor="@color/text_primary"
                                 android:textSize="13sp"
                                 android:textStyle="bold" />
@@ -487,7 +487,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:text="🌱 Smart Farming Advisories (Sowing • Spraying • Harvesting)"
+                android:text="@string/smart_advisories_heading"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -507,7 +507,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="10dp"
-                android:text="📅 5-Day Farm Weather Forecast"
+                android:text="@string/five_day_forecast_heading"
                 android:textColor="@color/text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />

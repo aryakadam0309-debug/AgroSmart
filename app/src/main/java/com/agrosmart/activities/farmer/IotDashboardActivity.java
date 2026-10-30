@@ -102,12 +102,12 @@ public class IotDashboardActivity extends BaseActivity {
             boolean online = Boolean.TRUE.equals(isOnline);
             if (online) {
                 binding.viewStatusDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
-                binding.tvConnectionStatus.setText("Station Online (ESP32 Live)");
-                binding.tvLastSeen.setText("Last sync: Live");
+                binding.tvConnectionStatus.setText(getString(R.string.iot_station_online));
+                binding.tvLastSeen.setText(getString(R.string.iot_last_sync_now));
                 binding.cardAlert.setVisibility(View.GONE);
             } else {
                 binding.viewStatusDot.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E53935")));
-                binding.tvConnectionStatus.setText("Hardware Offline (Waiting for ESP32)");
+                binding.tvConnectionStatus.setText(getString(R.string.iot_station_offline));
                 SensorReading last = viewModel.getLatestReading().getValue();
                 if (last != null && last.getRecordedAt() != null) {
                     binding.tvLastSeen.setText("Last Recorded: " + last.getRecordedAt());
