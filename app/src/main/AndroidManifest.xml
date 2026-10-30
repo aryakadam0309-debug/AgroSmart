@@ -114,6 +114,20 @@
         <activity android:name=".activities.farmer.OrderSuccessActivity" android:exported="false" />
         <activity android:name=".activities.farmer.NotificationsActivity" android:exported="false" />
 
+        <!-- Tractor & Farm Equipment Rental Activities -->
+        <activity
+            android:name=".activities.farmer.TractorListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.farmer.BookTractorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.farmer.AddTractorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.farmer.MyBookingsActivity"
+            android:exported="false" />
+
         <!-- IoT Smart Farming & Irrigation Module Activities -->
         <activity
             android:name=".activities.farmer.IotDashboardActivity"
@@ -166,3 +180,4 @@
     </application>
 
 </manifest>
+

@@ -46,6 +46,7 @@ public class HomeFragment extends Fragment {
         // Navigation click listeners
         binding.cardWeather.setOnClickListener(v -> openFeature("Weather Forecast", "com.agrosmart.activities.farmer.WeatherActivity"));
         binding.cardIotSmartFarming.setOnClickListener(v -> openFeature("IoT Smart Farming", "com.agrosmart.activities.farmer.IotDashboardActivity"));
+        binding.cardTractorRental.setOnClickListener(v -> openFeature("Tractor Rental", "com.agrosmart.activities.farmer.TractorListActivity"));
         binding.cardCropPrices.setOnClickListener(v -> openFeature("Crop Prices", "com.agrosmart.activities.farmer.CropPriceActivity"));
         binding.cardSchemes.setOnClickListener(v -> openFeature("Govt Schemes", "com.agrosmart.activities.farmer.SchemeActivity"));
         binding.cardCropGuide.setOnClickListener(v -> openFeature("Crop Guide", "com.agrosmart.activities.farmer.CropGuideActivity"));
@@ -127,3 +128,4 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 }
+

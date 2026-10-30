@@ -29,6 +29,7 @@ public class ServicesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.cardIotService.setOnClickListener(v -> openTarget("IoT Smart Farming", "com.agrosmart.activities.farmer.IotDashboardActivity"));
+        binding.cardTractorRentalService.setOnClickListener(v -> openTarget("Tractor & Equipment Rental", "com.agrosmart.activities.farmer.TractorListActivity"));
         binding.cardFarmExpensesService.setOnClickListener(v -> openTarget("Farm Expenses & Profitability", "com.agrosmart.activities.farmer.FarmExpensesActivity"));
         binding.cardCropRecommendationService.setOnClickListener(v -> openTarget("Crop Recommendations", "com.agrosmart.activities.farmer.CropRecommendationActivity"));
         binding.cardFertilizerService.setOnClickListener(v -> openTarget("Fertilizer Inventory", "com.agrosmart.activities.farmer.FertilizerInventoryActivity"));
@@ -52,3 +53,4 @@ public class ServicesFragment extends Fragment {
         binding = null;
     }
 }
+
