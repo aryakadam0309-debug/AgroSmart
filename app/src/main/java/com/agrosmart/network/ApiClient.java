@@ -16,9 +16,9 @@ public class ApiClient {
     private static final String WEATHER_BASE_URL = "https://api.openweathermap.org/data/2.5/";
     // Default USB reverse port-forwarding IP (http://127.0.0.1:8080/api/)
     // With automatic fallback to Wi-Fi / Hotspot LAN IP (10.10.189.191)
-    private static final String BACKEND_BASE_URL = "http://127.0.0.1:8080/api/";
-    private static final String WIFI_FALLBACK_HOST = "10.10.189.191";
-    private static volatile String preferredHost = "127.0.0.1";
+    private static final String BACKEND_BASE_URL = "http://10.10.211.230:8080/api/";
+    private static final String WIFI_FALLBACK_HOST = "127.0.0.1";
+    private static volatile String preferredHost = "10.10.211.230";
 
     private static Retrofit weatherRetrofit = null;
     private static Retrofit backendRetrofit = null;

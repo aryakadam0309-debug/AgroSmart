@@ -1,131 +1,160 @@
 # ==============================================================================
-# AGROSMART — ESP32 MICROPYTHON SENSOR & TELEMETRY SCRIPT (FOR THONNY IDE)
+# AGROSMART — ESP32 MICROPYTHON SENSOR STATION (NO RELAY / SENSORS ONLY)
 # ==============================================================================
-# Instructions:
-# 1. Connect ESP32 to Laptop via USB and open Thonny IDE.
-# 2. Select MicroPython (ESP32) interpreter in Thonny bottom-right.
-# 3. Paste this code into Thonny and click Run (F5).
+# Target Hardware: ESP32 DevKit V1
+# Sensors:
+#   - Capacitive Soil Moisture Sensor v1.2 (Analog on GPIO 34)
+#   - Optional DHT22 Temp & Humidity Sensor (Digital on GPIO 4)
+#
+# Steps in Thonny IDE:
+# 1. Connect ESP32 to laptop via USB.
+# 2. In Thonny: Run -> Select Interpreter -> MicroPython (ESP32).
+# 3. Enter your Wi-Fi SSID, Password, and your Laptop's LAN IP below.
+# 4. Click Run (F5).
 # ==============================================================================
 
 import machine
 import time
-import urequests
 import network
+import urequests
 import ujson
 
-# 1. Wi-Fi Configuration (Connects to your phone hotspot or home Wi-Fi)
-WIFI_SSID = "Arya"            # Replace with your phone's hotspot name if different
-WIFI_PASS = "12345678"        # Replace with your phone's hotspot password
+# ------------------------------------------------------------------------------
+# 1. NETWORK & BACKEND CONFIGURATION
+# ------------------------------------------------------------------------------
+WIFI_SSID = "Arya"            # <-- Replace with your phone hotspot or Wi-Fi name
+WIFI_PASS = "12345678"        # <-- Replace with your Wi-Fi password
 
-# 2. Backend Server URL (Your laptop IP on the phone's hotspot)
-BACKEND_URL = "http://10.10.115.182:8080/api/iot"
+LAPTOP_IP = "10.10.211.230"   # <-- Replace with your Laptop's IP (from 'ipconfig')
+BACKEND_URL = f"http://{LAPTOP_IP}:8080/api/iot"
+
 DEVICE_ID = "ESP32-AGRO-01"
+API_KEY = "AGRO-ESP32-SECURE-KEY-2026"
 
-# 3. Pin Definitions
-# Capacitive Soil Moisture Sensor on GPIO 34 (ADC1, works with Wi-Fi)
+# ------------------------------------------------------------------------------
+# 2. SENSOR SETUP
+# ------------------------------------------------------------------------------
+# Capacitive Soil Moisture Sensor on GPIO 34 (ADC1 channel, works with Wi-Fi)
 soil_pin = machine.Pin(34)
 adc = machine.ADC(soil_pin)
-# ATTN_11DB is CRITICAL: Allows reading the full 0 - 3.3V range from the sensor
-adc.atten(machine.ADC.ATTN_11DB)
-adc.width(machine.ADC.WIDTH_12BIT)  # 0 to 4095
+adc.atten(machine.ADC.ATTN_11DB)      # Full 0 - 3.3V range
+adc.width(machine.ADC.WIDTH_12BIT)    # 12-bit ADC (0 - 4095)
 
-# Relay Pin on GPIO 18 (Active LOW or HIGH depending on your relay)
-relay = machine.Pin(18, machine.Pin.OUT)
-relay.value(1) # Start with Relay OFF
+# Optional DHT22 (if attached on GPIO 4)
+try:
+    import dht
+    dht_sensor = dht.DHT22(machine.Pin(4))
+except Exception:
+    dht_sensor = None
 
-# 4. Sensor Calibration Values
-# In dry air: raw ADC is usually ~3200 - 3700
-# In water/wet soil: raw ADC is usually ~1300 - 1600
+# Calibration limits:
+# Raw ADC in dry air: ~3200 - 3500
+# Raw ADC in water / wet soil: ~1300 - 1500
 DRY_ADC = 3500
-WET_ADC = 1350
+WET_ADC = 1400
 
+# ------------------------------------------------------------------------------
+# 3. HELPER FUNCTIONS
+# ------------------------------------------------------------------------------
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     if not wlan.isconnected():
-        print(f"[WIFI] Connecting to {WIFI_SSID}...")
+        print(f"\n[WIFI] Connecting to '{WIFI_SSID}'...")
         wlan.connect(WIFI_SSID, WIFI_PASS)
-        timeout = 20
+        timeout = 25
         while not wlan.isconnected() and timeout > 0:
             time.sleep(0.5)
             timeout -= 1
+            print(".", end="")
+        print()
+
     if wlan.isconnected():
-        print(f"[WIFI] Connected! ESP32 IP: {wlan.ifconfig()[0]}")
+        ip = wlan.ifconfig()[0]
+        print(f"[WIFI] Connected! ESP32 IP: {ip}")
         return True
     else:
-        print("[WIFI] Connection failed. Operating in offline sensor test mode.")
+        print("[WIFI] Warning: Could not connect to Wi-Fi. Check SSID/Password.")
         return False
 
 def read_moisture():
-    # 15-sample average for high stability
+    # 15-sample average for rock-solid stability
     total = 0
     for _ in range(15):
         total += adc.read()
         time.sleep_ms(10)
     raw = total // 15
-    
-    # Calculate voltage (mV)
+
+    # Voltage calculation (mV)
     voltage_mv = (raw / 4095.0) * 3300.0
 
-    # Inverted capacitive calculation:
-    # When soil is WET, raw ADC is LOW. When soil is DRY, raw ADC is HIGH.
-    pct = ((DRY_ADC - raw) / (DRY_ADC - WET_ADC)) * 100.0
-    if pct < 0.0:
-        pct = 0.0
-    elif pct > 100.0:
-        pct = 100.0
+    # Inverted capacitive formula: higher ADC = dryer soil
+    moisture_pct = ((DRY_ADC - raw) / (DRY_ADC - WET_ADC)) * 100.0
+    moisture_pct = max(0.0, min(100.0, moisture_pct))
 
-    if pct < 35.0:
+    if moisture_pct < 30.0:
         status = "DRY"
-    elif pct <= 70.0:
+    elif moisture_pct <= 70.0:
         status = "MODERATE"
     else:
         status = "WET"
 
-    return raw, voltage_mv, pct, status
+    # Read DHT22 if connected, else use ambient defaults
+    temp_c = 28.5
+    humidity_pct = 60.0
+    if dht_sensor:
+        try:
+            dht_sensor.measure()
+            temp_c = round(dht_sensor.temperature(), 1)
+            humidity_pct = round(dht_sensor.humidity(), 1)
+        except Exception:
+            pass
 
-def send_telemetry(raw, pct, status):
+    return raw, voltage_mv, moisture_pct, status, temp_c, humidity_pct
+
+def send_telemetry(raw, pct, status, temp_c, humidity_pct):
     payload = {
         "deviceId": DEVICE_ID,
         "farmerId": 1,
         "soilMoisturePct": round(pct, 1),
         "soilMoistureRaw": raw,
         "moistureStatus": status,
-        "temperatureC": 28.5,
-        "humidityPct": 62.0,
+        "temperatureC": temp_c,
+        "humidityPct": humidity_pct,
         "sensorStatus": "VALID"
     }
-    
-    headers = {"Content-Type": "application/json"}
+
+    headers = {
+        "Content-Type": "application/json",
+        "X-Device-ApiKey": API_KEY
+    }
+
     try:
-        url = f"{BACKEND_URL}/reading"
-        response = urequests.post(url, data=ujson.dumps(payload), headers=headers)
-        if response.status_code == 200:
-            print(f"[SERVER ACK] Telemetry saved to MySQL database (HTTP 200)")
+        url = f"{BACKEND_URL}/readings"
+        res = urequests.post(url, data=ujson.dumps(payload), headers=headers)
+        if res.status_code in [200, 201]:
+            print(f"📡 [LIVE TELEMETRY] Moisture: {pct:.1f}% ({status}) | Raw ADC: {raw} | Temp: {temp_c}°C | Hum: {humidity_pct}%")
         else:
-            print(f"[SERVER] Response: {response.status_code}")
-        response.close()
+            print(f"[SERVER] Response: {res.status_code}")
+        res.close()
     except Exception as e:
         print(f"[SERVER ERR] Could not send to {BACKEND_URL}: {e}")
 
-# ==============================================================================
-# MAIN EXECUTION LOOP
-# ==============================================================================
+# ------------------------------------------------------------------------------
+# 4. MAIN LOOP
+# ------------------------------------------------------------------------------
 print("==================================================")
-print("  AGROSMART ESP32 MICROPYTHON MONITOR RUNNING     ")
+print("  🌱 AGROSMART SENSOR TELEMETRY STATION RUNNING   ")
 print("==================================================")
 
 connect_wifi()
 
 while True:
     try:
-        raw, mv, pct, status = read_moisture()
-        print(f"📊 [Moisture] Raw ADC: {raw:4d} | Voltage: {mv:6.1f} mV | Moisture: {pct:5.1f}% | Status: {status}")
-        
-        # Send live telemetry to laptop Spring Boot backend
-        send_telemetry(raw, pct, status)
-        
+        raw, mv, pct, status, temp_c, hum = read_moisture()
+        send_telemetry(raw, pct, status, temp_c, hum)
     except Exception as e:
-        print(f"Error in main loop: {e}")
-        
-    time.sleep(5)
+        print(f"[LOOP ERROR] {e}")
+
+    # Transmit reading every 4 seconds
+    time.sleep(4)

@@ -122,7 +122,7 @@ public class IotController {
     // ==========================================================
     // 2. SENSOR READINGS (ESP32 INGESTION & APP MONITORING)
     // ==========================================================
-    @PostMapping("/readings")
+    @PostMapping({"/readings", "/reading"})
     public ResponseEntity<?> submitReading(@RequestBody SensorReading reading,
                                            @RequestHeader(value = "X-Device-ApiKey", required = false) String apiKeyHeader) {
         if (reading.getDeviceId() == null || reading.getDeviceId().trim().isEmpty()) {
