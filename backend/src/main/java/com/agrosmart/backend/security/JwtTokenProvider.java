@@ -180,18 +180,16 @@ public class JwtTokenProvider {
             if (parts.length >= 2) {
                 byte[] decoded = Base64.getUrlDecoder().decode(parts[1]);
                 String json = new String(decoded, StandardCharsets.UTF_8);
-                // Simple regex or JSON parsing for key
-                String searchKey = "\"" + key + "\":\"";
-                int idx = json.indexOf(searchKey);
-                if (idx != -1) {
-                    int start = idx + searchKey.length();
-                    int end = json.indexOf("\"", start);
-                    if (end != -1) {
-                        return json.substring(start, end);
-                    }
+                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                        "\"" + java.util.regex.Pattern.quote(key) + "\"\\s*:\\s*\"?([^,\"}]+)\"?"
+                );
+                java.util.regex.Matcher matcher = pattern.matcher(json);
+                if (matcher.find()) {
+                    return matcher.group(1).trim();
                 }
             }
         } catch (Exception ignored) {}
         return null;
     }
 }
+
