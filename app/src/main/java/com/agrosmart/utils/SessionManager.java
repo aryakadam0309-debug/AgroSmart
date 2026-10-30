@@ -160,4 +160,28 @@ public class SessionManager {
         p.setAnnualIncome((double) pref.getFloat("profile_income", 120000.0f));
         return p;
     }
+
+    public void saveTractorSearchLocation(String areaName, double lat, double lon, boolean isGps) {
+        editor.putString("tractor_search_area", areaName);
+        editor.putFloat("tractor_search_lat", (float) lat);
+        editor.putFloat("tractor_search_lon", (float) lon);
+        editor.putBoolean("tractor_use_gps", isGps);
+        editor.apply();
+    }
+
+    public String getTractorSearchArea() {
+        return pref.getString("tractor_search_area", "Karad, Satara");
+    }
+
+    public double getTractorSearchLat() {
+        return pref.getFloat("tractor_search_lat", 17.2892f);
+    }
+
+    public double getTractorSearchLon() {
+        return pref.getFloat("tractor_search_lon", 74.1818f);
+    }
+
+    public boolean isTractorSearchUsingGps() {
+        return pref.getBoolean("tractor_use_gps", false);
+    }
 }

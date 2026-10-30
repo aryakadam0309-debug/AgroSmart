@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_warm_cream">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/forest_green_primary">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarTractors"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Tractor &amp; Farm Equipment Rental"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@android:drawable/ic_menu_revert"
+            app:navigationIconTint="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Top Actions Bar: View Bookings & Filters -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Area-Wise Tractor Search"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewMyBookings"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:text="My Bookings"
+                android:textSize="12sp"
+                app:cornerRadius="8dp"
+                app:strokeColor="@color/forest_green_primary"
+                android:textColor="@color/forest_green_primary" />
+        </LinearLayout>
+
+        <!-- Live GPS Location Card (Auto-detects live location and sorts nearest first) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/divider_line"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:id="@+id/layoutChangeLocation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LIVE GPS LOCATION • AUTO-SORTED"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/forest_green_primary" />
+
+                        <TextView
+                            android:id="@+id/tvSelectedLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📍 Detecting live location..."
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:id="@+id/tvLiveLocationCoords"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🟢 Nearest tractors sorted first"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_muted" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRefreshGps"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="6dp"
+                        android:text="🔄 Refresh GPS"
+                        android:textSize="11sp"
+                        app:cornerRadius="8dp" />
+
+                    <!-- Invisible legacy button for ViewBinding compatibility -->
+                    <View
+                        android:id="@+id/btnOpenMapPicker"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSelectDate"
+                        style="@style/Widget.Material3.Chip.Assist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📅 Any Date"
+                        android:textSize="12sp"
+                        app:chipIcon="@android:drawable/ic_menu_my_calendar" />
+
+                    <TextView
+                        android:id="@+id/tvClearDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Clear Date"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_muted"
+                        android:visibility="gone"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tvRadiusBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_category_badge"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:text="Nearest First"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/deep_teal" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Scope Toggle: Under 20 km vs All Maharashtra -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginTop="6dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupScope"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipNearbyOnly"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="📍 Under 20 km Radius" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAllTractors"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌍 All Available Machines" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <!-- Horizontal Brand Filter Chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginTop="6dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAllBrands"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="All Brands" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMahindra"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mahindra" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipJohnDeere"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="John Deere" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSwaraj"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Swaraj" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipSonalika"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sonalika" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEicher"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Eicher" />
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="6dp">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshTractors"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTractors"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="80dp" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚜"
+                    android:textSize="48sp" />
+
+                <TextView
+                    android:id="@+id/tvEmptyTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="No Tractors Found Within 20 km"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
+
+                <TextView
+                    android:id="@+id/tvEmptyMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="No approved tractors are available in your immediate 20 km vicinity for this date. Try changing the location or expanding the search."
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"
+                    android:gravity="center" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEmptyChangeLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="🔄 Refresh Live GPS"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/forest_green_primary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSearchAllMaharashtra"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="View All Across Maharashtra"
+                    android:textColor="@color/forest_green_primary"
+                    app:strokeColor="@color/forest_green_primary" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabAddTractor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:text="List My Equipment"
+        app:icon="@android:drawable/ic_input_add"
+        android:textColor="@color/white"
+        app:iconTint="@color/white"
+        app:backgroundTint="@color/forest_green_primary" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

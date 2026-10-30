@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_warm_cream">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/forest_green_primary">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarMyBookings"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="My Tractor Bookings"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@android:drawable/ic_menu_revert"
+            app:navigationIconTint="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshBookings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBookings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <!-- Loading Spinner -->
+        <ProgressBar
+            android:id="@+id/pbLoadingBookings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/forest_green_primary"
+            android:visibility="visible" />
+
+        <!-- Rich Empty State -->
+        <LinearLayout
+            android:id="@+id/layoutEmptyBookings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvEmptyIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚜"
+                android:textSize="56sp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tvEmptyTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="No Tractor Bookings Yet"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tvEmptyMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="You haven't reserved any tractors yet.\nFind available machinery near your farm and reserve directly with local fleet owners."
+                android:textSize="13sp"
+                android:textColor="@color/text_muted"
+                android:gravity="center" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBrowseTractors"
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:layout_marginTop="20dp"
+                android:text="🚜 Browse Nearby Tractors"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/forest_green_primary" />
+        </LinearLayout>
+
+        <!-- Legacy fallback view if referenced -->
+        <TextView
+            android:id="@+id/tvEmptyBookings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.agrosmart.repository;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
@@ -11,9 +12,13 @@ import com.agrosmart.database.AgroSmartDbHelper;
 import com.agrosmart.models.Tractor;
 import com.agrosmart.models.TractorBooking;
 import com.agrosmart.network.ApiClient;
+import com.agrosmart.utils.SessionManager;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,252 +26,572 @@ import retrofit2.Response;
 
 public class TractorRepository {
 
-    private static final String TAG = "TractorRepo";
-    private static TractorRepository instance;
-    private final List<Tractor> tractorFleet = new ArrayList<>();
-    private final List<TractorBooking> bookings = new ArrayList<>();
+    private static final String TAG = "TractorRepository";
+    private final AgroSmartDbHelper dbHelper;
+    private final SessionManager sessionManager;
+    private final MutableLiveData<List<Tractor>> tractorsLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<TractorBooking>> bookingsLiveData = new MutableLiveData<>();
-    private AgroSmartDbHelper dbHelper;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public static synchronized TractorRepository getInstance(Context context) {
-        if (instance == null) {
-            instance = new TractorRepository(context != null ? context.getApplicationContext() : null);
-        } else if (instance.dbHelper == null && context != null) {
-            instance.initDb(context.getApplicationContext());
-        }
-        return instance;
-    }
-
-    public static synchronized TractorRepository getInstance() {
-        if (instance == null) {
-            instance = new TractorRepository(null);
-        }
-        return instance;
-    }
-
-    public TractorRepository() {
-        this(null);
+    public interface RepositoryCallback<T> {
+        void onSuccess(T result);
+        void onError(String message, int statusCode);
     }
 
     public TractorRepository(Context context) {
-        initTractors();
-        if (context != null) {
-            initDb(context);
-        }
+        this.dbHelper = AgroSmartDbHelper.getInstance(context);
+        this.sessionManager = new SessionManager(context);
     }
 
-    public synchronized void initDb(Context context) {
-        if (context != null) {
-            this.dbHelper = AgroSmartDbHelper.getInstance(context);
-            List<Tractor> dbTractors = dbHelper.getAllTractors("All Brands");
-            if (dbTractors != null && !dbTractors.isEmpty()) {
-                tractorFleet.clear();
-                tractorFleet.addAll(dbTractors);
-            }
-            List<TractorBooking> dbBookings = dbHelper.getAllBookings();
-            if (dbBookings != null && !dbBookings.isEmpty()) {
-                bookings.clear();
-                bookings.addAll(dbBookings);
-                dispatchBookings();
-            }
-        }
+    public LiveData<List<Tractor>> getTractorsLiveData() {
+        return tractorsLiveData;
     }
 
-    private void initTractors() {
-        tractorFleet.clear();
-        tractorFleet.add(new Tractor(
-                "TR01", "Mahindra 575 DI XP Plus", "Mahindra", "47 HP",
-                800.0, 5800.0, "Rotavator, 9-Tyne Cultivator, Trolley",
-                "Ramesh Patil", "9822334455", "Nashik, Maharashtra",
-                true, 4.9f
-        ));
-        tractorFleet.add(new Tractor(
-                "TR02", "John Deere 5050 D GearPro", "John Deere", "50 HP",
-                900.0, 6500.0, "Heavy-Duty Rotavator, MB Plough",
-                "Suresh Jagtap", "9822445566", "Shirur, Pune",
-                true, 4.8f
-        ));
-        tractorFleet.add(new Tractor(
-                "TR03", "Swaraj 855 FE 4WD", "Swaraj", "52 HP",
-                950.0, 6800.0, "Laser Land Leveler, Disk Harrow",
-                "Vikas Deshmukh", "9822556677", "Daund, Pune",
-                true, 4.9f
-        ));
-        tractorFleet.add(new Tractor(
-                "TR04", "Sonalika DI 745 III Sikander", "Sonalika", "50 HP",
-                850.0, 6000.0, "Cultivator, Seed Drill, Trolley",
-                "Ganesh Shinde", "9822667788", "Niphad, Nashik",
-                true, 4.7f
-        ));
-        tractorFleet.add(new Tractor(
-                "TR05", "Eicher 380 Super DI", "Eicher", "40 HP",
-                700.0, 5000.0, "Rigid Cultivator, Trolley",
-                "Baburao Kadam", "9822778899", "Dindori, Nashik",
-                true, 4.6f
-        ));
+    public LiveData<List<TractorBooking>> getBookingsLiveData() {
+        return bookingsLiveData;
     }
 
-    private void dispatchBookings() {
-        try {
-            if (Looper.getMainLooper() != null && Looper.myLooper() == Looper.getMainLooper()) {
-                bookingsLiveData.setValue(new ArrayList<>(bookings));
-            } else {
-                bookingsLiveData.postValue(new ArrayList<>(bookings));
-            }
-        } catch (Exception ignored) {
-            // Safe fallback in JVM unit test environments where Android Looper is unmocked
-        }
-    }
+    public void loadTractors(String brand) {
+        // Load local SQLite tractors first
+        executor.execute(() -> {
+            List<Tractor> local = dbHelper.getAllTractors(brand);
+            mainHandler.post(() -> tractorsLiveData.setValue(local));
+        });
 
-    public synchronized void addTractor(Tractor tractor) {
-        if (tractor != null) {
-            tractorFleet.add(0, tractor);
-            if (dbHelper != null) {
-                dbHelper.addTractor(tractor);
-            }
-        }
-    }
-
-    public LiveData<List<Tractor>> getTractors(String brand) {
-        MutableLiveData<List<Tractor>> liveData = new MutableLiveData<>();
-        List<Tractor> initial = new ArrayList<>();
-        for (Tractor t : tractorFleet) {
-            if (brand == null || brand.equals("All Brands") || t.getBrand().equalsIgnoreCase(brand)) {
-                initial.add(t);
-            }
-        }
-        liveData.setValue(initial);
-
-        // Fetch live from MySQL backend
-        ApiClient.getInstance().getApi().getTractors(brand != null && !brand.equals("All Brands") ? brand : null)
+        // Sync from Spring Boot backend
+        ApiClient.getInstance().getApi().getTractors(brand)
                 .enqueue(new Callback<List<Tractor>>() {
                     @Override
                     public void onResponse(Call<List<Tractor>> call, Response<List<Tractor>> response) {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                            synchronized (TractorRepository.this) {
-                                tractorFleet.clear();
-                                tractorFleet.addAll(response.body());
-                                if (dbHelper != null) {
-                                    for (Tractor tr : response.body()) {
-                                        dbHelper.addTractor(tr);
-                                    }
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<Tractor> remote = response.body();
+                            tractorsLiveData.postValue(remote);
+                            executor.execute(() -> {
+                                for (Tractor t : remote) {
+                                    dbHelper.addTractor(t);
                                 }
-                            }
-                            liveData.postValue(response.body());
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure(Call<List<Tractor>> call, Throwable t) {
-                        Log.w(TAG, "Backend unreachable, using cached tractor fleet: " + t.getMessage());
-                    }
-                });
-
-        return liveData;
-    }
-
-    public LiveData<List<TractorBooking>> getBookings() {
-        return bookingsLiveData;
-    }
-
-    public void loadFarmerBookings(String phone) {
-        ApiClient.getInstance().getApi().getFarmerBookings(phone)
-                .enqueue(new Callback<List<TractorBooking>>() {
-                    @Override
-                    public void onResponse(Call<List<TractorBooking>> call, Response<List<TractorBooking>> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            synchronized (TractorRepository.this) {
-                                bookings.clear();
-                                bookings.addAll(response.body());
-                                if (dbHelper != null) {
-                                    for (TractorBooking tb : response.body()) {
-                                        dbHelper.addBooking(tb);
-                                    }
-                                }
-                            }
-                            dispatchBookings();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<TractorBooking>> call, Throwable t) {
-                        Log.w(TAG, "Could not sync bookings with backend: " + t.getMessage());
+                        Log.w(TAG, "Backend unreachable, using SQLite local tractor catalog: " + t.getMessage());
                     }
                 });
     }
 
-    public synchronized boolean hasBookingConflict(String tractorId, String bookingDate) {
-        if (tractorId == null || bookingDate == null) return false;
-        for (TractorBooking b : bookings) {
-            if (b.getTractorId().equalsIgnoreCase(tractorId) &&
-                    b.getBookingDate().equalsIgnoreCase(bookingDate) &&
-                    !"CANCELLED".equalsIgnoreCase(b.getStatus())) {
-                return true;
-            }
+    public void confirmBooking(TractorBooking booking, RepositoryCallback<TractorBooking> callback) {
+        String phone = sessionManager.getUserPhone();
+        String name = sessionManager.getUserName();
+        if (phone == null || phone.trim().isEmpty()) {
+            phone = "9876543210";
         }
-        return false;
-    }
-
-    public synchronized boolean addBooking(TractorBooking booking) {
-        if (booking == null) return false;
-        if (booking.getDurationHours() <= 0) return false;
-
-        // Prevent overlapping bookings for the same tractor on the same date
-        if (hasBookingConflict(booking.getTractorId(), booking.getBookingDate())) {
-            return false;
+        if (name == null || name.trim().isEmpty()) {
+            name = "Farmer";
         }
+        booking.setFarmerPhone(phone);
+        booking.setFarmerName(name);
+        booking.setStatus("CONFIRMED");
+        booking.setPaymentMethod("DIRECT_WITH_OWNER");
+        booking.setPaymentStatus("DIRECT_WITH_OWNER");
 
-        bookings.add(0, booking);
-        if (dbHelper != null) {
-            dbHelper.addBooking(booking);
-        }
-        dispatchBookings();
-
-        // Send to backend MySQL
         ApiClient.getInstance().getApi().createBooking(booking)
                 .enqueue(new Callback<TractorBooking>() {
                     @Override
                     public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.i(TAG, "Booking persisted to MySQL successfully: " + response.body().getId());
+                            TractorBooking created = response.body();
+                            executor.execute(() -> dbHelper.addBooking(created));
+                            if (callback != null) callback.onSuccess(created);
                         } else {
-                            Log.w(TAG, "Backend returned non-200 for booking: " + response.code());
+                            String err = "Sorry, this tractor has just been booked for your selected dates. Please refresh availability or choose another tractor or date range.";
+                            try {
+                                if (response.errorBody() != null) {
+                                    String raw = response.errorBody().string();
+                                    if (raw.contains("Sorry, this tractor has just been booked") || raw.contains("error")) {
+                                        err = raw;
+                                    }
+                                }
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<TractorBooking> call, Throwable t) {
-                        Log.w(TAG, "Saved booking locally, offline sync will retry: " + t.getMessage());
+                        Log.w(TAG, "Backend unreachable for booking confirmation, caching locally: " + t.getMessage());
+                        if (booking.getId() == null || booking.getId().isEmpty()) {
+                            booking.setId("TB-LOCAL-" + System.currentTimeMillis());
+                        }
+                        executor.execute(() -> dbHelper.addBooking(booking));
+                        mainHandler.post(() -> {
+                            if (callback != null) callback.onSuccess(booking);
+                        });
                     }
                 });
-
-        return true;
     }
 
-    public synchronized void cancelBooking(String bookingId) {
-        for (TractorBooking b : bookings) {
-            if (b.getId().equals(bookingId)) {
-                b.setStatus("CANCELLED");
-                if (dbHelper != null) {
-                    dbHelper.updateBookingStatus(bookingId, "CANCELLED");
-                }
-                break;
-            }
-        }
-        dispatchBookings();
+    public void holdAndCreateBooking(TractorBooking booking, RepositoryCallback<TractorBooking> callback) {
+        String phone = sessionManager.getUserPhone();
+        String name = sessionManager.getUserName();
+        booking.setFarmerPhone(phone);
+        booking.setFarmerName(name);
 
-        // Send cancel status to backend MySQL
-        ApiClient.getInstance().getApi().updateBookingStatus(bookingId, "CANCELLED")
+        ApiClient.getInstance().getApi().createBooking(booking)
                 .enqueue(new Callback<TractorBooking>() {
                     @Override
                     public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
-                        Log.i(TAG, "Booking cancellation persisted to MySQL");
+                        if (response.isSuccessful() && response.body() != null) {
+                            TractorBooking created = response.body();
+                            executor.execute(() -> dbHelper.addBooking(created));
+                            if (callback != null) callback.onSuccess(created);
+                        } else {
+                            String err = "Date conflict: Tractor already reserved on this date.";
+                            try {
+                                if (response.errorBody() != null) err = response.errorBody().string();
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<TractorBooking> call, Throwable t) {
-                        Log.w(TAG, "Failed to update booking status on backend: " + t.getMessage());
+                        Log.w(TAG, "Backend unreachable for booking hold, falling back to local SQLite: " + t.getMessage());
+                        executor.execute(() -> dbHelper.addBooking(booking));
+                        mainHandler.post(() -> {
+                            if (callback != null) callback.onSuccess(booking);
+                        });
                     }
                 });
+    }
+
+    public void createPaymentOrder(String bookingId, RepositoryCallback<Map<String, Object>> callback) {
+        String phone = sessionManager.getUserPhone();
+        Map<String, String> payload = new HashMap<>();
+        payload.put("bookingId", bookingId);
+        payload.put("phone", phone);
+
+        ApiClient.getInstance().getApi().createTractorPaymentOrder(payload)
+                .enqueue(new Callback<Map<String, Object>>() {
+                    @Override
+                    public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (callback != null) callback.onSuccess(response.body());
+                        } else {
+                            String err = "Unable to create payment order.";
+                            try {
+                                if (response.errorBody() != null) err = response.errorBody().string();
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                        Log.w(TAG, "Backend unreachable for payment order, creating local order details: " + t.getMessage());
+                        Map<String, Object> fallbackOrder = new HashMap<>();
+                        fallbackOrder.put("bookingId", bookingId);
+                        fallbackOrder.put("orderId", "order_local_" + System.currentTimeMillis());
+                        fallbackOrder.put("amount", 210000L);
+                        fallbackOrder.put("currency", "INR");
+                        fallbackOrder.put("keyId", "rzp_test_AgroSmartDemo123");
+                        mainHandler.post(() -> {
+                            if (callback != null) callback.onSuccess(fallbackOrder);
+                        });
+                    }
+                });
+    }
+
+    public void verifyPayment(String bookingId, String paymentId, String orderId, String signature,
+                              RepositoryCallback<TractorBooking> callback) {
+        String phone = sessionManager.getUserPhone();
+        Map<String, String> payload = new HashMap<>();
+        payload.put("bookingId", bookingId);
+        payload.put("paymentId", paymentId);
+        payload.put("orderId", orderId);
+        payload.put("signature", signature);
+        payload.put("phone", phone);
+
+        ApiClient.getInstance().getApi().verifyTractorPayment(payload)
+                .enqueue(new Callback<TractorBooking>() {
+                    @Override
+                    public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            TractorBooking confirmed = response.body();
+                            executor.execute(() -> dbHelper.addBooking(confirmed));
+                            if (callback != null) callback.onSuccess(confirmed);
+                        } else {
+                            String err = "Payment verification failed.";
+                            try {
+                                if (response.errorBody() != null) err = response.errorBody().string();
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TractorBooking> call, Throwable t) {
+                        Log.w(TAG, "Backend unreachable for payment verification, updating local booking: " + t.getMessage());
+                        executor.execute(() -> {
+                            dbHelper.updateBookingStatus(bookingId, "CONFIRMED");
+                            List<TractorBooking> all = dbHelper.getAllBookings();
+                            TractorBooking target = null;
+                            for (TractorBooking b : all) {
+                                if (bookingId.equalsIgnoreCase(b.getId())) {
+                                    target = b;
+                                    break;
+                                }
+                            }
+                            if (target == null) {
+                                target = new TractorBooking();
+                                target.setId(bookingId);
+                                target.setStatus("CONFIRMED");
+                            }
+                            final TractorBooking confirmed = target;
+                            mainHandler.post(() -> {
+                                if (callback != null) callback.onSuccess(confirmed);
+                            });
+                        });
+                    }
+                });
+    }
+
+    public void loadFarmerBookings() {
+        String phone = sessionManager.getUserPhone();
+        executor.execute(() -> {
+            List<TractorBooking> local = dbHelper.getAllBookings();
+            mainHandler.post(() -> bookingsLiveData.setValue(local));
+        });
+
+        ApiClient.getInstance().getApi().getFarmerBookings(phone)
+                .enqueue(new Callback<List<TractorBooking>>() {
+                    @Override
+                    public void onResponse(Call<List<TractorBooking>> call, Response<List<TractorBooking>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<TractorBooking> remote = response.body();
+                            bookingsLiveData.postValue(remote);
+                            executor.execute(() -> {
+                                for (TractorBooking b : remote) {
+                                    dbHelper.addBooking(b);
+                                }
+                            });
+                        } else {
+                            executor.execute(() -> {
+                                List<TractorBooking> local = dbHelper.getAllBookings();
+                                mainHandler.post(() -> bookingsLiveData.setValue(local));
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<TractorBooking>> call, Throwable t) {
+                        Log.w(TAG, "Backend unreachable for bookings: " + t.getMessage());
+                        executor.execute(() -> {
+                            List<TractorBooking> local = dbHelper.getAllBookings();
+                            mainHandler.post(() -> bookingsLiveData.setValue(local));
+                        });
+                    }
+                });
+    }
+
+    public void submitUpiPayment(String bookingId, String upiTxnRef, String paymentMethod, RepositoryCallback<TractorBooking> callback) {
+        String phone = sessionManager.getUserPhone();
+        Map<String, String> payload = new HashMap<>();
+        payload.put("upiTransactionRef", upiTxnRef);
+        payload.put("paymentMethod", paymentMethod != null ? paymentMethod : "DIRECT_UPI");
+        payload.put("phone", phone);
+
+        ApiClient.getInstance().getApi().submitUpiPayment(bookingId, payload)
+                .enqueue(new Callback<TractorBooking>() {
+                    @Override
+                    public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            TractorBooking updated = response.body();
+                            executor.execute(() -> {
+                                dbHelper.addBooking(updated);
+                                dbHelper.updateBookingStatus(bookingId, "AWAITING_VERIFICATION");
+                            });
+                            loadFarmerBookings();
+                            if (callback != null) callback.onSuccess(updated);
+                        } else {
+                            String err = "Submission failed";
+                            try {
+                                if (response.errorBody() != null) err = response.errorBody().string();
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TractorBooking> call, Throwable t) {
+                        executor.execute(() -> {
+                            TractorBooking local = null;
+                            for (TractorBooking b : dbHelper.getAllBookings()) {
+                                if (bookingId.equalsIgnoreCase(b.getId())) {
+                                    local = b;
+                                    break;
+                                }
+                            }
+                            if (local != null) {
+                                local.setUpiTransactionRef(upiTxnRef);
+                                local.setPaymentMethod(paymentMethod);
+                                local.setStatus("AWAITING_VERIFICATION");
+                                local.setPaymentStatus("PAYMENT_SUBMITTED");
+                                dbHelper.addBooking(local);
+                            }
+                            final TractorBooking res = local;
+                            mainHandler.post(() -> {
+                                if (callback != null) callback.onSuccess(res);
+                            });
+                        });
+                    }
+                });
+    }
+
+    public void verifyDirectPayment(String bookingId, boolean approved, String notes, RepositoryCallback<TractorBooking> callback) {
+        String phone = sessionManager.getUserPhone();
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("approved", approved);
+        payload.put("notes", notes != null ? notes : "");
+        payload.put("phone", phone);
+
+        ApiClient.getInstance().getApi().verifyDirectPayment(bookingId, payload)
+                .enqueue(new Callback<TractorBooking>() {
+                    @Override
+                    public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            TractorBooking updated = response.body();
+                            executor.execute(() -> {
+                                dbHelper.addBooking(updated);
+                                dbHelper.updateBookingStatus(bookingId, updated.getStatus());
+                            });
+                            if (callback != null) callback.onSuccess(updated);
+                        } else {
+                            String err = "Verification failed";
+                            try {
+                                if (response.errorBody() != null) err = response.errorBody().string();
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TractorBooking> call, Throwable t) {
+                        if (callback != null) callback.onError("Network error: " + t.getMessage(), 500);
+                    }
+                });
+    }
+
+    public void cancelBooking(String bookingId, String reason, RepositoryCallback<TractorBooking> callback) {
+        String phone = sessionManager.getUserPhone();
+        Map<String, String> payload = new HashMap<>();
+        payload.put("reason", reason);
+        payload.put("phone", phone);
+
+        ApiClient.getInstance().getApi().cancelBooking(bookingId, payload)
+                .enqueue(new Callback<TractorBooking>() {
+                    @Override
+                    public void onResponse(Call<TractorBooking> call, Response<TractorBooking> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            TractorBooking cancelled = response.body();
+                            executor.execute(() -> dbHelper.updateBookingStatus(bookingId, "CANCELLED"));
+                            loadFarmerBookings();
+                            if (callback != null) callback.onSuccess(cancelled);
+                        } else {
+                            String err = "Cancellation failed.";
+                            try {
+                                if (response.errorBody() != null) err = response.errorBody().string();
+                            } catch (Exception ignored) {}
+                            if (callback != null) callback.onError(err, response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TractorBooking> call, Throwable t) {
+                        if (callback != null) callback.onError("Network error: " + t.getMessage(), 500);
+                    }
+                });
+    }
+
+    public void registerTractor(Tractor tractor, RepositoryCallback<Tractor> callback) {
+        executor.execute(() -> dbHelper.addTractor(tractor));
+        ApiClient.getInstance().getApi().addTractor(tractor)
+                .enqueue(new Callback<Tractor>() {
+                    @Override
+                    public void onResponse(Call<Tractor> call, Response<Tractor> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Tractor saved = response.body();
+                            executor.execute(() -> dbHelper.addTractor(saved));
+                            if (callback != null) callback.onSuccess(saved);
+                        } else {
+                            if (callback != null) callback.onSuccess(tractor);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Tractor> call, Throwable t) {
+                        if (callback != null) callback.onSuccess(tractor);
+                    }
+                });
+    }
+
+    public void loadAllTractorsAdmin(RepositoryCallback<List<Tractor>> callback) {
+        ApiClient.getInstance().getApi().getAllTractorsAdmin()
+                .enqueue(new Callback<List<Tractor>>() {
+                    @Override
+                    public void onResponse(Call<List<Tractor>> call, Response<List<Tractor>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (callback != null) callback.onSuccess(response.body());
+                        } else {
+                            executor.execute(() -> {
+                                List<Tractor> local = dbHelper.getAllTractors(null);
+                                mainHandler.post(() -> {
+                                    if (callback != null) callback.onSuccess(local);
+                                });
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Tractor>> call, Throwable t) {
+                        executor.execute(() -> {
+                            List<Tractor> local = dbHelper.getAllTractors(null);
+                            mainHandler.post(() -> {
+                                if (callback != null) callback.onSuccess(local);
+                            });
+                        });
+                    }
+                });
+    }
+
+    public void setTractorApproval(String tractorId, boolean approve, RepositoryCallback<Tractor> callback) {
+        ApiClient.getInstance().getApi().approveTractor(tractorId, approve)
+                .enqueue(new Callback<Tractor>() {
+                    @Override
+                    public void onResponse(Call<Tractor> call, Response<Tractor> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Tractor updated = response.body();
+                            executor.execute(() -> dbHelper.addTractor(updated));
+                            if (callback != null) callback.onSuccess(updated);
+                        } else {
+                            if (callback != null) callback.onError("Failed to update status", response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Tractor> call, Throwable t) {
+                        if (callback != null) callback.onError(t.getMessage(), 500);
+                    }
+                });
+    }
+
+    public void searchNearbyTractors(double lat, double lon, Double radiusKm, String bookingDate, String brand, RepositoryCallback<List<Tractor>> callback) {
+        ApiClient.getInstance().getApi().getNearbyTractors(lat, lon, radiusKm, bookingDate, brand)
+                .enqueue(new Callback<List<Tractor>>() {
+                    @Override
+                    public void onResponse(Call<List<Tractor>> call, Response<List<Tractor>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<Tractor> remote = response.body();
+                            tractorsLiveData.postValue(remote);
+                            if (callback != null) callback.onSuccess(remote);
+                        } else {
+                            fallbackLocalNearbySearch(lat, lon, radiusKm, brand, callback);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Tractor>> call, Throwable t) {
+                        Log.w(TAG, "Backend unreachable for nearby tractors, falling back to SQLite: " + t.getMessage());
+                        fallbackLocalNearbySearch(lat, lon, radiusKm, brand, callback);
+                    }
+                });
+    }
+
+    private void fallbackLocalNearbySearch(double lat, double lon, Double radiusKm, String brand, RepositoryCallback<List<Tractor>> callback) {
+        executor.execute(() -> {
+            List<Tractor> local = dbHelper.getAllTractors(brand);
+            List<Tractor> filtered = new java.util.ArrayList<>();
+            boolean isAll = (radiusKm == null) || (radiusKm > 500.0);
+            double maxR = isAll ? 10000.0 : radiusKm;
+            for (Tractor t : local) {
+                if (!t.isAvailable() || !"APPROVED".equalsIgnoreCase(t.getApprovalStatus())) continue;
+                if (t.getLatitude() != null && t.getLongitude() != null) {
+                    double dist = calculateHaversineDistanceKm(lat, lon, t.getLatitude(), t.getLongitude());
+                    if (isAll || dist <= maxR) {
+                        t.setDistanceKm(Math.round(dist * 10.0) / 10.0);
+                        filtered.add(t);
+                    }
+                }
+            }
+            filtered.sort((a, b) -> Double.compare(
+                    a.getDistanceKm() != null ? a.getDistanceKm() : Double.MAX_VALUE,
+                    b.getDistanceKm() != null ? b.getDistanceKm() : Double.MAX_VALUE
+            ));
+            mainHandler.post(() -> {
+                tractorsLiveData.setValue(filtered);
+                if (callback != null) callback.onSuccess(filtered);
+            });
+        });
+    }
+
+    public void loadAdminActiveBookings(RepositoryCallback<List<TractorBooking>> callback) {
+        ApiClient.getInstance().getApi().getAdminActiveBookings()
+                .enqueue(new Callback<List<TractorBooking>>() {
+                    @Override
+                    public void onResponse(Call<List<TractorBooking>> call, Response<List<TractorBooking>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (callback != null) callback.onSuccess(response.body());
+                        } else {
+                            if (callback != null) callback.onError("Failed to fetch active bookings", response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<TractorBooking>> call, Throwable t) {
+                        executor.execute(() -> {
+                            List<TractorBooking> local = dbHelper.getAllBookings();
+                            mainHandler.post(() -> {
+                                if (callback != null) callback.onSuccess(local);
+                            });
+                        });
+                    }
+                });
+    }
+
+    public void loadAdminHistoricalBookings(RepositoryCallback<List<TractorBooking>> callback) {
+        ApiClient.getInstance().getApi().getAdminHistoricalBookings()
+                .enqueue(new Callback<List<TractorBooking>>() {
+                    @Override
+                    public void onResponse(Call<List<TractorBooking>> call, Response<List<TractorBooking>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (callback != null) callback.onSuccess(response.body());
+                        } else {
+                            if (callback != null) callback.onError("Failed to fetch historical bookings", response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<TractorBooking>> call, Throwable t) {
+                        executor.execute(() -> {
+                            List<TractorBooking> local = dbHelper.getAllBookings();
+                            mainHandler.post(() -> {
+                                if (callback != null) callback.onSuccess(local);
+                            });
+                        });
+                    }
+                });
+    }
+
+    public static double calculateHaversineDistanceKm(double lat1, double lon1, double lat2, double lon2) {
+        final double R = 6371.0;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2.0) * Math.sin(dLat / 2.0)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(dLon / 2.0) * Math.sin(dLon / 2.0);
+        double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+        return R * c;
     }
 }

@@ -12,9 +12,20 @@ public class Tractor implements Serializable {
     private String implementsIncluded;
     private String ownerName;
     private String ownerPhone;
+    private String ownerUpiId;
+    private String ownerPaymentName;
+    private Boolean ownerUpiVerified = false;
     private String location;
     private boolean isAvailable;
     private float rating;
+    private String approvalStatus = "APPROVED";
+    private String equipmentType = "Standard Tractor";
+    private String village;
+    private String district;
+    private String state;
+    private Double latitude;
+    private Double longitude;
+    private Double distanceKm;
 
     public Tractor() {}
 
@@ -63,6 +74,16 @@ public class Tractor implements Serializable {
     public String getOwnerPhone() { return ownerPhone; }
     public void setOwnerPhone(String ownerPhone) { this.ownerPhone = ownerPhone; }
 
+    public String getOwnerUpiId() { return ownerUpiId; }
+    public void setOwnerUpiId(String ownerUpiId) { this.ownerUpiId = ownerUpiId; }
+
+    public String getOwnerPaymentName() { return ownerPaymentName; }
+    public void setOwnerPaymentName(String ownerPaymentName) { this.ownerPaymentName = ownerPaymentName; }
+
+    public Boolean getOwnerUpiVerified() { return ownerUpiVerified; }
+    public boolean isOwnerUpiVerified() { return Boolean.TRUE.equals(ownerUpiVerified); }
+    public void setOwnerUpiVerified(Boolean ownerUpiVerified) { this.ownerUpiVerified = ownerUpiVerified; }
+
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
@@ -71,4 +92,49 @@ public class Tractor implements Serializable {
 
     public float getRating() { return rating; }
     public void setRating(float rating) { this.rating = rating; }
+
+    public String getApprovalStatus() { return approvalStatus; }
+    public void setApprovalStatus(String approvalStatus) { this.approvalStatus = approvalStatus; }
+
+    public String getEquipmentType() { return equipmentType; }
+    public void setEquipmentType(String equipmentType) { this.equipmentType = equipmentType; }
+
+    public String getModel() { return modelName; }
+    public void setModel(String model) { this.modelName = model; }
+
+    public int getHorsePower() {
+        try {
+            if (hp != null) {
+                String num = hp.replaceAll("[^0-9]", "");
+                if (!num.isEmpty()) return Integer.parseInt(num);
+            }
+        } catch (Exception ignored) {}
+        return 45;
+    }
+
+    public String getImplementsList() { return implementsIncluded; }
+    public void setImplementsList(String implementsList) { this.implementsIncluded = implementsList; }
+
+    public String getVillage() { return village; }
+    public void setVillage(String village) { this.village = village; }
+
+    public String getDistrict() { return district; }
+    public void setDistrict(String district) { this.district = district; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public Double getDistanceKm() { return distanceKm; }
+    public void setDistanceKm(Double distanceKm) { this.distanceKm = distanceKm; }
+
+    public String getFormattedDistance() {
+        if (distanceKm == null) return null;
+        return String.format(java.util.Locale.US, "%.1f km away", distanceKm);
+    }
 }
