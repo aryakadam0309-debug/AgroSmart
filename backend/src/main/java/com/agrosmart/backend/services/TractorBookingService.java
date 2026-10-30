@@ -113,7 +113,7 @@ public class TractorBookingService {
                 continue;
             }
 
-            if (!t.isAvailable() || !"APPROVED".equalsIgnoreCase(t.getApprovalStatus())) {
+            if (!t.isAvailable() || "REJECTED".equalsIgnoreCase(t.getApprovalStatus())) {
                 continue;
             }
 

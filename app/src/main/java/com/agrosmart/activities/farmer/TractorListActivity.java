@@ -335,45 +335,100 @@ public class TractorListActivity extends BaseActivity {
     private void observeTractors() {
         repository.getTractorsLiveData().observe(this, list -> {
             if (list == null || list.isEmpty()) {
-                // If 20 km radius found 0 tractors (e.g. user is in Mumbai or outside local radius),
-                // automatically expand to state-wide fleets so they see machinery sorted by distance from their location!
-                if (searchRadiusKm != null) {
-                    searchRadiusKm = null;
-                    binding.chipAllTractors.setChecked(true);
-                    binding.tvRadiusBadge.setText("All Maharashtra");
-                    binding.tvLiveLocationCoords.setText(String.format(Locale.US,
-                            "Lat: %.3f, Lon: %.3f • Nearest fleets sorted by distance", searchLat, searchLon));
-                    loadTractors();
-                    return;
+                showEmptyState();
+                return;
+            }
+
+            // 1. Calculate distance from live GPS for all tractors
+            List<Tractor> processedList = new ArrayList<>();
+            for (Tractor t : list) {
+                resolveTractorCoordinates(t);
+                if (t.getLatitude() != null && t.getLongitude() != null) {
+                    double dist = calculateHaversineDistanceKm(searchLat, searchLon, t.getLatitude(), t.getLongitude());
+                    t.setDistanceKm(Math.round(dist * 10.0) / 10.0);
                 }
 
-                binding.rvTractors.setVisibility(View.GONE);
-                binding.layoutEmptyState.setVisibility(View.VISIBLE);
+                // If within radius filter is applied, only include tractors within that radius
+                if (searchRadiusKm != null) {
+                    if (t.getDistanceKm() != null && t.getDistanceKm() <= searchRadiusKm) {
+                        processedList.add(t);
+                    }
+                } else {
+                    processedList.add(t);
+                }
+            }
 
-                String dateStr = selectedBookingDate != null ? " on " + selectedBookingDate : "";
-                String brandStr = !"All Brands".equalsIgnoreCase(selectedBrand) ? " (" + selectedBrand + ")" : "";
-                binding.tvEmptyTitle.setText("No Tractors Found Near Your Location" + brandStr);
-                binding.tvEmptyMessage.setText("No approved tractors found within your area" + dateStr
-                        + ". Tap 'View All Across Maharashtra' to see the full state fleet.");
+            // 2. Sort strictly from nearest to farthest (ascending distance)
+            Collections.sort(processedList, Comparator.comparingDouble(t ->
+                    t.getDistanceKm() != null ? t.getDistanceKm() : 999999.0));
+
+            if (processedList.isEmpty()) {
+                showEmptyState();
             } else {
                 binding.layoutEmptyState.setVisibility(View.GONE);
                 binding.rvTractors.setVisibility(View.VISIBLE);
 
-                // Calculate distance from live GPS and sort strictly nearest to farthest
-                List<Tractor> sortedList = new ArrayList<>(list);
-                for (Tractor t : sortedList) {
-                    if (t.getLatitude() != null && t.getLongitude() != null) {
-                        double dist = calculateHaversineDistanceKm(searchLat, searchLon, t.getLatitude(), t.getLongitude());
-                        t.setDistanceKm(Math.round(dist * 10.0) / 10.0);
-                    }
+                if (searchRadiusKm != null) {
+                    binding.tvLiveLocationCoords.setText(String.format(Locale.US,
+                            "Lat: %.3f, Lon: %.3f • %d tractors within %.0f km (nearest first)",
+                            searchLat, searchLon, processedList.size(), searchRadiusKm));
+                } else {
+                    binding.tvLiveLocationCoords.setText(String.format(Locale.US,
+                            "Lat: %.3f, Lon: %.3f • All %d tractors sorted nearest first",
+                            searchLat, searchLon, processedList.size()));
                 }
 
-                Collections.sort(sortedList, Comparator.comparingDouble(t ->
-                        t.getDistanceKm() != null ? t.getDistanceKm() : 999999.0));
-
-                adapter.submitList(sortedList);
+                adapter.submitList(processedList);
             }
         });
+    }
+
+    private void showEmptyState() {
+        binding.rvTractors.setVisibility(View.GONE);
+        binding.layoutEmptyState.setVisibility(View.VISIBLE);
+
+        String dateStr = selectedBookingDate != null ? " on " + selectedBookingDate : "";
+        String brandStr = !"All Brands".equalsIgnoreCase(selectedBrand) ? " (" + selectedBrand + ")" : "";
+        String radiusStr = searchRadiusKm != null ? " within " + String.format(Locale.US, "%.0f km", searchRadiusKm) : "";
+
+        binding.tvEmptyTitle.setText("No Tractors Found" + radiusStr + brandStr);
+        binding.tvEmptyMessage.setText("No available tractors found in this range" + dateStr
+                + ". Tap 'View All Across Maharashtra' to view the entire fleet sorted by distance from your location.");
+    }
+
+    public static void resolveTractorCoordinates(Tractor t) {
+        if (t.getLatitude() != null && t.getLongitude() != null && (t.getLatitude() != 0.0 || t.getLongitude() != 0.0)) {
+            return;
+        }
+        String loc = ((t.getLocation() != null ? t.getLocation() : "") + " " +
+                (t.getVillage() != null ? t.getVillage() : "") + " " +
+                (t.getDistrict() != null ? t.getDistrict() : "")).toLowerCase();
+
+        if (loc.contains("mumbai") || loc.contains("goregaon") || loc.contains("aarey") || loc.contains("bhandup")) {
+            t.setLatitude(19.0760); t.setLongitude(72.8777);
+        } else if (loc.contains("thane")) {
+            t.setLatitude(19.2183); t.setLongitude(72.9781);
+        } else if (loc.contains("panvel") || loc.contains("raigad")) {
+            t.setLatitude(18.9894); t.setLongitude(73.1175);
+        } else if (loc.contains("karad") || loc.contains("satara") || loc.contains("malkapur") || loc.contains("ogalewadi")) {
+            t.setLatitude(17.2892); t.setLongitude(74.1818);
+        } else if (loc.contains("baramati")) {
+            t.setLatitude(18.1519); t.setLongitude(74.5771);
+        } else if (loc.contains("shirur")) {
+            t.setLatitude(18.8272); t.setLongitude(74.3792);
+        } else if (loc.contains("daund")) {
+            t.setLatitude(18.4655); t.setLongitude(74.5828);
+        } else if (loc.contains("pune")) {
+            t.setLatitude(18.5204); t.setLongitude(73.8567);
+        } else if (loc.contains("nashik") || loc.contains("niphad") || loc.contains("dindori") || loc.contains("sinnar")) {
+            t.setLatitude(19.9975); t.setLongitude(73.7898);
+        } else if (loc.contains("kolhapur") || loc.contains("shirol") || loc.contains("ichalkaranji")) {
+            t.setLatitude(16.7050); t.setLongitude(74.2433);
+        } else if (loc.contains("sangli") || loc.contains("ashta") || loc.contains("tasgaon") || loc.contains("islampur")) {
+            t.setLatitude(16.8524); t.setLongitude(74.5815);
+        } else {
+            t.setLatitude(18.5204); t.setLongitude(73.8567);
+        }
     }
 
     public static double calculateHaversineDistanceKm(double lat1, double lon1, double lat2, double lon2) {

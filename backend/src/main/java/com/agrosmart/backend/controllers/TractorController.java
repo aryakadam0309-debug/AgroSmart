@@ -63,7 +63,13 @@ public class TractorController {
         double lon = 74.1818;
         String resolvedName = "Karad, Satara";
 
-        if (q.contains("karad")) {
+        if (q.contains("mumbai") || q.contains("bombay")) {
+            lat = 19.0760; lon = 72.8777; resolvedName = "Mumbai, Maharashtra";
+        } else if (q.contains("thane")) {
+            lat = 19.2183; lon = 72.9781; resolvedName = "Thane, Maharashtra";
+        } else if (q.contains("panvel")) {
+            lat = 18.9894; lon = 73.1175; resolvedName = "Panvel, Raigad";
+        } else if (q.contains("karad")) {
             lat = 17.2892; lon = 74.1818; resolvedName = "Karad, Satara";
         } else if (q.contains("baramati")) {
             lat = 18.1519; lon = 74.5771; resolvedName = "Baramati, Pune";
